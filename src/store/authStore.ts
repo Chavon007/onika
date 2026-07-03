@@ -4,10 +4,10 @@ import { User } from "../lib/types";
 
 interface AuthState {
   user: User | null;
-  token: string | null;
+ 
   isAuthenticated: boolean;
   isVerified: boolean;
-  login: (user: User, token: string, isVerified?: boolean) => void;
+  login: (user: User, isVerified?: boolean) => void;
   logout: () => void;
   updateUser: (user: Partial<User>) => void;
   setIsVerified: (value: boolean) => void;
@@ -20,20 +20,19 @@ const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
       user: null,
-      token: null,
+    
       isAuthenticated: false,
       isVerified: false,
-      login: (user, token, isVerified = false) =>
+      login: (user, isVerified = false) =>
         set({
           user,
-          token,
           isAuthenticated: true,
           isVerified,
         }),
       logout: () =>
         set({
           user: null,
-          token: null,
+         
           isAuthenticated: false,
           isVerified: false,
         }),
