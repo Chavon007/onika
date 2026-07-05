@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const signUpSchema = z
+export const signUpSchema = z
   .object({
     fullName: z.string().min(1, "Full name is required"),
     email: z.string().email("Invalid email address"),
@@ -9,13 +9,14 @@ const signUpSchema = z
     confirmPassword: z.string(),
     state: z.string().min(1, "State is required"),
     lga: z.string().min(1, "Please put your Local Government area"),
+    role: z.enum(["customer", "artisan"]),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
     path: ["confirmPassword"],
   });
 
-const loginSchema = z.object({
+export const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(1, "Password is required"),
 });

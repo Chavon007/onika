@@ -9,7 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ZodType } from "zod";
 
 interface FormProps<TFormValues extends FieldValues, Schema> {
-  className: string;
+  className?: string;
   onSubmit: SubmitHandler<TFormValues>;
   children: (method: UseFormReturn<TFormValues>) => React.ReactNode;
   schema?: Schema;
