@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { inter } from "../lib/fonts";
+import { AppProvider } from "../provider/AppProvider";
 import { Toaster } from "react-hot-toast";
 export const metadata: Metadata = {
   title: "Onika",
@@ -15,8 +16,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        {children}
-        <Toaster position="top-right" />
+        <AppProvider>
+          {children}
+          <Toaster position="top-right" />
+        </AppProvider>
       </body>
     </html>
   );

@@ -1,9 +1,10 @@
+"use client";
 import apiClient from "@/ultiz/axios";
 import { User } from "../lib/types";
 import toast from "react-hot-toast";
 import useAuthStore from "@/store/authStore";
 import { signupFormDTO, loginFormDTO } from "../schema/userSchema";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 const signupFn = async (data: signupFormDTO) => {
   return apiClient.post("/auth/signup", data);

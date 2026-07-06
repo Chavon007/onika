@@ -1,3 +1,4 @@
+import { poppins } from "@/lib/fonts";
 import React, { useState } from "react";
 import { UseFormRegisterReturn, FieldError } from "react-hook-form";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
@@ -23,32 +24,42 @@ export const InputField: React.FC<InputFieldProps> = ({
   const [showPassword, setShowPassword] = useState(false);
   const isPasswordType = type === "password";
 
-  const inputType = isPasswordType ? (showPassword ? "text" : "password") : type;
+  const inputType = isPasswordType
+    ? showPassword
+      ? "text"
+      : "password"
+    : type;
 
   return (
     <div className={className}>
       {/* label */}
       <div>
-        <label>{label}</label>
+        <label className={` text-text text-sm font-bold`}>{label}</label>
         {labelRight && <div>{labelRight}</div>}
       </div>
       {/* icon */}
-      <div>
+      <div className="flex relative">
         {icon && <div>{icon}</div>}
-        <input type={inputType} className="" {...registration} {...props} />
+        <input
+          type={inputType}
+          className="bg-muted text-xs text-background font-bold focus:outline-none py-2 rounded px-3 w-full"
+          {...registration}
+          {...props}
+        />
 
         {isPasswordType && (
           <button
             type="button"
+            className="text-text absolute top-2.5  right-2"
             onClick={() => setShowPassword((prev) => !prev)}
             aria-label={showPassword ? "Hide pssword" : "Show password"}
           >
-            {showPassword ? <FaRegEye/> : <FaRegEyeSlash/>}
+            {showPassword ? <FaRegEye /> : <FaRegEyeSlash />}
           </button>
         )}
       </div>
 
-      {error?.message && <p>{error.message}</p>}
+      {error?.message && <p className="text-red-500">{error.message}</p>}
     </div>
   );
 };

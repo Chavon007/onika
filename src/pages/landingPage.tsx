@@ -8,7 +8,8 @@ import { MdMenu } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
 import { useState } from "react";
 import { poppins } from "../lib/fonts";
-
+import logo from "../../public/logo1.png";
+import Image from "next/image";
 const infoCard = [
   { title: "How it works" },
   { title: "For artisans" },
@@ -16,8 +17,8 @@ const infoCard = [
 ];
 
 const joinCard = [
-  { title: "Find an artisan", link: "/login" },
-  { title: "Join as artisan", link: "/login" },
+  { title: "Find an artisan", link: "/signup" },
+  { title: "Join as artisan", link: "/signup" },
 ];
 
 const card = [
@@ -48,9 +49,7 @@ function LandingPage() {
     <div className="bg-background min-h-screen px-2 pt-2 pb-7 flex flex-col gap-3">
       {/* HEADER */}
       <section className="flex justify-between items-center w-[90%] mx-auto p-2">
-        <h2 className={`${poppins.className} text-text text-2xl font-bold`}>
-          Onika
-        </h2>
+        <Image src={logo} alt="Logo" width={120} height={80} />
 
         {/* DESKTOP */}
         <div className="hidden p-2 w-[35%] lg:flex gap-2 justify-between items-center">
@@ -183,7 +182,10 @@ function LandingPage() {
       </section>
 
       {/* CARDS */}
-      <section id="cards" className="w-[98%] md:w-[90%] mx-auto grid grid-cols-1 md:grid-cols-3 gap-3 items-stretch">
+      <section
+        id="cards"
+        className="w-[98%] md:w-[90%] mx-auto grid grid-cols-1 md:grid-cols-3 gap-3 items-stretch"
+      >
         {card.map((c) => (
           <div
             key={c.title}
