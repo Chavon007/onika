@@ -1,206 +1,238 @@
 "use client";
-
-import Link from "next/link";
-import { FaRegUser } from "react-icons/fa";
-import { FaTools } from "react-icons/fa";
-import { FaArrowRight } from "react-icons/fa";
-import { MdMenu } from "react-icons/md";
-import { IoClose } from "react-icons/io5";
-import { useState } from "react";
-import { poppins } from "../lib/fonts";
-import logo from "../../public/logo1.png";
-import Image from "next/image";
-const infoCard = [
-  { title: "How it works" },
-  { title: "For artisans" },
-  { title: "Get started" },
-];
-
-const joinCard = [
-  { title: "Find an artisan", link: "/signup" },
-  { title: "Join as artisan", link: "/signup" },
-];
-
-const card = [
+import Header from "@/component/header";
+import banner from "../../public/banner.avif";
+import { MdOutlineVerifiedUser } from "react-icons/md";
+import { CiSearch } from "react-icons/ci";
+import { IoIosStar } from "react-icons/io";
+import { FaLongArrowAltRight } from "react-icons/fa";
+const bRating = [
   {
-    title: "How it works",
-    description:
-      "Post your job, get matched with a verified artisan nearby, pay safely into escrow, and only release the money when you're satisfied. No scams. No stress.",
-    icon: <FaRegUser />,
+    title: "Verified Artisans",
+    num: "500+",
   },
   {
-    title: "For artisans",
-    description:
-      "Get matched with customer jobs, accept requests, and work with confidence knowing your payment is secured in escrow. Once the job is completed and confirmed, your earnings are released instantly",
-    icon: <FaTools />,
+    title: "Jobs Completed",
+    num: "10000+",
   },
   {
-    title: "Get started",
-    description:
-      "Start by creating an account as a customer to post jobs or as an artisan to connect with real job opportunities near you.",
-    icon: <FaArrowRight />,
+    title: "Avg. Rating",
+    num: "4.8",
+    icon: <IoIosStar />,
+  },
+];
+
+const serviceCard = [
+  {
+    title: "Cleaners",
+    num: "50+ artisans",
+    icon: "🧹",
+    bg: "bg-yellow-100",
+  },
+  {
+    title: "Plumbers",
+    num: "50+ artisans",
+    icon: "🔧",
+    bg: "bg-blue-100",
+  },
+  {
+    title: "Car Wash",
+    num: "100+ artisans",
+    icon: "🚗",
+    bg: "bg-green-100",
+  },
+  {
+    title: "Electrican",
+    num: "25+ artisans",
+    icon: "⚡",
+    bg: "bg-purple-100",
+  },
+  {
+    title: "Painting",
+    num: "85+ artisans",
+    icon: "🎨",
+    bg: "bg-pink-100",
+  },
+  {
+    title: "Chefs",
+    num: "65+ artisans",
+    icon: "👨‍🍳",
+    bg: "bg-emerald-100",
+  },
+  {
+    title: "AC Techs",
+    num: "70+ artisans",
+    icon: "❄️",
+    bg: "bg-sky-100",
+  },
+  {
+    title: "And more",
+    icon: "✨",
+    bg: "bg-orange-100",
+  },
+];
+
+const howItWorks = [
+  {
+    stage: "01",
+    title: "Post the job",
+    desc: "Describe the work you need done. Post location, timing, and any special requirements",
+  },
+  {
+    stage: "02",
+    title: "Match with Artisans",
+    desc: "See only NIN-verified artisans near you.",
+  },
+  {
+    stage: "03",
+    title: "Pay into escrow",
+    desc: "Your money stays with Sabi until you confirm",
+  },
+  {
+    stage: "04",
+    title: "Confirm & rate",
+    desc: "Release payment when the job is truly done.",
   },
 ];
 
 function LandingPage() {
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
-    <div className="bg-background min-h-screen px-2 pt-2 pb-7 flex flex-col gap-3">
-      {/* HEADER */}
-      <section className="flex justify-between items-center w-[90%] mx-auto p-2">
-        <Image src={logo} alt="Logo" width={120} height={80} />
+    <div>
+      {/* header */}
+      <Header />
+      {/* banner */}
+      <section
+        className="bg-cover bg-center relative min-h-screen flex items-center"
+        style={{ backgroundImage: `url(${banner.src})` }}
+      >
+        <div className="absolute inset-0 bg-[#1a2d4a]/90" />
+        <div className="relative z-10 w-[95%] mx-auto flex flex-col gap-3">
+          <small className="bg-primary/25 font-sans text-sm text-primary font-medium  flex gap-1 items-center justify-center w-60 p-1.5 rounded-2xl">
+            <span className="text-xl">
+              <MdOutlineVerifiedUser />
+            </span>
+            <span>NIN & BVN verified pros only</span>
+          </small>
+          <h2 className="text-white font-heading text-5xl  font-bold leading-[55px] tracking-wider">
+            Book real <br />
+            <span className="text-primary"> artisans.</span> <br /> Pay when the
+            job <br /> is <span className="text-primary">actually</span> done.
+          </h2>
+          <p className="w-[600px] leading-[25px]  text-gray-300 tracking-wide font-light font-sans text-sm">
+            Connect with verified local artisans for cleaning, plumbing, car
+            wash, electrical work, and more. Booked in minutes, done right.
+          </p>
 
-        {/* DESKTOP */}
-        <div className="hidden p-2 w-[35%] lg:flex gap-2 justify-between items-center">
-          {infoCard.map((i) => (
+          <div className=" flex w-[600px] justify-between items-center">
+            <div className="flex items-center gap-1 bg-[#30415a] w-[75%] py-3 text-gray-300 border border-gray-500  rounded-xl pl-3">
+              <CiSearch className="text-xl font-bold " />
+              <input
+                className="focus:outline-none w-[80%] font-sans font-light text-sm"
+                placeholder="What service do you need?"
+              />
+            </div>
             <button
-              key={i.title}
-              className="
-                bg-primary w-25 text-sm font-bold text-background
-                cursor-pointer rounded p-1
-                relative overflow-hidden group
-              "
+              className="bg-primary p-3  w-30 text-center text-white font-sans text-sm font-bold rounded-xl"
+              type="submit"
             >
-              <span className="relative z-10">{i.title}</span>
-              <span
-                className="
-                absolute inset-0 bg-secondary
-                scale-x-0 origin-left
-                transition-transform duration-300
-                group-hover:scale-x-100
-              "
-              ></span>
+              Find Artisan
             </button>
-          ))}
-        </div>
+          </div>
 
-        {/* MOBILE */}
-        <div className="lg:hidden">
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="text-primary text-3xl flex items-center justify-center w-9 h-9 rounded-lg hover:bg-primary/10 transition-colors"
-          >
-            {isOpen ? <IoClose /> : <MdMenu />}
-          </button>
-
-          {/* Overlay */}
-          <div
-            onClick={() => setIsOpen(false)}
-            className={`fixed inset-0 bg-black/60 z-40 transition-opacity duration-300 ${
-              isOpen
-                ? "opacity-100 pointer-events-auto"
-                : "opacity-0 pointer-events-none"
-            }`}
-          />
-
-          {/* Drawer */}
-          <div
-            className={`fixed top-0 right-0 h-full w-[72%] bg-[#111c14] z-50 flex flex-col transition-transform duration-300 ease-in-out ${
-              isOpen ? "translate-x-0" : "translate-x-full"
-            }`}
-          >
-            {/* Drawer top */}
-            <div className="flex items-center justify-between px-5 py-5 border-b border-white/5">
-              <span className="text-primary font-bold text-sm">Onika</span>
-              <button
-                onClick={() => setIsOpen(false)}
-                className="text-muted hover:text-text w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/5 transition-colors text-xl"
+          <div className="flex justify-between items-center mt-2 w-[500px]">
+            {bRating.map((r) => (
+              <section
+                className="font-sans text-base font-bold text-white"
+                key={r.title}
               >
-                <IoClose />
-              </button>
-            </div>
-
-            {/* Nav links */}
-            <div className="flex flex-col flex-1 py-3">
-              {infoCard.map((item, index) => (
-                <button
-                  key={item.title}
-                  onClick={() => {
-                    setIsOpen(false);
-                    setTimeout(() => {
-                      document
-                        .getElementById("cards")
-                        ?.scrollIntoView({ behavior: "smooth" });
-                    }, 300);
-                  }}
-                  style={{
-                    animationDelay: isOpen ? `${0.1 + index * 0.08}s` : "0s",
-                  }}
-                  className={`flex items-center gap-3 px-5 py-4 text-sm font-medium text-muted
-            hover:text-primary hover:bg-primary/5 border-l-2 border-transparent
-            hover:border-primary transition-all text-left w-full
-            ${isOpen ? "animate-slideIn" : "opacity-0"}
-          `}
-                >
-                  {item.title}
-                </button>
-              ))}
-            </div>
+                <h3 className="flex items-center justify-center">
+                  {r.num} {r.icon}
+                </h3>
+                <p className="text-gray-400 text-sm font-light">{r.title}</p>
+              </section>
+            ))}
           </div>
         </div>
       </section>
-
-      {/* BANNER */}
-      <section className="flex flex-col gap-3 md:justify-center p-2 w-[98%] md:w-[90%] mx-auto md:h-[60vh]">
-        <h3
-          className={`${poppins.className} text-2xl md:text-4xl font-bold text-text md:max-w-[500px]`}
-        >
-          Connect with trusted artisans near you — fast, secure, and
-          stress-free.
-        </h3>
-
-        <p className="text-muted md:w-[380px] text-sm font-medium">
-          Post a job as a customer or get hired as an artisan. Payments are
-          secured with escrow, so you only pay when the job is done right.
-        </p>
-
-        {/* CTA BUTTONS */}
-        <div className="md:w-[25%] flex md:justify-between items-center p-2 gap-2">
-          {joinCard.map((j) => (
-            <Link
-              key={j.title}
-              href={j.link}
-              className="
-                bg-primary w-30 text-center text-sm font-bold text-background
-                cursor-pointer rounded p-1
-                relative overflow-hidden group
-              "
-            >
-              <span className="relative z-10">{j.title}</span>
-              <span
-                className="
-                absolute inset-0 bg-secondary
-                scale-x-0 origin-left
-                transition-transform duration-300
-                group-hover:scale-x-100
-              "
-              ></span>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* CARDS */}
-      <section
-        id="cards"
-        className="w-[98%] md:w-[90%] mx-auto grid grid-cols-1 md:grid-cols-3 gap-3 items-stretch"
-      >
-        {card.map((c) => (
-          <div
-            key={c.title}
-            className="border border-border p-4 rounded flex flex-col items-center gap-3 justify-start h-full"
-          >
-            <h5 className="text-primary text-2xl">{c.icon}</h5>
-            <h2 className="text-primary font-bold text-2xl">{c.title}</h2>
-            <p className="text-sm text-muted font-medium text-center">
-              {c.description}
+      {/* service  cat*/}
+      <section className="bg-background flex flex-col justify-center h-[80vh]">
+        <div className="w-[95%] mx-auto flex flex-col gap-8">
+          <div className="">
+            <h2 className="font-heading font-bold text-3xl text-muted">
+              Browse by service
+            </h2>
+            <p className="text-black/75 font-sans font-light text-base mt-1">
+              From quick fixes to major overhauls. We have a specialist for
+              every job.
             </p>
           </div>
-        ))}
+
+          <div className=" grid grid-cols-4 gap-3">
+            {serviceCard.map((s) => (
+              <div
+                className={`${s.bg} h-30 rounded-3xl py-2 pl-4 text-2xl flex flex-col gap-2 justify-center`}
+                key={s.title}
+              >
+                {s.icon}
+                <h4 className="text-sm font-sans font-bold text-black/70">
+                  {s.title}
+                </h4>
+                <p className="text-xs font-sans text-black/60">{s.num}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
+      {/* how it works */}
+      <section className="bg-[#f0efe9] flex flex-col justify-center h-[65vh]">
+        <div className="w-[95%] mx-auto flex flex-col gap-8">
+          <div className=" text-center">
+            <h2 className="font-heading font-bold text-3xl text-muted">
+              How Onkia works
+            </h2>
+            <p className="text-black/75 font-sans font-light text-base mt-1">
+              From posting a job to paying only when it's done in four honest
+              steps.
+            </p>
+          </div>
+
+          <div className="flex justify-between items-center">
+            {howItWorks.map((w, i) => (
+              <div key={w.title} className="flex items-center">
+                <div className="w-65 p-3">
+                  <button
+                    type="button"
+                    className="bg-[#1a2d4a] p-5 rounded-2xl text-white font-heading font-bold text-2xl"
+                  >
+                    {w.stage}
+                  </button>
+                  <h4 className="font-sans text-black text-base font-bold py-2">
+                    {w.title}
+                  </h4>
+                  <p className="mt-1 font-sans font-light text-xs text-black/80">
+                    {w.desc}
+                  </p>
+                </div>
+
+                {i < howItWorks.length - 1 && (
+                  <FaLongArrowAltRight className="w-10 h-6 text-[#1a2d4a]/70 " />
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* rated artisans */}
+      <section></section>
+
+      {/* testimonials */}
+      <section></section>
+
+      {/* join */}
+      <section></section>
+
+      {/* footer */}
     </div>
   );
 }
-
 export default LandingPage;

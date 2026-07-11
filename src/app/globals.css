@@ -1,26 +1,27 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #0b0f14;
-  --color-text: #f8fafc;
-  --color-muted: #94a3b8;
-  --color-primary: #aaffc7;
-  --color-secondary: #34d399;
-  --color-accent: #22c55e;
-  --color-border: rgba(255, 255, 255, 0.08);
-}
+    /* Main page background */
+  --color-background: #FAFAF7;
 
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateX(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
+  /* Primary text color (dark blue) */
+  --color-text: #293E5A;
 
-.animate-slideIn {
-  animation: slideIn 0.3s forwards;
+  /* Secondary text / slated blue */
+  --color-muted: #566984;
+
+  /* Primary brand color (orange) */
+  --color-primary: #EC6B2A;
+
+  /* Secondary background / light blue gray / sections */
+  --color-secondary: #E8EDF4;
+
+  /* Accent color (using the brand orange) */
+  --color-accent: #EC6B2A;
+
+  /* Borders and dividers */
+  --color-border: #E8EDF4;
+
+  --font-sans: var(--font-plus-jakarta);
+  --font-heading: var(--font-fraunces)
 }
