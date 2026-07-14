@@ -1,27 +1,30 @@
 @import "tailwindcss";
 
 @theme {
-    /* Main page background */
-  --color-background: #FAFAF7;
+  /* Main page background */
+  --color-background: #fafaf7;
 
+  /* second background color */
+  --color-main: #1a2d4a;
+  
   /* Primary text color (dark blue) */
-  --color-text: #293E5A;
+  --color-text: #293e5a;
 
   /* Secondary text / slated blue */
   --color-muted: #566984;
 
   /* Primary brand color (orange) */
-  --color-primary: #EC6B2A;
+  --color-primary: #ec6b2a;
 
   /* Secondary background / light blue gray / sections */
-  --color-secondary: #E8EDF4;
+  --color-secondary: #e8edf4;
 
   /* Accent color (using the brand orange) */
-  --color-accent: #EC6B2A;
+  --color-accent: #ec6b2a;
 
   /* Borders and dividers */
-  --color-border: #E8EDF4;
+  --color-border: #e8edf4;
 
   --font-sans: var(--font-plus-jakarta);
-  --font-heading: var(--font-fraunces)
+  --font-heading: var(--font-fraunces);
 }
