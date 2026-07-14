@@ -9,27 +9,33 @@ import { loginFormDTO, loginSchema } from "../schema/userSchema";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import logo from "../../public/logo1.png";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { poppins } from "@/lib/fonts";
 
-const images = [
-  "https://i.pinimg.com/736x/65/9a/a2/659aa2282572a132c9fa145f166f07da.jpg",
-  "https://i.pinimg.com/1200x/77/7e/b4/777eb4f68ce664bdaacaff05111d5128.jpg",
-  "https://images.unsplash.com/photo-1542013936693-884638332954?w=600&auto=format&fit=crop&q=60",
+const features = [
+  {
+    title: "Escrow-Protected Payments",
+    desc: "Funds helid until job confirmed done",
+    icon: "🔒",
+  },
+  {
+    title: "NIN/BVN Verified Artisans",
+    desc: "Every artisan identity-checked before approval",
+    icon: "✅",
+  },
+  {
+    title: "Behavioral Trust Score",
+    desc: "Real ratings + completion rate on every profile",
+    icon: "🌟",
+  },
+  {
+    title: "Masked Phone Numbers",
+    desc: "Contact stays inside the platform, no bypass",
+    icon: "📱",
+  },
 ];
 
 function LoginPage() {
   const router = useRouter();
   const { mutate, isPending } = auth.useLoginMutation();
-  const [currentImage, setCurrentImage] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImage((prev) => (prev + 1) % images.length);
-    }, 2500);
-
-    return () => clearInterval(interval);
-  }, []);
 
   const onSubmit = (data: loginFormDTO) => {
     mutate(data, {
@@ -40,39 +46,72 @@ function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen overflow-hidden">
-
+    <div className="flex min-h-screen overflow-hidden ">
       {/* LEFT IMAGE */}
-      <div className="hidden md:block w-1/2 min-h-screen relative">
-        <Image
-          key={currentImage}
-          src={images[currentImage]}
-          alt="Login visual"
-          fill
-          priority
-          className="object-cover transition-all duration-700"
-        />
+      <div className="hidden md:block w-1/2 min-h-screen relative bg-main  p-9">
+        {/* logo */}
+        <div className="flex w-[80%] mx-auto items-center gap-2">
+          <Image src={logo} alt="onika" width={40} height={40} />
+          <h2 className="font-heading text-3xl font-bold text-background">
+            Onika
+          </h2>
+        </div>
+
+        {/* content */}
+        <div className=" w-[80%] mx-auto flex flex-col mt-7">
+          <h2 className="w-[450px] text-4xl font-semibold font-heading text-background">
+            Nigeria's most trusted artisan marketplace
+          </h2>
+          <p className="font-sans mt-4 text-xs text-gray-400 font-medium">
+            Verified professionals. Escrow-protected payments. Zero scam risk.
+          </p>
+
+          <div className=" flex flex-col gap-5 mt-5 p-2">
+            {features.map((f) => (
+              <div
+                key={f.title}
+                className=" flex gap-3 bg-text rounded-2xl p-3"
+              >
+                <h6 className="text-xl">{f.icon}</h6>
+                <p className="flex flex-col gap-1 text-white">
+                  <strong className="font-heading text-base font-bold">
+                    {f.title}
+                  </strong>{" "}
+                  <span className="text-sm text-gray-400 font-sans font-light">
+                    {f.desc}
+                  </span>
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* RIGHT FORM */}
       <div className="w-full md:w-1/2 bg-background flex items-center justify-center p-4 overflow-y-auto">
         <div className="w-full max-w-md">
-
           {/* HEADER */}
-          <div className="flex flex-col items-center text-center mb-4">
-            <Image src={logo} alt="Logo" width={100} height={80} />
-            <h3 className={`${poppins.className} text-2xl font-bold text-text`}>
+          <div className="flex flex-col gap-2">
+            <h3 className={` text-4xl text-muted font-heading font-bold`}>
               Welcome back
             </h3>
-            <p className="text-muted text-sm">
-              Login into your account
-            </p>
+            <div className="flex items-center gap-2 text-xs">
+              <p className="text-text font-light font-sans text-sm">
+                Don't have an account?
+              </p>
+              <Link
+                className="text-accent font-sans font-bold text-sm hover:underline"
+                href="/signup"
+              >
+                Sign up free
+              </Link>
+            </div>
           </div>
 
           {/* FORM CARD */}
-          <div className="w-full max-w-md py-10">
+          <div className="w-full mt-3">
             <Form
-              className="flex flex-col gap-3 p-5 border border-primary/30 rounded-2xl bg-card shadow-md"
+              className="flex flex-col gap-3"
               onSubmit={onSubmit}
               schema={loginSchema}
             >
@@ -97,7 +136,7 @@ function LoginPage() {
                   <button
                     type="submit"
                     disabled={isPending}
-                    className="bg-primary w-full text-sm font-bold text-background rounded p-2 flex items-center justify-center gap-2"
+                    className="bg-primary w-full text-sm font-bold text-background rounded-xl p-3 flex items-center justify-center gap-2"
                   >
                     {isPending ? (
                       <>
@@ -108,23 +147,10 @@ function LoginPage() {
                       "Login"
                     )}
                   </button>
-
-                  <div className="flex items-center justify-center gap-2 text-xs">
-                    <p className="text-text">
-                      You don't have an account?
-                    </p>
-                    <Link
-                      className="text-blue-400 hover:underline"
-                      href="/signup"
-                    >
-                      Signup
-                    </Link>
-                  </div>
                 </>
               )}
             </Form>
           </div>
-
         </div>
       </div>
     </div>

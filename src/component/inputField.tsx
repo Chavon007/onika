@@ -33,8 +33,8 @@ export const InputField: React.FC<InputFieldProps> = ({
   return (
     <div className={className}>
       {/* label */}
-      <div>
-        <label className={` text-text text-sm font-bold`}>{label}</label>
+      <div className="p-2">
+        <label className={` text-black/90 text-sm font-light font-sans`}>{label}</label>
         {labelRight && <div>{labelRight}</div>}
       </div>
       {/* icon */}
@@ -42,7 +42,7 @@ export const InputField: React.FC<InputFieldProps> = ({
         {icon && <div>{icon}</div>}
         <input
           type={inputType}
-          className="bg-muted text-xs text-background font-bold focus:outline-none py-2 rounded px-3 w-full"
+          className="bg-transparent border border-black rounded-xl text-xs text-black/80 font-bold focus:outline-none p-3  w-full"
           {...registration}
           {...props}
         />
