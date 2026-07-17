@@ -1,12 +1,13 @@
 "use client";
 
+import Button from "@/component/button";
 import auth from "@/api/auth";
 import { Form } from "@/component/form";
 import { InputField } from "@/component/inputField";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { loginFormDTO, loginSchema } from "../schema/userSchema";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
+
 import logo from "../../public/logo1.png";
 import Link from "next/link";
 
@@ -39,8 +40,8 @@ function LoginPage() {
 
   const onSubmit = (data: loginFormDTO) => {
     mutate(data, {
-      onSuccess: () => {
-        router.push("/dashboard");
+      onSuccess: (user) => {
+        router.push(user.verified ? "/dashboard" : "/verify");
       },
     });
   };
@@ -133,20 +134,21 @@ function LoginPage() {
                     error={methods.formState.errors.password}
                   />
 
-                  <button
-                    type="submit"
-                    disabled={isPending}
-                    className="bg-primary w-full text-sm font-bold text-background rounded-xl p-3 flex items-center justify-center gap-2"
+                  <Link
+                    href="./forgot"
+                    className="font-sans text-xs font-light text-accent hover:text-accent/90"
                   >
-                    {isPending ? (
-                      <>
-                        <AiOutlineLoading3Quarters className="animate-spin text-lg" />
-                        Logging in...
-                      </>
-                    ) : (
-                      "Login"
-                    )}
-                  </button>
+                    Forgot Password?
+                  </Link>
+
+                  <Button
+                    type="submit"
+                    isLoading={isPending}
+                    loadingText="Logging in..."
+                  >
+                    {" "}
+                    Login
+                  </Button>
                 </>
               )}
             </Form>

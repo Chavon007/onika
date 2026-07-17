@@ -4,7 +4,7 @@ import { UseFormRegisterReturn, FieldError } from "react-hook-form";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 
 interface InputFieldProps extends React.InputHTMLAttributes<HTMLElement> {
-  label: string;
+  label?: string;
   registration: Partial<UseFormRegisterReturn>;
   error?: FieldError;
   icon?: React.ReactNode;
