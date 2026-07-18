@@ -18,7 +18,7 @@ const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const baseStyle =
-    "bg-primary w-full text-sm font-bold text-background rounded-xl p-3 flex items-center justify-center gap-2";
+    "bg-primary w-full text-sm font-bold text-background rounded-xl p-3 flex items-center justify-center gap-2 hover:bg-accent/70 cursor-pointer";
 
   return (
     <button
@@ -28,8 +28,8 @@ const Button: React.FC<ButtonProps> = ({
     >
       {isLoading ? (
         <>
-        <AiOutlineLoading3Quarters className="animate-spin text-lh"/>
-        {loadingText}
+          <AiOutlineLoading3Quarters className="animate-spin text-lh" />
+          {loadingText}
         </>
       ) : (
         <div>

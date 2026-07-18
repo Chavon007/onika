@@ -42,9 +42,10 @@ function SignupPage() {
 
   const onSubmit = (data: signupFormDTO) => {
     mutate(
-      { ...data, role },
+      { ...data },
       {
-        onSuccess: () => router.push("/login"),
+        onSuccess: () =>
+          router.push(`/verify?phone=${encodeURIComponent(data.phoneNumber)}`),
       },
     );
   };
