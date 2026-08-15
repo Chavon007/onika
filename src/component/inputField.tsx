@@ -1,4 +1,3 @@
-import { poppins } from "@/lib/fonts";
 import React, { useState } from "react";
 import { UseFormRegisterReturn, FieldError } from "react-hook-form";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
@@ -9,12 +8,14 @@ interface InputFieldProps extends React.InputHTMLAttributes<HTMLElement> {
   error?: FieldError;
   icon?: React.ReactNode;
   labelRight?: React.ReactNode;
+  small?: string;
 }
 
 export const InputField: React.FC<InputFieldProps> = ({
   label,
   registration,
   error,
+  small,
   icon,
   labelRight,
   className,
@@ -34,7 +35,10 @@ export const InputField: React.FC<InputFieldProps> = ({
     <div className={className}>
       {/* label */}
       <div className="p-2">
-        <label className={` text-black/90 text-sm font-light font-sans`}>{label}</label>
+        <label className={` text-black/90 text-sm font-light font-sans`}>
+          {label}
+        </label>
+        <small>{small}</small>
         {labelRight && <div>{labelRight}</div>}
       </div>
       {/* icon */}
