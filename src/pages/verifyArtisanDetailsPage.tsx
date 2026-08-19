@@ -10,11 +10,13 @@ import FileDropZone from "@/component/fileDropzone";
 import SkillInputField from "@/component/skillInputList";
 import Steppers from "@/component/stepper";
 import logo from "../../public/logo1.png";
+
 import useVerifyArtisanMutation from "@/api/artsianProfile";
 import {
   ArtisanProfileSchema,
   artisanProfileDTO,
 } from "@/schema/ArtisanProfileSchema";
+import TextArea from "@/component/TextArea";
 
 const stepFields: Record<number, (keyof artisanProfileDTO)[]> = {
   1: ["fullname", "phoneNumber", "city", "bio"],
@@ -31,25 +33,27 @@ function VerifyArtisanDetails() {
   const onSubmit = (data: artisanProfileDTO) => {
     mutate(data, {
       onSuccess: () => {
-        router.push("/verify");
+        router.push("/artisan-review");
       },
     });
   };
 
   return (
-    <div>
-      <div className="conatiner">
+    <div className="min-h-screen p-4">
+      <div className="container w-full max-w-2xl mx-auto flex flex-col gap-3">
         {/* logo */}
-        <div className="flex w-[80%] mx-auto items-center gap-2">
-          <Image src={logo} alt="onika" width={40} height={40} />
-          <h2 className="font-heading text-3xl font-bold text-background">
-            Onika
-          </h2>
+        <div className="flex items-center gap-2">
+          <Image src={logo} alt="onika" width={20} height={20} />
+          <h2 className="font-heading text-2xl font-bold text-text">Onika</h2>
         </div>
 
-        <div>
-          <h3>Join as an Artisan</h3>
-          <p>Complete your profile to start receiving job requests.</p>
+        <div className=" flex flex-col gap-0.5 ">
+          <h3 className="font-heading font-bold  text-black text-3xl tracking-wider">
+            Join as an Artisan
+          </h3>
+          <p className="font-sans font-medium text-sm text-gray-400/80 tracking-wider">
+            Complete your profile to start receiving job requests.
+          </p>
         </div>
 
         <Steppers
@@ -58,7 +62,6 @@ function VerifyArtisanDetails() {
             { label: "Skills" },
             { label: "Identity (KYC)" },
             { label: "Portfolio" },
-            { label: "Pending Review" },
           ]}
           currentNumber={currentStep}
         />
@@ -66,20 +69,19 @@ function VerifyArtisanDetails() {
         <Form className="" onSubmit={onSubmit} schema={ArtisanProfileSchema}>
           {(methods) => {
             const {
+              control,
               trigger,
               formState: { errors },
             } = methods;
             const goNext = async () => {
               const fieldsToValidate = stepFields[currentStep];
-              // trigger() runs zod validation only for these fields
+
               const isValid = fieldsToValidate
                 ? await trigger(fieldsToValidate as any)
                 : true;
               if (isValid) {
                 setCurrentStep((s) => Math.min(s + 1, totalSteps));
               }
-              // if invalid, errors get populated and InputField/FileDropzone
-              // will show them - user stays on this step
             };
 
             const goBack = () => {
@@ -90,6 +92,9 @@ function VerifyArtisanDetails() {
               <>
                 {currentStep === 1 && (
                   <>
+                    <h6 className="text-heading font-bold text-base text-muted">
+                      Tell us about yourself
+                    </h6>
                     <InputField
                       label="Full Name (as on ID)"
                       type="text"
@@ -109,9 +114,8 @@ function VerifyArtisanDetails() {
                       registration={methods.register("city")}
                       error={methods.formState.errors.city}
                     />
-                    <InputField
+                    <TextArea
                       label="Short Bio"
-                      type="text"
                       registration={methods.register("bio")}
                       error={methods.formState.errors.bio}
                     />
@@ -152,81 +156,107 @@ function VerifyArtisanDetails() {
 
                 {currentStep === 3 && (
                   <>
-                    <div>
-                      <InputField
-                        label="NIN (11-digit number)"
-                        placeholder="12345678987"
-                        registration={methods.register("nin")}
-                        error={methods.formState.errors.nin}
-                      />
-                      <InputField
-                        label="BVN (optional but recommended)"
-                        placeholder="98765432123"
-                        registration={methods.register("bvn")}
-                        error={methods.formState.errors.bvn}
-                      />
+                    <div className="flex flex-col gap-3">
+                      <div className="flex flex-col gap-1">
+                        <h6 className="text-heading font-bold text-base text-muted">
+                          Identity Verification (KYC)
+                        </h6>
+                        <p className="text-xs font-sans">
+                          This is the most important step. Verifying your
+                          identity protects customers and builds trust in the
+                          platform.
+                        </p>
+                      </div>
+                      <div className="flex justify-between items-center mb-3">
+                        <InputField
+                          label="NIN (11-digit number)"
+                          placeholder="12345678987"
+                          registration={methods.register("nin")}
+                          error={methods.formState.errors.nin}
+                        />
+                        <InputField
+                          label="BVN (optional but recommended)"
+                          placeholder="98765432123"
+                          registration={methods.register("bvn")}
+                          error={methods.formState.errors.bvn}
+                        />
+                      </div>
+                      <div className="flex flex-col gap-3">
+                        <Controller
+                          name="governmentId"
+                          control={control}
+                          render={({ field }) => (
+                            <FileDropZone
+                              label="Upload Government ID (NIN Slip / Voter's Card / Int'l Passport)"
+                              value={field.value}
+                              onChange={field.onChange}
+                              error={errors.governmentId?.message as string}
+                            />
+                          )}
+                        />
+                        <Controller
+                          name="faceVerification"
+                          control={control}
+                          render={({ field }) => (
+                            <FileDropZone
+                              label="Face Verification (selfie)"
+                              value={field.value}
+                              onChange={field.onChange}
+                              error={errors.faceVerification?.message as string}
+                            />
+                          )}
+                        />
+                      </div>
                     </div>
-                    <Controller
-                      name="governmentId"
-                      control={control}
-                      render={({ field }) => (
-                        <FileDropZone
-                          label="Upload Government ID (NIN Slip / Voter's Card / Int'l Passport)"
-                          value={field.value}
-                          onChange={field.onChange}
-                          error={errors.governmentId?.message as string}
-                        />
-                      )}
-                    />
-                    <Controller
-                      name="faceVer"
-                      control={control}
-                      render={({ field }) => (
-                        <FileDropZone
-                          label="Face Verification (selfie)"
-                          value={field.value}
-                          onChange={field.onChange}
-                          error={errors.faceVerification?.message as string}
-                        />
-                      )}
-                    />
                   </>
                 )}
 
                 {currentStep === 4 && (
                   <Controller
-                    name="Work"
+                    name="workImage"
                     control={control}
                     render={({ field }) => (
                       <FileDropZone
                         label="Showcase your work"
                         value={field.value}
+                        maxFiles={6}
+                        multiple={true}
                         onChange={field.onChange}
                         error={errors.workImage?.message as string}
                       />
                     )}
                   />
                 )}
-                <div>
-                  {currentStep > 1 && (
-                    <button type="button" onClick={goBack}>
-                      Back
-                    </button>
-                  )}
 
-                  {currentStep < totalSteps ? (
-                    <Button type="button" isLoading={isPending}>
-                      Next
-                    </Button>
-                  ) : (
-                    <Button
-                      type="submit"
-                      isLoading={isPending}
-                      loadingText="Submitting...."
-                    >
-                      Submit
-                    </Button>
-                  )}
+                <div className="w-full flex items-center mt-4">
+                  <div>
+                    {currentStep > 1 && (
+                      <button type="button" onClick={goBack}>
+                        Back
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="ml-auto">
+                    {currentStep < totalSteps ? (
+                      <Button
+                        className="w-[140px]"
+                        type="button"
+                        isLoading={isPending}
+                        onClick={goNext}
+                      >
+                        Next
+                      </Button>
+                    ) : (
+                      <Button
+                        type="submit"
+                        isLoading={isPending}
+                        loadingText="Submitting...."
+                      >
+                        Submit
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </>
             );

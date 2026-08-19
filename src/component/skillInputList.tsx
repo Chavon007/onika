@@ -31,31 +31,45 @@ const SkillInputField: React.FC<skillInputProps> = ({
     onChange(updated.length > 0 ? updated : [""]);
   };
   return (
-    <div>
-      <div>
-        <label>{label}</label>
-        <small>{small}</small>
-
-        {skills.map((skill, i) => (
-          <div key={i}>
-            <input
-              type="text"
-              value={skill}
-              onChange={(e) => updateSkill(i, e.target.value)}
-              placeholder="e.g. Plumbing"
-            />
-
-            {skills.length > 1 && (
-              <button type="button" onClick={() => removeSkill(i)}>
-                -
-              </button>
-            )}
-          </div>
-        ))}
-        <button type="button" onClick={addSkill}>+ Add another skill</button>
-
-        {error && <p className="text-red-500">{error}</p>}
+    <div className="flex flex-col gap-3">
+      <div className="flex flex-col p-2">
+        <label className="text-black/90 text-sm font-light font-sans">
+          {label}
+        </label>
+        <small className="text-black/50 text-xs">{small}</small>
       </div>
+
+      {skills.map((skill, i) => (
+        <div key={i} className="flex items-center gap-2">
+          <input
+            type="text"
+            value={skill}
+            onChange={(e) => updateSkill(i, e.target.value)}
+            placeholder="e.g. Plumbing"
+            className="bg-transparent border border-black rounded-xl text-xs text-black/80 font-bold focus:outline-none p-3 w-full"
+          />
+
+          {skills.length > 1 && (
+            <button
+              type="button"
+              onClick={() => removeSkill(i)}
+              className="shrink-0 w-9 h-9 flex items-center justify-center rounded-xl border border-black text-black/80 font-bold"
+            >
+              -
+            </button>
+          )}
+        </div>
+      ))}
+
+      <button
+        type="button"
+        onClick={addSkill}
+        className="self-start text-sm font-bold text-primary"
+      >
+        + Add another skill
+      </button>
+
+      {error && <p className="text-red-500">{error}</p>}
     </div>
   );
 };

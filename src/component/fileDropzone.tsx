@@ -2,6 +2,7 @@
 
 import { useState, useRef, DragEvent } from "react";
 import Image from "next/image";
+import { FiUploadCloud, FiX } from "react-icons/fi";
 
 interface FileDropZoneProps {
   label: string;
@@ -53,7 +54,7 @@ function FileDropZone({
   };
 
   return (
-    <div>
+    <div className="flex flex-col gap-3">
       <div
         onClick={() => inputRef.current?.click()}
         onDragOver={(e) => {
@@ -62,9 +63,15 @@ function FileDropZone({
         }}
         onDragLeave={() => setIsDragging(false)}
         onDrop={handleDrop}
+        className={`flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition ${
+          isDragging ? "border-primary bg-primary/5" : "border-black/30"
+        } ${error ? "border-red-500" : ""}`}
       >
-        <p>{label}</p>
-        {hint && <p>{hint}</p>}
+        <div className="w-12 h-12 rounded-full bg-black/5 flex items-center justify-center">
+          <FiUploadCloud className="text-xl text-black/60" />
+        </div>
+        <p className="text-sm font-bold text-black/80">{label}</p>
+        {hint && <p className="text-xs text-black/50">{hint}</p>}
 
         <input
           ref={inputRef}
@@ -76,15 +83,28 @@ function FileDropZone({
         />
       </div>
 
-      {error && <p>{error}</p>}
+      {error && <p className="text-red-500">{error}</p>}
 
       {files.length > 0 && (
-        <div>
+        <div className="flex flex-wrap gap-3">
           {files.map((file, i) => (
-            <div key={i}>
-              <Image src={URL.createObjectURL(file)} alt={file.name} />
-              <button type="button" onClick={() => removeFile(i)}>
-                Remove
+            <div
+              key={i}
+              className="relative w-20 h-20 rounded-xl overflow-hidden border border-black/20"
+            >
+              <Image
+                src={URL.createObjectURL(file)}
+                alt={file.name}
+                fill
+                unoptimized
+                className="object-cover"
+              />
+              <button
+                type="button"
+                onClick={() => removeFile(i)}
+                className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center rounded-full bg-black/60 text-white"
+              >
+                <FiX size={12} />
               </button>
             </div>
           ))}
@@ -93,4 +113,4 @@ function FileDropZone({
     </div>
   );
 }
-export default FileDropZone
+export default FileDropZone;

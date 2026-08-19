@@ -1,5 +1,6 @@
 import React from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { twMerge } from "tailwind-merge";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
@@ -22,7 +23,7 @@ const Button: React.FC<ButtonProps> = ({
 
   return (
     <button
-      className={`${baseStyle} ${className}`}
+      className={twMerge(baseStyle, className)}
       disabled={isLoading || disabled}
       {...props}
     >
