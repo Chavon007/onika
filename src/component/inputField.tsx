@@ -49,6 +49,9 @@ export const InputField: React.FC<InputFieldProps> = ({
           className="bg-transparent border border-black rounded-xl text-xs text-black/80 font-bold focus:outline-none p-3  w-full"
           {...registration}
           {...props}
+          onChange={(e) => {
+            registration.onChange?.(e);
+          }}
         />
 
         {isPasswordType && (

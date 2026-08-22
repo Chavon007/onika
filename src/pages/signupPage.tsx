@@ -45,7 +45,7 @@ function SignupPage() {
       { ...data },
       {
         onSuccess: () =>
-          router.push(`/verify?phone=${encodeURIComponent(data.phoneNumber)}`),
+          router.push(`/verify?email=${encodeURIComponent(data.email)}`),
       },
     );
   };
@@ -114,113 +114,125 @@ function SignupPage() {
 
           {/* FORM CARD */}
           <div className="w-full max-w-md">
-            <Form
+            <Form<signupFormDTO>
               className="flex flex-col gap-3 p-5 border border-primary/30 rounded-2xl bg-card shadow-md"
               onSubmit={onSubmit}
               schema={signUpSchema}
+              defaultValues={{ role: "customer" }}
             >
-              {(methods) => (
-                <>
-                  {/* ROLE */}
-                  <div className="flex justify-center gap-6 mb-2">
-                    <button
-                      type="button"
-                      onClick={() => setRole("customer")}
-                      className={`text-sm font-medium pb-1 ${
-                        role === "customer"
-                          ? "text-primary border-b-2 border-primary"
-                          : "text-muted"
-                      }`}
-                    >
-                      Customer
-                    </button>
+              {(methods) => {
+                return (
+                  <>
+                    {/* ROLE */}
+                    <div className="flex justify-center gap-6 mb-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setRole("customer");
+                          methods.setValue("role", "customer", {
+                            shouldValidate: true,
+                          });
+                        }}
+                        className={`text-sm font-medium pb-1 ${
+                          role === "customer"
+                            ? "text-primary border-b-2 border-primary"
+                            : "text-muted"
+                        }`}
+                      >
+                        Customer
+                      </button>
 
-                    <button
-                      type="button"
-                      onClick={() => setRole("artisan")}
-                      className={`text-sm font-medium pb-1 ${
-                        role === "artisan"
-                          ? "text-primary border-b-2 border-primary"
-                          : "text-muted"
-                      }`}
-                    >
-                      Artisan
-                    </button>
-                  </div>
-
-                  <InputField
-                    label="Full name"
-                    type="text"
-                    placeholder="John Sam"
-                    registration={methods.register("fullName")}
-                    error={methods.formState.errors.fullName}
-                  />
-
-                  <InputField
-                    label="Email"
-                    type="email"
-                    placeholder="test@example.com"
-                    registration={methods.register("email")}
-                    error={methods.formState.errors.email}
-                  />
-
-                  <InputField
-                    label="Phone Number"
-                    type="tel"
-                    placeholder="08131344765"
-                    registration={methods.register("phoneNumber")}
-                    error={methods.formState.errors.phoneNumber}
-                  />
-
-                  {/* STATE + LGA SIDE BY SIDE */}
-                  <div className="flex gap-3">
-                    <div className="flex-1">
-                      <InputField
-                        label="State"
-                        type="text"
-                        placeholder="Lagos"
-                        registration={methods.register("state")}
-                        error={methods.formState.errors.state}
-                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setRole("artisan");
+                          methods.setValue("role", "artisan", {
+                            shouldValidate: true,
+                          });
+                        }}
+                        className={`text-sm font-medium pb-1 ${
+                          role === "artisan"
+                            ? "text-primary border-b-2 border-primary"
+                            : "text-muted"
+                        }`}
+                      >
+                        Artisan
+                      </button>
                     </div>
 
-                    <div className="flex-1">
-                      <InputField
-                        label="LGA"
-                        type="text"
-                        placeholder="Ikeja"
-                        registration={methods.register("lga")}
-                        error={methods.formState.errors.lga}
-                      />
+                    <InputField
+                      label="Full name"
+                      type="text"
+                      placeholder="John Sam"
+                      registration={methods.register("fullName")}
+                      error={methods.formState.errors.fullName}
+                    />
+
+                    <InputField
+                      label="Email"
+                      type="email"
+                      placeholder="test@example.com"
+                      registration={methods.register("email")}
+                      error={methods.formState.errors.email}
+                    />
+
+                    <InputField
+                      label="Phone Number"
+                      type="tel"
+                      placeholder="08131344765"
+                      registration={methods.register("phoneNumber")}
+                      error={methods.formState.errors.phoneNumber}
+                    />
+
+                    <div className="flex gap-3">
+                      <div className="flex-1">
+                        <InputField
+                          label="State"
+                          type="text"
+                          placeholder="Lagos"
+                          registration={methods.register("state")}
+                          error={methods.formState.errors.state}
+                        />
+                      </div>
+
+                      <div className="flex-1">
+                        <InputField
+                          label="LGA"
+                          type="text"
+                          placeholder="Ikeja"
+                          registration={methods.register("lga")}
+                          error={methods.formState.errors.lga}
+                        />
+                      </div>
                     </div>
-                  </div>
 
-                  <InputField
-                    label="Password"
-                    type="password"
-                    placeholder="***********"
-                    registration={methods.register("password")}
-                    error={methods.formState.errors.password}
-                  />
+                    <InputField
+                      label="Password"
+                      type="password"
+                      placeholder="***********"
+                      registration={methods.register("password")}
+                      error={methods.formState.errors.password}
+                    />
 
-                  <InputField
-                    label="Confirm Password"
-                    type="password"
-                    placeholder="***********"
-                    registration={methods.register("confirmPassword")}
-                    error={methods.formState.errors.confirmPassword}
-                  />
+                    <InputField
+                      label="Confirm Password"
+                      type="password"
+                      placeholder="***********"
+                      registration={methods.register("confirmPassword")}
+                      error={methods.formState.errors.confirmPassword}
+                    />
 
-                  <Button
-                    type="submit"
-                    isLoading={isPending}
-                    loadingText="Creating account..."
-                  >
-                    {" "}
-                    Create account
-                  </Button>
-                </>
-              )}
+                    <Button
+                      type="submit"
+                      isLoading={isPending}
+                      loadingText="Creating account..."
+                    >
+                      {" "}
+                      Create account
+                    </Button>
+                  </>
+                );
+              }}
             </Form>
           </div>
         </div>

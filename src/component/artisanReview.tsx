@@ -66,7 +66,7 @@ function ArtisanReview() {
           ))}
         </section>
         <Button type="button" className="w-[140px] mt-2">
-          <Link href="/verify">Go to dashboard</Link>
+          <Link href="/dashboard">Go to dashboard</Link>
         </Button>
       </div>
     </div>

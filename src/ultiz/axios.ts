@@ -42,7 +42,9 @@ apiClient.interceptors.response.use(
       if (error.response.status === 401) {
         console.warn("Unauthorized request - redirecting to login");
         useAuthStore.getState().logout();
-        window.location.href = "/login";
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 2000);
       }
       if (error.response.status === 403) {
         toast.error("You are not authorized to perform this action");

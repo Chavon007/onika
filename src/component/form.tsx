@@ -32,8 +32,15 @@ export const Form = <
     mode: "onChange",
   });
 
+  void methods.formState.errors;
+  
   return (
-    <form className={className} onSubmit={methods.handleSubmit(onSubmit)}>
+    <form
+      className={className}
+      onSubmit={methods.handleSubmit(onSubmit, (errors) => {
+       
+      })}
+    >
       {children(methods)}
     </form>
   );
