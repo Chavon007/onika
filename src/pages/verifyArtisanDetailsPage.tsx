@@ -20,7 +20,7 @@ import TextArea from "@/component/TextArea";
 
 const stepFields: Record<number, (keyof artisanProfileDTO)[]> = {
   1: ["fullname", "phoneNumber", "city", "bio"],
-  2: ["skills", "experince"],
+  2: ["skills", "experience"],
   3: ["nin", "bvn", "governmentId", "faceVerification"],
   4: ["workImage"],
 };
@@ -146,8 +146,8 @@ function VerifyArtisanDetails() {
                         <InputField
                           label="Years of Experience"
                           placeholder="Your years of experience"
-                          registration={methods.register("experince")}
-                          error={methods.formState.errors.experince}
+                          registration={methods.register("experience")}
+                          error={methods.formState.errors.experience}
                         />
                       </>
                     )}

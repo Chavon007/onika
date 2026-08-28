@@ -12,7 +12,7 @@ export const ArtisanProfileSchema = z.object({
     .min(1, "Bio can't be less than one character")
     .max(500, "Bio can't be more than 500 words"),
   skills: z.array(z.string()).min(1, "Please select at least one skill"),
-  experince: z.string().min(1, "Please slecet years of experince"),
+  experience: z.string().min(1, "Please slecet years of experience"),
   nin: z.string().length(11, "NIN must be 11 digits"),
   bvn: z.string().length(11, "BVN must be 11 digits").optional(),
   governmentId: z.instanceof(File, {

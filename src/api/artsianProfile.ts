@@ -10,25 +10,22 @@ const verifyArtisanProfile = async (data: artisanProfileDTO) => {
   const [governmentIdUrl, faceVerificationUrl, workImageUrls] =
     await Promise.all([
       uploadToCloudinary(data.governmentId, "artisan/government-id"),
-      uploadToCloudinary(data.faceVerification, "artisan/face=verification"),
+      uploadToCloudinary(data.faceVerification, "artisan/face-verification"),
       Promise.all(
         data.workImage.map((file) =>
           uploadToCloudinary(file, "artisan/work-images"),
         ),
       ),
     ]);
-  return apiClient.post("/verify/artisan", {
-    fullName: data.fullname,
-    phoneNumber: data.phoneNumber,
-    city: data.city,
+  return apiClient.post("/artisan/create-profile", {
     bio: data.bio,
     skills: data.skills,
     nin: data.nin,
     bvn: data.bvn,
-    goverbmentId: governmentIdUrl,
+    governmentId: governmentIdUrl,
     workImage: workImageUrls,
     faceVerification: faceVerificationUrl,
-    experince: data.experince,
+    experience: data.experience,
   });
 };
 
