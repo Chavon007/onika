@@ -66,7 +66,9 @@ export const InputField: React.FC<InputFieldProps> = ({
         )}
       </div>
 
-      {error?.message && <p className="text-red-500">{error.message}</p>}
+      {error?.message && (
+        <p className="text-red-500 text-xs font-sans">{error.message}</p>
+      )}
     </div>
   );
 };

@@ -25,10 +25,12 @@ const logout = async () => {
 
 // fetch user's profile
 const fetchMeFn = async (): Promise<User> => {
-  return apiClient.get("/auth/me");
+  const response: any = await apiClient.get("/auth/me");
+
+  return response.data;
 };
 
-const verifyOTPtFn = async (data: verifyFormDTO & {email: string}) => {
+const verifyOTPtFn = async (data: verifyFormDTO & { email: string }) => {
   return apiClient.post("/auth/verify-otp", data);
 };
 
@@ -46,7 +48,7 @@ const useLoginMutation = () => {
     },
 
     onSuccess: (user) => {
-      useAuthStore.getState().login(user, user.verified);
+      useAuthStore.getState().login(user, user.isVerified);
       toast.success("Login successful");
     },
   });
@@ -63,13 +65,13 @@ const useSignupMutation = () => {
 
 const useVerifyOTP = () => {
   return useMutation({
-    mutationFn: async (data: verifyFormDTO & {email:string}) => {
+    mutationFn: async (data: verifyFormDTO & { email: string }) => {
       await verifyOTPtFn(data);
       const user = await fetchMeFn();
       return user;
     },
     onSuccess: (user) => {
-      useAuthStore.getState().login(user, user.verified);
+      useAuthStore.getState().login(user, user.isVerified);
       toast.success("Account verified successfully");
     },
   });

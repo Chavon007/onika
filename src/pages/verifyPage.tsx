@@ -1,6 +1,12 @@
 "use client";
 
-import { useRef, useState, useEffect, KeyboardEvent, ClipboardEvent } from "react";
+import {
+  useRef,
+  useState,
+  useEffect,
+  KeyboardEvent,
+  ClipboardEvent,
+} from "react";
 import Button from "@/component/button";
 import { Form } from "@/component/form";
 import auth from "@/api/auth";
@@ -22,7 +28,10 @@ function OTPBoxes({
   error?: string;
 }) {
   const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
-  const digits = value.split("").concat(Array(OTP_LENGTH).fill("")).slice(0, OTP_LENGTH);
+  const digits = value
+    .split("")
+    .concat(Array(OTP_LENGTH).fill(""))
+    .slice(0, OTP_LENGTH);
 
   const setDigit = (index: number, digit: string) => {
     const next = digits.slice();
@@ -43,15 +52,22 @@ function OTPBoxes({
       inputsRef.current[index - 1]?.focus();
       setDigit(index - 1, "");
     }
-    if (e.key === "ArrowLeft" && index > 0) inputsRef.current[index - 1]?.focus();
-    if (e.key === "ArrowRight" && index < OTP_LENGTH - 1) inputsRef.current[index + 1]?.focus();
+    if (e.key === "ArrowLeft" && index > 0)
+      inputsRef.current[index - 1]?.focus();
+    if (e.key === "ArrowRight" && index < OTP_LENGTH - 1)
+      inputsRef.current[index + 1]?.focus();
   };
 
   const handlePaste = (e: ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
-    const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, OTP_LENGTH);
+    const pasted = e.clipboardData
+      .getData("text")
+      .replace(/\D/g, "")
+      .slice(0, OTP_LENGTH);
     if (!pasted) return;
-    onChange(pasted.padEnd(OTP_LENGTH, "").slice(0, OTP_LENGTH).replace(/ /g, ""));
+    onChange(
+      pasted.padEnd(OTP_LENGTH, "").slice(0, OTP_LENGTH).replace(/ /g, ""),
+    );
     const lastIndex = Math.min(pasted.length, OTP_LENGTH) - 1;
     inputsRef.current[lastIndex]?.focus();
   };
@@ -99,19 +115,27 @@ function VerifyPage() {
 
   useEffect(() => {
     if (cooldown === 0) return;
-    const timer = setInterval(() => setCooldown((s) => Math.max(s - 1, 0)), 1000);
+    const timer = setInterval(
+      () => setCooldown((s) => Math.max(s - 1, 0)),
+      1000,
+    );
     return () => clearInterval(timer);
   }, [cooldown]);
 
   const onSubmit = (data: verifyFormDTO) => {
-    if(!email){
+    if (!email || isPending) {
       return;
     }
-    mutate({...data, email}, {
-      onSuccess: (user) => {
-        router.push( user.role === "artisan" ? "/artisan-profile" : "/dashboard");
+    mutate(
+      { ...data, email },
+      {
+        onSuccess: (user) => {
+          router.push(
+            user.role === "artisan" ? "/artisan-profile" : "/dashboard",
+          );
+        },
       },
-    });
+    );
   };
 
   const handleResend = () => {
@@ -126,7 +150,9 @@ function VerifyPage() {
       <div className="w-full max-w-sm flex flex-col items-center gap-8 text-center">
         <div className="flex items-center gap-2">
           <Image src={logo} alt="" width={32} height={32} />
-          <span className="font-heading text-xl font-bold text-neutral-900">Onika</span>
+          <span className="font-heading text-xl font-bold text-neutral-900">
+            Onika
+          </span>
         </div>
 
         <div className="flex flex-col items-center gap-2">
@@ -145,7 +171,9 @@ function VerifyPage() {
           schema={verifySchema}
         >
           {(methods) => {
-            const error = methods.formState.errors.OTP?.message as string | undefined;
+            const error = methods.formState.errors.OTP?.message as
+              | string
+              | undefined;
 
             return (
               <>
@@ -183,8 +211,8 @@ function VerifyPage() {
             {isResending
               ? "Sending..."
               : cooldown > 0
-              ? `Resend in ${cooldown}s`
-              : "Resend code"}
+                ? `Resend in ${cooldown}s`
+                : "Resend code"}
           </button>
         </p>
       </div>

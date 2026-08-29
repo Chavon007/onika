@@ -13,6 +13,6 @@ export interface User {
   role: UserRole;
   lga: string;
   state: string;
-  verified: boolean;
+  isVerified: boolean;
   createdAt: string;
 }

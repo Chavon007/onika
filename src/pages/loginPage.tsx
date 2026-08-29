@@ -41,7 +41,7 @@ function LoginPage() {
   const onSubmit = (data: loginFormDTO) => {
     mutate(data, {
       onSuccess: (user) => {
-        router.push(user.verified ? "/dashboard" : "/verify");
+        router.push(user.isVerified ? "/dashboard" : "/verify");
       },
     });
   };

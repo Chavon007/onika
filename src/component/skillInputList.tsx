@@ -64,12 +64,12 @@ const SkillInputField: React.FC<skillInputProps> = ({
       <button
         type="button"
         onClick={addSkill}
-        className="self-start text-sm font-bold text-primary"
+        className="self-start text-sm font-bold font-heading text-primary"
       >
         + Add another skill
       </button>
 
-      {error && <p className="text-red-500">{error}</p>}
+      {error && <p className="text-red-500 text-xs font-sans">{error}</p>}
     </div>
   );
 };
