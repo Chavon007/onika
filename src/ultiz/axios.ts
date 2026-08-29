@@ -1,11 +1,9 @@
 import axios, {
   AxiosError,
-  InternalAxiosRequestConfig,
   AxiosResponse,
+  InternalAxiosRequestConfig,
 } from "axios";
-
 import useAuthStore from "@/store/authStore";
-
 import toast from "react-hot-toast";
 
 const apiClient = axios.create({
@@ -17,15 +15,59 @@ const apiClient = axios.create({
   },
 });
 
+let isRefreshing = false;
+let refreshSubscribers: (() => void)[] = [];
 
+const onRefreshed = () => {
+  refreshSubscribers.forEach((callback) => callback());
+  refreshSubscribers = [];
+};
 
 apiClient.interceptors.response.use(
-  (response: AxiosResponse) => {
-    return response.data;
-  },
-  (error: AxiosError) => {
+  (response: AxiosResponse) => response.data,
+  async (error: AxiosError) => {
+    const originalRequest = error.config as InternalAxiosRequestConfig & {
+      _retry?: boolean;
+    };
+
     if (error.response) {
       const data: any = error.response.data;
+
+      // Attempt silent refresh on 401, but only once per request,
+      // and never for the refresh endpoint itself (avoid infinite loop)
+      if (
+        error.response.status === 401 &&
+        !originalRequest._retry &&
+        !originalRequest.url?.includes("/auth/refresh")
+      ) {
+        originalRequest._retry = true;
+
+        if (!isRefreshing) {
+          isRefreshing = true;
+          try {
+            await apiClient.post("/auth/refresh");
+            isRefreshing = false;
+            onRefreshed();
+            return apiClient(originalRequest); // retry the original request
+          } catch (refreshError) {
+            isRefreshing = false;
+            useAuthStore.getState().logout();
+            toast.error("Session expired. Please log in again.");
+            setTimeout(() => {
+              window.location.href = "/login";
+            }, 1500);
+            return Promise.reject(refreshError);
+          }
+        }
+
+        // if a refresh is already in flight, queue this request until it's done
+        return new Promise((resolve) => {
+          refreshSubscribers.push(() => {
+            resolve(apiClient(originalRequest));
+          });
+        });
+      }
+
       const subject = data?.message || "Error";
       const details = data?.errors;
 
@@ -37,22 +79,17 @@ apiClient.interceptors.response.use(
       } else {
         finalMessage = error.message;
       }
-      toast.error(`${subject}: ${finalMessage}`);
 
-      if (error.response.status === 401) {
-        console.warn("Unauthorized request - redirecting to login");
-        useAuthStore.getState().logout();
-        setTimeout(() => {
-          window.location.href = "/login";
-        }, 2000);
+      // don't toast on the 401 we're silently handling above
+      if (error.response.status !== 401) {
+        toast.error(`${subject}: ${finalMessage}`);
       }
+
       if (error.response.status === 403) {
         toast.error("You are not authorized to perform this action");
       }
     } else if (error.request) {
-      toast.error(
-        "Network Error: Could not successfully communicate with the backend",
-      );
+      toast.error("Network Error: Could not successfully communicate with the backend");
     } else {
       toast.error(error.message);
     }
