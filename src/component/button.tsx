@@ -2,7 +2,8 @@ import React from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { twMerge } from "tailwind-merge";
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   isLoading?: boolean;
   loadingText?: string;
@@ -19,7 +20,7 @@ const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const baseStyle =
-    "bg-primary w-full text-sm font-bold text-background rounded-xl p-3 flex items-center justify-center gap-2 hover:bg-accent/70 cursor-pointer";
+    "bg-primary w-full text-sm font-bold text-background rounded-xl p-3 flex flex-row items-center justify-center gap-2 hover:bg-accent/70 cursor-pointer";
 
   return (
     <button
@@ -29,16 +30,14 @@ const Button: React.FC<ButtonProps> = ({
     >
       {isLoading ? (
         <>
-          <AiOutlineLoading3Quarters className="animate-spin text-lh" />
-          {loadingText}
+          <AiOutlineLoading3Quarters className="animate-spin" />
+          <span>{loadingText}</span>
         </>
       ) : (
-        <div>
-          <>
-            {icon && <span>{icon}</span>}
-            {children}
-          </>
-        </div>
+        <>
+          {icon && <span>{icon}</span>}
+          {children}
+        </>
       )}
     </button>
   );

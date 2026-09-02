@@ -1,7 +1,8 @@
-import Home from "@/pages/Home";
+"use client";
+import Dashboard from "@/pages/Home";
 
 function DashboardPage() {
-  return <Home />;
+  return <Dashboard />;
 }
 
 export default DashboardPage;

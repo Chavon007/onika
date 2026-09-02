@@ -147,7 +147,7 @@ function VerifyPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#FAF9F6] px-4 py-10">
-      <div className="w-full max-w-sm flex flex-col items-center gap-8 text-center">
+      <div className="container mx-auto w-full max-w-sm flex flex-col items-center gap-8 text-center">
         <div className="flex items-center gap-2">
           <Image src={logo} alt="" width={32} height={32} />
           <span className="font-heading text-xl font-bold text-neutral-900">

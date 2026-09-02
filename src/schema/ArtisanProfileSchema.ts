@@ -1,4 +1,4 @@
-import { file, z } from "zod";
+import { z } from "zod";
 
 export const ArtisanProfileSchema = z.object({
   fullname: z.string().min(1, "Full name is required"),

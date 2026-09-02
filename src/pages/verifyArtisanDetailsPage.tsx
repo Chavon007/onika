@@ -30,6 +30,7 @@ function VerifyArtisanDetails() {
   const router = useRouter();
   const { mutate, isPending } = useVerifyArtisanMutation();
   const [currentStep, setCurrentStep] = useState(1);
+
   const onSubmit = (data: artisanProfileDTO) => {
     mutate(data, {
       onSuccess: () => {

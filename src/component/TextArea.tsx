@@ -1,16 +1,17 @@
 import { FieldError, UseFormRegisterReturn } from "react-hook-form";
 
-interface TextAreaProps
-  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
   registration: UseFormRegisterReturn;
   error?: FieldError;
+  small?: string;
 }
 
 const TextArea: React.FC<TextAreaProps> = ({
   label,
   registration,
   error,
+  small,
   className,
   ...props
 }) => {
@@ -20,7 +21,9 @@ const TextArea: React.FC<TextAreaProps> = ({
         <label className="text-black/90 px-2 text-sm font-light font-sans">
           {label}
         </label>
+        
       )}
+      <small>{small}</small>
 
       <textarea
         {...registration}
@@ -28,9 +31,7 @@ const TextArea: React.FC<TextAreaProps> = ({
         className={`bg-transparent border border-black rounded-xl text-xs text-black/80 font-bold focus:outline-none p-3 w-full min-h-[140px] resize-none ${className ?? ""}`}
       />
 
-      {error?.message && (
-        <p className="text-red-500">{error.message}</p>
-      )}
+      {error?.message && <p className="text-red-500">{error.message}</p>}
     </div>
   );
 };
