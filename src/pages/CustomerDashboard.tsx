@@ -4,6 +4,7 @@ import { GoPlus } from "react-icons/go";
 import Button from "@/component/button";
 import Card from "@/component/card";
 import { useState } from "react";
+import Link from "next/link";
 const ActiveTab = [
   {
     title: "Overview",
@@ -66,10 +67,13 @@ function CustomerDashboard() {
               {date}
             </p>
           </div>
-          <Button className="max-w-30" type="button">
+          <Link
+            href="/post-job"
+            className="max-w-30 bg-primary w-full text-sm font-bold text-background rounded-xl p-3 flex flex-row items-center justify-center gap-2 hover:bg-accent/70"
+          >
             <GoPlus className="shrink-0" />
             <span>Post a job</span>
-          </Button>
+          </Link>
         </section>
 
         <section className="w-full border-b border-border pb-3 mt-4">
