@@ -1,10 +1,13 @@
 import { FieldError, UseFormRegisterReturn } from "react-hook-form";
+import { twMerge } from "tailwind-merge";
 
 interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
   registration: UseFormRegisterReturn;
   error?: FieldError;
   small?: string;
+  labelClassName?: string;
+  smallClassName?: string;
 }
 
 const TextArea: React.FC<TextAreaProps> = ({
@@ -13,17 +16,23 @@ const TextArea: React.FC<TextAreaProps> = ({
   error,
   small,
   className,
+  labelClassName,
+  smallClassName,
   ...props
 }) => {
   return (
     <div className="flex mt-2 w-full flex-col gap-2">
       {label && (
-        <label className="text-black/90 px-2 text-sm font-light font-sans">
+        <label
+          className={twMerge(
+            "text-black/90  text-sm font-light font-sans",
+            labelClassName,
+          )}
+        >
           {label}
         </label>
-        
       )}
-      <small>{small}</small>
+      <small className={twMerge("", smallClassName)}>{small}</small>
 
       <textarea
         {...registration}
