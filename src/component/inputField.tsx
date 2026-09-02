@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { UseFormRegisterReturn, FieldError } from "react-hook-form";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
+import { twMerge } from "tailwind-merge";
 
 interface InputFieldProps extends React.InputHTMLAttributes<HTMLElement> {
   label?: string;
@@ -9,6 +10,8 @@ interface InputFieldProps extends React.InputHTMLAttributes<HTMLElement> {
   icon?: React.ReactNode;
   labelRight?: React.ReactNode;
   small?: string;
+  labelClassName?: string;
+  smallClassName?: string;
 }
 
 export const InputField: React.FC<InputFieldProps> = ({
@@ -19,6 +22,8 @@ export const InputField: React.FC<InputFieldProps> = ({
   icon,
   labelRight,
   className,
+  labelClassName,
+  smallClassName,
   type = "text",
   ...props
 }) => {
@@ -35,10 +40,15 @@ export const InputField: React.FC<InputFieldProps> = ({
     <div className={className}>
       {/* label */}
       <div className="p-2">
-        <label className={` text-black/90 text-sm font-light font-sans`}>
+        <label
+          className={twMerge(
+            ` text-black/90 text-sm font-light font-sans`,
+            labelClassName,
+          )}
+        >
           {label}
         </label>
-        <small>{small}</small>
+        <small className={twMerge("", smallClassName)}>{small}</small>
         {labelRight && <div>{labelRight}</div>}
       </div>
       {/* icon */}

@@ -11,12 +11,12 @@ export const postJobSchema = z.object({
   priority: z.enum(["ASAP", "Today", "This week", "Flexible"]),
   images: z
     .array(z.instanceof(File))
-    .min(1, "Please upload at least one image of he job")
-    .max(3, "You can upload a maximum of 3 images of the job"),
+    .min(3, "Please upload at least 3 images of he job")
+    .max(6, "You can upload a maximum of 6 images of the job"),
   state: z.string().min(1, "Please enter right state"),
   city: z.string().min(1, "City can't be less than 1 character"),
   lga: z.string().min(1, "Please put your Local Government area"),
-  price: z.string().min(1),
+  price: z.number().min(1),
   landmark: z.string().min(1, "landmark can't be less than 1 character"),
   address: z.string().min(1, "address  can't be less than 1 character"),
 });
