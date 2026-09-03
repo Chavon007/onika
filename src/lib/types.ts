@@ -16,3 +16,37 @@ export interface User {
   isVerified: boolean;
   createdAt: string;
 }
+
+export interface JobSummary {
+  _id: string;
+  customerId: {
+    _id: string;
+    fullName: string;
+  };
+  category: string;
+  description: string;
+  city: string;
+  lga: string;
+  priority: "ASAP" | "Today" | "This week" | "Flexible";
+  price: number;
+  createdAt: string;
+}
+
+export interface jobDetails {
+  _id: string;
+  customerId: {
+    fullName: string;
+    phoneNumber: string;
+  };
+  category: string;
+  description: string;
+  price: number;
+  city: string;
+  lga: string;
+  address: string;
+  state: string;
+  landmark: string;
+  images: string[];
+  priority: "ASAP" | "Today" | "This week" | "Flexible";
+  createdAt: string;
+}

@@ -11,6 +11,7 @@ import { InputField } from "../component/inputField";
 import { Controller } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { FiCheck } from "react-icons/fi";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import Button from "../component/button";
 
@@ -83,11 +84,15 @@ function PostJobForm() {
   const router = useRouter();
   const { mutate, isPending } = usePostJobMutation();
   const [currentStep, setCurrentStep] = useState(1);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const onSubmit = (data: postJobDTO) => {
     mutate(data, {
       onSuccess: () => {
-        router.push("/dashboard");
+        setShowSuccessModal(true);
+        setTimeout(() => {
+          router.push("/dashboard");
+        }, 3000);
       },
     });
   };
@@ -166,7 +171,7 @@ function PostJobForm() {
                       What service do you need?
                     </h6>
 
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                       {services.map((s) => (
                         <div
                           key={s.title}
@@ -203,6 +208,7 @@ function PostJobForm() {
                       labelClassName="text-base font-bold text-text font-sans"
                       small="The more detail you give, the better your artisan match will be."
                       smallClassName="text-xs font-light text-muted/70 font-heading"
+                      placeholder="E.g. Need a licensed plumber to fix a leaking kitchen pipe and replace the kitchen tap. The pipe has been dripping for 3 days. Apartment is on the 2nd floor."
                       registration={methods.register("description")}
                       error={methods.formState.errors.description}
                     />
@@ -269,7 +275,7 @@ function PostJobForm() {
                       <h4 className="text-text text-base font-bold font-heading">
                         Location
                       </h4>
-                      <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-2">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-center gap-2 md:gap-3 lg:gap-2">
                         <InputField
                           label="City"
                           labelClassName="text-muted text-xs font-medium font-sans"
@@ -428,6 +434,26 @@ function PostJobForm() {
             );
           }}
         </Form>
+
+        {showSuccessModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-background">
+            <div className="flex flex-col items-center justify-center gap-4 text-center px-4">
+              <span className="w-24 h-24 rounded-full bg-green-100 flex items-center justify-center">
+                <FiCheck className="text-5xl text-green-600" />
+              </span>
+              <h4 className="font-heading text-4xl font-bold text-text">
+                Job Posted!
+              </h4>
+              <p className="font-sans text-base text-muted max-w-md">
+                We're matching you with verified artisans nearby. You'll receive
+                proposals within minutes
+              </p>
+              <small className="font-sans text-sm text-muted/60">
+                Redirecting to the dashboard...
+              </small>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

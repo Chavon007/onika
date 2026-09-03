@@ -3,6 +3,7 @@ import useAuthStore from "@/store/authStore";
 import { FiToggleRight } from "react-icons/fi";
 import Card from "@/component/card";
 import { useState } from "react";
+import JobRequestpage from "./jobRequestPage";
 const ActiveTab = [
   {
     title: "Overview",
@@ -125,7 +126,7 @@ function ArtisanDashboard() {
           )}
           {isActive === "Job Requests" && (
             <div>
-              <p>coming soon</p>
+             <JobRequestpage/>
             </div>
           )}
           {isActive === "Active Jobs" && (

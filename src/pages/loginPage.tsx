@@ -48,7 +48,7 @@ function LoginPage() {
 
   return (
     <div className="min-h-screen overflow-hidden ">
-      <div className="w-full flex">
+      <div className="w-full flex  min-h-screen">
         {/* LEFT IMAGE */}
         <div className="hidden md:block w-1/2 min-h-screen relative bg-main  p-9">
           {/* logo */}
