@@ -7,10 +7,10 @@ import { Form } from "@/component/form";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import FileDropZone from "@/component/fileDropzone";
-import SkillInputField from "@/component/skillInputList";
 import Steppers from "@/component/stepper";
 import logo from "../../public/logo1.png";
-
+import { serviceCard } from "@/constants/serviceCategories";
+import { ServiceSelect } from "@/component/serviceSelect";
 import useVerifyArtisanMutation from "@/api/artsianProfile";
 import {
   ArtisanProfileSchema,
@@ -20,7 +20,7 @@ import TextArea from "@/component/TextArea";
 
 const stepFields: Record<number, (keyof artisanProfileDTO)[]> = {
   1: ["fullname", "phoneNumber", "city", "bio"],
-  2: ["skills", "experience"],
+  2: ["skills", "specialization", "experience"],
   3: ["nin", "bvn", "governmentId", "faceVerification"],
   4: ["workImage"],
 };
@@ -125,36 +125,38 @@ function VerifyArtisanDetails() {
 
                 {currentStep === 2 && (
                   <>
-                    {currentStep === 2 && (
-                      <>
-                        <Controller
-                          name="skills"
-                          control={methods.control}
-                          render={({ field }) => (
-                            <SkillInputField
-                              label="Add your skills"
-                              small="You can add multiple skill categories."
-                              value={field.value ?? []}
-                              onChange={field.onChange}
-                              error={
-                                methods.formState.errors.skills
-                                  ?.message as string
-                              }
-                            />
-                          )}
+                    <Controller
+                      name="skills"
+                      control={methods.control}
+                      render={({ field }) => (
+                        <ServiceSelect
+                          label="Select your service categories"
+                          small="Choose all the categories that apply to your work."
+                          options={serviceCard}
+                          value={field.value ?? []}
+                          onChange={field.onChange}
+                          error={
+                            methods.formState.errors.skills?.message as string
+                          }
                         />
+                      )}
+                    />
 
-                        <InputField
-                          label="Years of Experience"
-                          placeholder="Your years of experience"
-                          registration={methods.register("experience")}
-                          error={methods.formState.errors.experience}
-                        />
-                      </>
-                    )}
+                    <TextArea
+                      label="Describe your area of specialization"
+                      placeholder="e.g. I specialize in residential electrical wiring, solar installation, and rewiring old buildings..."
+                      registration={methods.register("specialization")}
+                      error={methods.formState.errors.specialization}
+                    />
+
+                    <InputField
+                      label="Years of Experience"
+                      placeholder="Your years of experience"
+                      registration={methods.register("experience")}
+                      error={methods.formState.errors.experience}
+                    />
                   </>
                 )}
-
                 {currentStep === 3 && (
                   <>
                     <div className="flex flex-col gap-3">
@@ -232,7 +234,11 @@ function VerifyArtisanDetails() {
                 <div className="w-full flex items-center mt-4">
                   <div>
                     {currentStep > 1 && (
-                      <button type="button" onClick={goBack}>
+                      <button
+                        type="button"
+                        className="cursor-pointer hover:bg-secondary text-sm hover:text-muted border text-text font-sans font-medium p-2 w-[100px] rounded-xl"
+                        onClick={goBack}
+                      >
                         Back
                       </button>
                     )}

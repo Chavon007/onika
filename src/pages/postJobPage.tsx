@@ -11,8 +11,11 @@ import { InputField } from "../component/inputField";
 import { Controller } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { FiCheck } from "react-icons/fi";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import Button from "../component/button";
+import { serviceCard } from "@/constants/serviceCategories";
+import { ServiceSelect } from "@/component/serviceSelect";
 
 const stepFields: Record<number, (keyof postJobDTO)[]> = {
   1: ["category"],
@@ -45,26 +48,6 @@ const when = [
   },
 ];
 
-const services = [
-  { title: "Cleaning", icon: "🧹", bg: "bg-yellow-100" },
-  { title: "Plumbing", icon: "🔧", bg: "bg-blue-100" },
-  { title: "Car Wash", icon: "🚗", bg: "bg-green-100" },
-  { title: "Electrician", icon: "⚡", bg: "bg-purple-100" },
-  { title: "Painting", icon: "🎨", bg: "bg-pink-100" },
-  { title: "Chefs", icon: "👨‍🍳", bg: "bg-emerald-100" },
-  { title: "AC Techs", icon: "❄️", bg: "bg-sky-100" },
-  { title: "Moving/Packing", icon: "📦", bg: "bg-amber-100" },
-  { title: "Hairdressing", icon: "💇‍♀️", bg: "bg-rose-100" },
-  { title: "Makeup Artist", icon: "💄", bg: "bg-fuchsia-100" },
-  { title: "Carpentry", icon: "🔨", bg: "bg-lime-100" },
-  { title: "Gardening", icon: "🌿", bg: "bg-teal-100" },
-  { title: "Laundry", icon: "🧺", bg: "bg-cyan-100" },
-  { title: "Photography", icon: "📷", bg: "bg-indigo-100" },
-  { title: "Tutoring", icon: "📚", bg: "bg-violet-100" },
-  { title: "Tailoring", icon: "🧵", bg: "bg-red-100" },
-  { title: "Other", icon: "✨", bg: "bg-orange-100" },
-];
-
 const reviewFieldLabels: {
   key: Exclude<keyof postJobDTO, "images">;
   label: string;
@@ -83,11 +66,15 @@ function PostJobForm() {
   const router = useRouter();
   const { mutate, isPending } = usePostJobMutation();
   const [currentStep, setCurrentStep] = useState(1);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const onSubmit = (data: postJobDTO) => {
     mutate(data, {
       onSuccess: () => {
-        router.push("/dashboard");
+        setShowSuccessModal(true);
+        setTimeout(() => {
+          router.push("/dashboard");
+        }, 3000);
       },
     });
   };
@@ -166,32 +153,22 @@ function PostJobForm() {
                       What service do you need?
                     </h6>
 
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
-                      {services.map((s) => (
-                        <div
-                          key={s.title}
-                          onClick={() =>
-                            methods.setValue("category", s.title, {
-                              shouldValidate: true,
-                            })
+                    <Controller
+                      name="category"
+                      control={methods.control}
+                      render={({ field }) => (
+                        <ServiceSelect
+                          label="Select the service you need"
+                          small="Choose one category that best matches your job."
+                          options={serviceCard}
+                          multiple={false}
+                          value={field.value ?? ""}
+                          onChange={field.onChange}
+                          error={
+                            methods.formState.errors.category?.message as string
                           }
-                          className={`cursor-pointer rounded-xl border p-4 flex flex-col items-center gap-1 transition-colors ${s.bg} ${
-                            methods.watch("category") === s.title
-                              ? "border-[#1c1917]"
-                              : "border-transparent"
-                          }`}
-                        >
-                          <span>{s.icon}</span>
-                          <span>{s.title}</span>
-                        </div>
-                      ))}
-                    </div>
-                    <InputField
-                      label=""
-                      type="text"
-                      placeholder="Or type the service you need"
-                      registration={methods.register("category")}
-                      error={methods.formState.errors.category}
+                        />
+                      )}
                     />
                   </div>
                 )}
@@ -203,6 +180,7 @@ function PostJobForm() {
                       labelClassName="text-base font-bold text-text font-sans"
                       small="The more detail you give, the better your artisan match will be."
                       smallClassName="text-xs font-light text-muted/70 font-heading"
+                      placeholder="E.g. Need a licensed plumber to fix a leaking kitchen pipe and replace the kitchen tap. The pipe has been dripping for 3 days. Apartment is on the 2nd floor."
                       registration={methods.register("description")}
                       error={methods.formState.errors.description}
                     />
@@ -269,7 +247,7 @@ function PostJobForm() {
                       <h4 className="text-text text-base font-bold font-heading">
                         Location
                       </h4>
-                      <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-2">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-center gap-2 md:gap-3 lg:gap-2">
                         <InputField
                           label="City"
                           labelClassName="text-muted text-xs font-medium font-sans"
@@ -428,6 +406,26 @@ function PostJobForm() {
             );
           }}
         </Form>
+
+        {showSuccessModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-background">
+            <div className="flex flex-col items-center justify-center gap-4 text-center px-4">
+              <span className="w-24 h-24 rounded-full bg-green-100 flex items-center justify-center">
+                <FiCheck className="text-5xl text-green-600" />
+              </span>
+              <h4 className="font-heading text-4xl font-bold text-text">
+                Job Posted!
+              </h4>
+              <p className="font-sans text-base text-muted max-w-md">
+                We're matching you with verified artisans nearby. You'll receive
+                proposals within minutes
+              </p>
+              <small className="font-sans text-sm text-muted/60">
+                Redirecting to the dashboard...
+              </small>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

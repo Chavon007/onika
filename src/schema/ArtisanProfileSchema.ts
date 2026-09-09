@@ -18,6 +18,9 @@ export const ArtisanProfileSchema = z.object({
   governmentId: z.instanceof(File, {
     message: "Upload a verified Government id",
   }),
+  specialization: z
+    .string()
+    .min(10, "Please describe your specialization in a bit more detail"),
   faceVerification: z.instanceof(File, { message: "Face verification needed" }),
   workImage: z
     .array(z.instanceof(File))
