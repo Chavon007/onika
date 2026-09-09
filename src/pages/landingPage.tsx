@@ -7,23 +7,14 @@ import { IoIosStar } from "react-icons/io";
 import { FaLongArrowAltRight, FaLongArrowAltDown } from "react-icons/fa";
 import Image from "next/image";
 import Footer from "@/component/footer";
-
+import { serviceCard } from "@/constants/serviceCategories";
 const bRating = [
   { title: "Verified Artisans", num: "500+" },
   { title: "Jobs Completed", num: "10000+" },
   { title: "Avg. Rating", num: "4.8", icon: <IoIosStar /> },
 ];
 
-const serviceCard = [
-  { title: "Cleaners", num: "50+ artisans", icon: "🧹", bg: "bg-yellow-100" },
-  { title: "Plumbers", num: "50+ artisans", icon: "🔧", bg: "bg-blue-100" },
-  { title: "Car Wash", num: "100+ artisans", icon: "🚗", bg: "bg-green-100" },
-  { title: "Electrican", num: "25+ artisans", icon: "⚡", bg: "bg-purple-100" },
-  { title: "Painting", num: "85+ artisans", icon: "🎨", bg: "bg-pink-100" },
-  { title: "Chefs", num: "65+ artisans", icon: "👨‍🍳", bg: "bg-emerald-100" },
-  { title: "AC Techs", num: "70+ artisans", icon: "❄️", bg: "bg-sky-100" },
-  { title: "And more", icon: "✨", bg: "bg-orange-100" },
-];
+
 
 const howItWorks = [
   {
@@ -152,7 +143,7 @@ function LandingPage() {
               </p>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
               {serviceCard.map((s) => (
                 <div
                   className={`${s.bg} min-h-[130px] rounded-3xl p-4 text-2xl flex flex-col gap-2 justify-center`}
