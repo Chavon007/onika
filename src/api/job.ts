@@ -29,6 +29,15 @@ const findJobsForArtisan = async () => {
   return (await response).data;
 };
 
+const artisanAcceptJob = async (jobId: string) => {
+  const response = await apiClient.patch(`/jobs/${jobId}/accept`);
+  return response.data;
+};
+
+const artisanRejectJob = async (jobId: string) => {
+  const response = await apiClient.patch(`/jobs/${jobId}/reject`);
+  return response.data;
+};
 const usePostJobMutation = () => {
   return useMutation({
     mutationFn: postJobs,
@@ -48,4 +57,35 @@ export const useFindJobForArtisan = () => {
   });
 };
 
+export const useArtisanAcceptJob = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: artisanAcceptJob,
+    onSuccess: () => {
+      toast.success("Job Accepted");
+      queryClient.invalidateQueries({ queryKey: ["artisan-jobs"] });
+    },
+    onError(error: any) {
+      const message = error?.response?.data.message || "Failed to accept job";
+      toast.error(message);
+    },
+  });
+};
+
+export const useArtisanRejectJob = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: artisanRejectJob,
+    onSuccess: () => {
+      toast.success("Job Rejected");
+      queryClient.invalidateQueries({ queryKey: ["artisan-jobs"] });
+    },
+    onError(error: any) {
+      const message = error?.response?.data.message || "Failed to reject job";
+      toast.error(message);
+    },
+  });
+};
 export default usePostJobMutation;
