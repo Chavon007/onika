@@ -1,12 +1,13 @@
 import { JobSummary } from "@/lib/types";
 import Button from "@/component/button";
-
+import { useArtisanAcceptJob, useArtisanRejectJob } from "@/api/job";
 function JobCard({ job }: { job: JobSummary }) {
   const formattedDate = new Date(job.createdAt).toLocaleString("en-NG", {
     dateStyle: "medium",
     timeStyle: "short",
   });
-
+  const { mutate: acceptJob, isPending: isAccepting } = useArtisanAcceptJob();
+  const { mutate: rejectJob, isPending: isRejecting } = useArtisanRejectJob();
   return (
     <div className="w-full rounded-2xl border border-border bg-white p-6 shadow-sm">
       {/* Job Header */}
@@ -49,9 +50,7 @@ function JobCard({ job }: { job: JobSummary }) {
 
         {/* Created Date */}
         <div className="shrink-0">
-          <span className="font-sans text-sm text-muted">
-            {formattedDate}
-          </span>
+          <span className="font-sans text-sm text-muted">{formattedDate}</span>
         </div>
       </div>
 
@@ -71,6 +70,8 @@ function JobCard({ job }: { job: JobSummary }) {
         <Button
           loadingText="Accepting..."
           type="submit"
+          onClick={() => acceptJob(job._id)}
+          disabled={isAccepting || isRejecting}
           className="bg-main text-white hover:bg-main/90"
         >
           Accept Job
@@ -79,6 +80,8 @@ function JobCard({ job }: { job: JobSummary }) {
         <Button
           loadingText="Declining..."
           type="submit"
+          onClick={() => rejectJob(job._id)}
+          disabled={isAccepting || isRejecting}
           className="border border-border bg-white text-muted hover:bg-secondary"
         >
           Decline
