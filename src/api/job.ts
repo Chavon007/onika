@@ -38,6 +38,22 @@ const artisanRejectJob = async (jobId: string) => {
   const response = await apiClient.patch(`/jobs/${jobId}/reject`);
   return response.data;
 };
+
+const artisanActiveJobs = async () => {
+  const response = await apiClient.get("/jobs/active");
+  return response.data;
+};
+
+const artisanCompleteJob = async (jobId: string) => {
+  const response = await apiClient.patch(`/jobs/${jobId}/complete`);
+
+  return response.data;
+};
+
+const artisanJobInProgress = async (jobId: string) => {
+  const response = await apiClient.patch(`/jobs/${jobId}/in-progress`);
+  return response.data;
+};
 const usePostJobMutation = () => {
   return useMutation({
     mutationFn: postJobs,
@@ -84,6 +100,47 @@ export const useArtisanRejectJob = () => {
     },
     onError(error: any) {
       const message = error?.response?.data.message || "Failed to reject job";
+      toast.error(message);
+    },
+  });
+};
+
+export const useArtisanActiveJob = () => {
+  return useQuery({
+    queryKey: ["artisan-active-jobs"],
+    queryFn: artisanActiveJobs,
+  });
+};
+
+export const useArtisanCompleteJob = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: artisanCompleteJob,
+    onSuccess: () => {
+      toast.success("Job completed");
+      queryClient.invalidateQueries({ queryKey: ["artisan-jobs"] });
+      queryClient.invalidateQueries({ queryKey: ["artisan-active-jobs"] });
+    },
+    onError(error: any) {
+      const message = error?.response?.data.message || "Failed to complete job";
+      toast.error(message);
+    },
+  });
+};
+
+export const useArtisanJobInprogress = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: artisanJobInProgress,
+    onSuccess: () => {
+      toast.success("Job has started");
+      queryClient.invalidateQueries({ queryKey: ["artisan-jobs"] });
+      queryClient.invalidateQueries({ queryKey: ["artisan-active-jobs"] });
+    },
+    onError(error: any) {
+      const message =
+        error?.response?.data.message || "Failed to turn job to in progress";
       toast.error(message);
     },
   });

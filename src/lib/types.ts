@@ -39,14 +39,15 @@ export interface jobDetails {
     phoneNumber: string;
   };
   category: string;
-  description: string;
+  description?: string;
   price: number;
-  city: string;
-  lga: string;
-  address: string;
-  state: string;
-  landmark: string;
-  images: string[];
-  priority: "ASAP" | "Today" | "This week" | "Flexible";
+  city?: string;
+  lga?: string;
+  address?: string;
+  state?: string;
+  landmark?: string;
+  status: "pending" | "accepted" | "in_progress" | "completed" | "disputed" | "cancelled";
+  images?: string[];
+  priority?: "ASAP" | "Today" | "This week" | "Flexible";
   createdAt: string;
 }
