@@ -2,6 +2,7 @@
 
 import { jobDetails } from "@/lib/types";
 import Button from "./button";
+import toast from "react-hot-toast";
 import { useArtisanCompleteJob, useArtisanJobInprogress } from "@/api/job";
 
 export function ActiveJobCard({ job }: { job: jobDetails }) {
@@ -10,7 +11,7 @@ export function ActiveJobCard({ job }: { job: jobDetails }) {
   const { mutate: in_progress, isPending: isInprogress } =
     useArtisanJobInprogress();
 
-  return (
+  return (  
     <div className="w-full rounded-2xl border border-border bg-white p-6 shadow-sm">
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div className="flex flex-col gap-3">

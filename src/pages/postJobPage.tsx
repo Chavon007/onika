@@ -16,7 +16,7 @@ import { IoIosArrowRoundBack } from "react-icons/io";
 import Button from "../component/button";
 import { serviceCard } from "@/constants/serviceCategories";
 import { ServiceSelect } from "@/component/serviceSelect";
-
+import { useStepStorage } from "@/provider/useStepStorage";
 const stepFields: Record<number, (keyof postJobDTO)[]> = {
   1: ["category"],
   2: ["description", "priority", "images"],
@@ -64,19 +64,20 @@ const reviewFieldLabels: {
 
 function PostJobForm() {
   const router = useRouter();
-  const { mutate, isPending } = usePostJobMutation();
-  const [currentStep, setCurrentStep] = useState(1);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const { mutateAsync, isPending } = usePostJobMutation();
 
-  const onSubmit = (data: postJobDTO) => {
-    mutate(data, {
-      onSuccess: () => {
-        setShowSuccessModal(true);
-        setTimeout(() => {
-          router.push("/dashboard");
-        }, 3000);
-      },
-    });
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [currentStep, setCurrentStep] = useStepStorage(
+    "post-job-draft",
+    totalSteps,
+  );
+  const onSubmit = async (data: postJobDTO) => {
+    await mutateAsync(data);
+    sessionStorage.removeItem("post-job-draft-step");
+    setShowSuccessModal(true);
+    setTimeout(() => {
+      router.push("/dashboard");
+    }, 3000);
   };
   return (
     <div className="min-h-screen p-4 bg-background">
@@ -117,7 +118,12 @@ function PostJobForm() {
           currentNumber={currentStep}
         />
 
-        <Form className="" onSubmit={onSubmit} schema={postJobSchema}>
+        <Form
+          className=""
+          onSubmit={onSubmit}
+          schema={postJobSchema}
+          storageKey="post-job-draft"
+        >
           {(methods) => {
             const {
               control,
