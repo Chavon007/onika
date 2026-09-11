@@ -4,6 +4,7 @@ import { FiToggleRight } from "react-icons/fi";
 import Card from "@/component/card";
 import { useState } from "react";
 import JobRequestpage from "./jobRequestPage";
+import ActiveJobPage from "./ActiveJobpage";
 const ActiveTab = [
   {
     title: "Overview",
@@ -126,12 +127,12 @@ function ArtisanDashboard() {
           )}
           {isActive === "Job Requests" && (
             <div>
-             <JobRequestpage/>
+              <JobRequestpage />
             </div>
           )}
           {isActive === "Active Jobs" && (
             <div>
-              <p>coming soon</p>
+              <ActiveJobPage />
             </div>
           )}
           {isActive === "Earnings" && (
