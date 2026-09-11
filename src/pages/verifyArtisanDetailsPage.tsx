@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+
 import { Controller } from "react-hook-form";
 import Button from "@/component/button";
 import { InputField } from "@/component/inputField";
@@ -9,6 +9,7 @@ import Image from "next/image";
 import FileDropZone from "@/component/fileDropzone";
 import Steppers from "@/component/stepper";
 import logo from "../../public/logo1.png";
+import toast from "react-hot-toast";
 import { serviceCard } from "@/constants/serviceCategories";
 import { ServiceSelect } from "@/component/serviceSelect";
 import useVerifyArtisanMutation from "@/api/artsianProfile";
@@ -17,6 +18,7 @@ import {
   artisanProfileDTO,
 } from "@/schema/ArtisanProfileSchema";
 import TextArea from "@/component/TextArea";
+import { useStepStorage } from "@/provider/useStepStorage";
 
 const stepFields: Record<number, (keyof artisanProfileDTO)[]> = {
   1: ["fullname", "phoneNumber", "city", "bio"],
@@ -28,15 +30,15 @@ const totalSteps = 4;
 
 function VerifyArtisanDetails() {
   const router = useRouter();
-  const { mutate, isPending } = useVerifyArtisanMutation();
-  const [currentStep, setCurrentStep] = useState(1);
-
-  const onSubmit = (data: artisanProfileDTO) => {
-    mutate(data, {
-      onSuccess: () => {
-        router.push("/artisan-review");
-      },
-    });
+  const { mutateAsync, isPending } = useVerifyArtisanMutation();
+  const [currentStep, setCurrentStep] = useStepStorage(
+    "artisan-profile-draft",
+    totalSteps,
+  );
+  const onSubmit = async (data: artisanProfileDTO) => {
+    await mutateAsync(data);
+    toast.success("Profile submitted for review!");
+    router.push("/artisan-review");
   };
 
   return (
@@ -67,7 +69,12 @@ function VerifyArtisanDetails() {
           currentNumber={currentStep}
         />
 
-        <Form className="" onSubmit={onSubmit} schema={ArtisanProfileSchema}>
+        <Form
+          className=""
+          onSubmit={onSubmit}
+          schema={ArtisanProfileSchema}
+          storageKey="artisan-profile-draft"
+        >
           {(methods) => {
             const {
               control,

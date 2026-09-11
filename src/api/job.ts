@@ -5,6 +5,7 @@ import { postJobDTO } from "@/schema/postJobSchema";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import uploadToCloudinary from "@/ultiz/cloudinary";
+import { jobDetails } from "@/lib/types";
 const postJobs = async (data: postJobDTO) => {
   const imagesUrl = await Promise.all(
     data.images.map((file) => uploadToCloudinary(file, "job-image")),
@@ -29,6 +30,10 @@ const findJobsForArtisan = async () => {
   return (await response).data;
 };
 
+const getJobDetails = async (jobId: string): Promise<jobDetails> => {
+  const response = await apiClient.get(`/jobs/${jobId}`);
+  return response.data;
+};
 const artisanAcceptJob = async (jobId: string) => {
   const response = await apiClient.patch(`/jobs/${jobId}/accept`);
   return response.data;
@@ -73,6 +78,13 @@ export const useFindJobForArtisan = () => {
   });
 };
 
+export const useGetJobDetails = (jobId: string) => {
+  return useQuery<jobDetails>({
+    queryKey: ["artisan-job-details", jobId],
+    queryFn: () => getJobDetails(jobId),
+    enabled: !!jobId,
+  });
+};
 export const useArtisanAcceptJob = () => {
   const queryClient = useQueryClient();
 

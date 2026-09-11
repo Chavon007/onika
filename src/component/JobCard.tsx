@@ -1,7 +1,10 @@
+import { useState } from "react";
 import { JobSummary } from "@/lib/types";
 import Button from "@/component/button";
+import JobDetails from "./jobDetails";
 import { useArtisanAcceptJob, useArtisanRejectJob } from "@/api/job";
 function JobCard({ job }: { job: JobSummary }) {
+  const [showJobDetails, setShowJobDetails] = useState(false);
   const formattedDate = new Date(job.createdAt).toLocaleString("en-NG", {
     dateStyle: "medium",
     timeStyle: "short",
@@ -53,7 +56,6 @@ function JobCard({ job }: { job: JobSummary }) {
           <span className="font-sans text-sm text-muted">{formattedDate}</span>
         </div>
       </div>
-
       {/* Description */}
       <div className="mt-5 border-t border-border pt-5">
         <p className="mb-2 font-sans text-sm font-semibold text-text">
@@ -64,7 +66,6 @@ function JobCard({ job }: { job: JobSummary }) {
           {job.description}
         </p>
       </div>
-
       {/* Actions */}
       <div className="mt-6 grid grid-cols-1 gap-3 border-t border-border pt-5 md:grid-cols-3">
         <Button
@@ -88,12 +89,30 @@ function JobCard({ job }: { job: JobSummary }) {
         </Button>
 
         <Button
-          type="submit"
+          type="button"
+          onClick={() => setShowJobDetails(true)}
           className="border border-border bg-white text-main hover:bg-secondary"
         >
           View Details
         </Button>
       </div>
+      {/* job details overlay */}
+      {showJobDetails && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+          onClick={() => setShowJobDetails(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="flex h-[85vh] w-full max-w-xl flex-col overflow-hidden rounded-3xl"
+          >
+            <JobDetails
+              jobId={job._id}
+              onClose={() => setShowJobDetails(false)}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
