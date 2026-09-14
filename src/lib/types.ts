@@ -34,7 +34,11 @@ export interface JobSummary {
 
 export interface jobDetails {
   _id: string;
-  customerId: {
+  customerId?: {
+    fullName: string;
+    phoneNumber: string;
+  };
+  artisanId?: {
     fullName: string;
     phoneNumber: string;
   };
@@ -46,8 +50,17 @@ export interface jobDetails {
   address?: string;
   state?: string;
   landmark?: string;
-  status: "pending" | "accepted" | "in_progress" | "completed" | "disputed" | "cancelled";
+  status:
+    | "pending"
+    | "accepted"
+    | "in_progress"
+    | "awaiting_confirmation"
+    | "completed"
+    | "disputed"
+    | "cancelled";
   images?: string[];
   priority?: "ASAP" | "Today" | "This week" | "Flexible";
   createdAt: string;
 }
+
+

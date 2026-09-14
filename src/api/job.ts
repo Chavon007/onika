@@ -45,7 +45,12 @@ const artisanRejectJob = async (jobId: string) => {
 };
 
 const artisanActiveJobs = async () => {
-  const response = await apiClient.get("/jobs/active");
+  const response = await apiClient.get("/jobs/artisan-active");
+  return response.data;
+};
+
+const customerActiveJobs = async () => {
+  const response = await apiClient.get("/jobs/customer-active");
   return response.data;
 };
 
@@ -124,6 +129,12 @@ export const useArtisanActiveJob = () => {
   });
 };
 
+export const useCustomerActiveJob = () => {
+  return useQuery({
+    queryKey: ["customer-active-jobs"],
+    queryFn: customerActiveJobs,
+  });
+};
 export const useArtisanCompleteJob = () => {
   const queryClient = useQueryClient();
 

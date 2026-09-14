@@ -1,4 +1,4 @@
-import { ActiveJobCard } from "@/component/activeJobCard";
+import { ActiveJobCard } from "@/component/artisanActiveJobCard";
 import { useArtisanActiveJob } from "@/api/job";
 function ActiveJobPage() {
   const { data: job, isLoading, isError } = useArtisanActiveJob();
