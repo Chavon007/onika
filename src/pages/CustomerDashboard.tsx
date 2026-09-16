@@ -5,6 +5,7 @@ import Button from "@/component/button";
 import Card from "@/component/card";
 import { useState } from "react";
 import Link from "next/link";
+import { CustomerActiveJobPage } from "./CustoomerActiveJobPage";
 const ActiveTab = [
   {
     title: "Overview",
@@ -115,7 +116,7 @@ function CustomerDashboard() {
 
           {isActive === "Active Jobs" && (
             <div>
-              <p>Coming soon</p>
+             <CustomerActiveJobPage/>
             </div>
           )}
 

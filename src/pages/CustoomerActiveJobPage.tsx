@@ -1,7 +1,8 @@
-import { ActiveJobCard } from "@/component/artisanActiveJobCard";
-import { useArtisanActiveJob } from "@/api/job";
-function ActiveJobPage() {
-  const { data: job, isLoading, isError } = useArtisanActiveJob();
+import { CustomerActiveJob } from "@/component/customerActiveJobCard";
+import { useCustomerActiveJob } from "@/api/job";
+
+export function CustomerActiveJobPage() {
+  const { data: jobs, isLoading, isError } = useCustomerActiveJob();
 
   if (isLoading)
     return (
@@ -23,9 +24,9 @@ function ActiveJobPage() {
       </div>
     );
   return (
-    <div className="flex flex-col gap-2">
-      {job && job.length > 0 ? (
-        job.map((j: any) => <ActiveJobCard key={j._id} job={j} />)
+    <div className="flex flex-col gap-4">
+      {jobs && jobs.length > 0 ? (
+        jobs.map((j: any) => <CustomerActiveJob key={j._id} jobs={j} />)
       ) : (
         <div className="flex min-h-[60vh] items-center justify-center">
           <p className="rounded-xl border border-border font-heading bg-white px-8 py-5 font-sans text-sm font-medium text-muted shadow-sm">
@@ -36,5 +37,3 @@ function ActiveJobPage() {
     </div>
   );
 }
-
-export default ActiveJobPage;

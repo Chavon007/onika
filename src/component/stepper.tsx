@@ -33,7 +33,7 @@ function Steppers({ steps, currentNumber }: stepperProps) {
                 {isCompleted ? <GrStatusGood /> : stepNumber}
               </div>
               <p
-                className={`mt-2 text-[2px] whitespace-nowrap font-sans ${
+                className={`mt-2 text-[10px] whitespace-nowrap font-sans ${
                   isActive ? "text-gray-900 font-light" : "text-gray-400"
                 }`}
               >
