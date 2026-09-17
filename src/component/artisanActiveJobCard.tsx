@@ -29,7 +29,7 @@ export function ActiveJobCard({ job }: { job: jobDetails }) {
           <p className="font-sans text-base text-muted">
             Customer:{" "}
             <span className="font-semibold text-text">
-              {job.customerId.fullName}
+              {job.customerId?.fullName}
             </span>
           </p>
 
