@@ -96,6 +96,10 @@ const usePostJobMutation = () => {
   });
 };
 
+export const customerJobHistory = async () => {
+  const response = await apiClient.get("/jobs/history");
+  return response.data;
+};
 export const useFindJobForArtisan = () => {
   return useQuery({
     queryKey: ["artisan-jobs"],
@@ -153,6 +157,13 @@ export const useCustomerActiveJob = () => {
   return useQuery({
     queryKey: ["customer-active-jobs"],
     queryFn: customerActiveJobs,
+  });
+};
+
+export const useCustomerJobHistory = () => {
+  return useQuery({
+    queryKey: ["customer-job-history"],
+    queryFn: customerJobHistory,
   });
 };
 export const useArtisanCompleteJob = () => {

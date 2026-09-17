@@ -71,3 +71,5 @@ export interface jobDetails {
   priority?: "ASAP" | "Today" | "This week" | "Flexible";
   createdAt: string;
 }
+
+
