@@ -6,7 +6,10 @@ import Button from "./button";
 import toast from "react-hot-toast";
 import TextArea from "./TextArea";
 import Steppers from "./stepper";
-
+import { useCustomerReleasePayment } from "@/api/payment";
+import { useRaiseDispute } from "@/api/job";
+import { raiseDisputeDTO, raiseDisputeSchema } from "@/schema/disputeSchema";
+import { Form } from "./form";
 const stepLabels = [
   { label: "Job Posted" },
   { label: "Artisan Matched" },
@@ -16,7 +19,10 @@ const stepLabels = [
   { label: "Payment Released" },
 ];
 
-function getStepFromStatus(status: string): number {
+function getStepFromStatus(
+  status: string,
+  previousStatus?: string | null,
+): number {
   const map: Record<string, number> = {
     pending: 1,
     accepted: 3,
@@ -25,6 +31,9 @@ function getStepFromStatus(status: string): number {
     completed: 6,
   };
 
+  if (status === "disputed" && previousStatus) {
+    return map[previousStatus] ?? 1;
+  }
   return map[status] ?? 1;
 }
 
@@ -33,13 +42,24 @@ export function CustomerActiveJob({ jobs }: { jobs: jobDetails }) {
 
   const [releasePayemt, setReleasePayment] = useState(false);
   const [dispute, setDispute] = useState(false);
-  const currentStep = getStepFromStatus(jobs.status);
-  const [disputeText, setDisputeText] = useState("");
-
+  const currentStep = getStepFromStatus(jobs.status, jobs.previousStatus);
+  const { mutate, isPending } = useCustomerReleasePayment();
+  const { mutate: raiseDispute, isPending: isRaisingDispute } =
+    useRaiseDispute();
   const isCompleted = jobs.status === "completed";
 
   const statusLabel = jobs.status.replace("_", " ");
-
+  const cancelJob = jobs.status === "pending" || jobs.status === "accepted";
+  const isDisputed = jobs.status === "disputed";
+  const handleDisputeSubmit = (data: raiseDisputeDTO) => {
+    raiseDispute(
+      {
+        jobId: jobs._id,
+        data,
+      },
+      { onSuccess: () => setDispute(false) },
+    );
+  };
   return (
     <div className="w-full overflow-hidden rounded-2xl border border-border bg-white shadow-sm">
       {/* Main Job Information */}
@@ -138,37 +158,52 @@ export function CustomerActiveJob({ jobs }: { jobs: jobDetails }) {
             <div className="overflow-x-auto rounded-xl border border-border bg-background px-4 py-5">
               <Steppers steps={stepLabels} currentNumber={currentStep} />
             </div>
+
+            {isDisputed && (
+              <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+                ⚠ Dispute under review — payment is on hold
+              </div>
+            )}
           </div>
         </div>
 
-        
         {/* Actions */}
-        <div className="mt-6 grid grid-cols-1 gap-3 border-t border-border pt-5 md:grid-cols-2">
-          <Button
-            type="button"
-            className="bg-main text-white hover:bg-main/90"
-            onClick={() => {
-              if (jobs.status !== "awaiting_confirmation") {
-                toast.error(
-                  "You can only confirm completion when the job is awaiting your confirmation.",
-                );
-                return;
-              }
+        {!isDisputed && jobs.status !== "cancelled" && (
+          <div className="mt-6 grid grid-cols-1  gap-3 border-t border-border pt-5 md:grid-cols-3">
+            <Button
+              type="button"
+              className="bg-main text-white hover:bg-main/90"
+              onClick={() => {
+                if (jobs.status !== "awaiting_confirmation") {
+                  toast.error(
+                    "You can only confirm completion when the job is awaiting your confirmation.",
+                  );
+                  return;
+                }
 
-              setReleasePayment(true);
-            }}
-          >
-            Confirm Completion & Release Payment
-          </Button>
+                setReleasePayment(true);
+              }}
+            >
+              Confirm Completion & Release Payment
+            </Button>
 
-          <Button
-            type="button"
-            className="border border-red-200 bg-white text-red-600 hover:bg-red-50"
-            onClick={() => setDispute(true)}
-          >
-            Raise Dispute
-          </Button>
-        </div>
+            {cancelJob && (
+              <Button
+                type="submit"
+                className="border border-red-200 bg-red-600 font-bold text-white hover:bg-red-600/80 font-sans"
+              >
+                Cancel Job
+              </Button>
+            )}
+            <Button
+              type="button"
+              className="border border-red-200 bg-white text-red-600 hover:bg-red-50 font-sans"
+              onClick={() => setDispute(true)}
+            >
+              Raise Dispute
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Payment Modal */}
@@ -204,7 +239,9 @@ export function CustomerActiveJob({ jobs }: { jobs: jobDetails }) {
                 <Button
                   type="button"
                   className="bg-primary text-white hover:bg-primary/90"
-                  onClick={() => setReleasePayment(true)}
+                  onClick={() => mutate(jobs._id)}
+                  disabled={isPending}
+                  isLoading={isPending}
                 >
                   Release Payment
                 </Button>
@@ -218,43 +255,52 @@ export function CustomerActiveJob({ jobs }: { jobs: jobDetails }) {
       {dispute && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-main/50 px-4">
           <div className="w-full max-w-md rounded-2xl border border-border bg-white p-6 shadow-xl">
-            <div className="flex flex-col">
-              {/* Icon */}
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-red-50">
-                <span className="text-lg text-red-600">!</span>
-              </div>
+            <Form<raiseDisputeDTO>
+              schema={raiseDisputeSchema}
+              onSubmit={handleDisputeSubmit}
+              className="flex flex-col"
+            >
+              {({ register, formState: { errors } }) => (
+                <>
+                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-red-50">
+                    <span className="text-lg text-red-600">!</span>
+                  </div>
 
-              {/* Content */}
-              <h4 className="mt-5 font-heading text-lg font-bold text-text">
-                What is the issue?
-              </h4>
+                  <h4 className="mt-5 font-heading text-lg font-bold text-text">
+                    What is the issue?
+                  </h4>
 
-              <p className="mt-2 font-sans text-sm leading-6 text-muted">
-                Tell us what went wrong with the job.
-              </p>
+                  <p className="mt-2 font-sans text-sm leading-6 text-muted">
+                    Tell us what went wrong with the job.
+                  </p>
 
-              {/* Text Area */}
-              {/* <TextArea registration={} /> */}
+                  <TextArea
+                    registration={register("disputeReason")}
+                    error={errors.disputeReason}
+                  />
 
-              {/* Actions */}
-              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                <Button
-                  type="button"
-                  className="border border-border bg-white text-muted hover:bg-secondary"
-                  onClick={() => setDispute(false)}
-                >
-                  Cancel
-                </Button>
+                  <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                    <Button
+                      type="button"
+                      className="border border-border bg-white text-muted hover:bg-secondary"
+                      onClick={() => setDispute(false)}
+                    >
+                      Cancel
+                    </Button>
 
-                <Button
-                  type="button"
-                  loadingText="sending..."
-                  className="bg-primary text-white hover:bg-primary/90"
-                >
-                  Send
-                </Button>
-              </div>
-            </div>
+                    <Button
+                      type="submit"
+                      loadingText="sending..."
+                      isLoading={isRaisingDispute}
+                      className="bg-primary text-white hover:bg-primary/90"
+                      disabled={isRaisingDispute}
+                    >
+                      Send
+                    </Button>
+                  </div>
+                </>
+              )}
+            </Form>
           </div>
         </div>
       )}
