@@ -6,6 +6,8 @@ import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import uploadToCloudinary from "@/ultiz/cloudinary";
 import { jobDetails } from "@/lib/types";
+import { useRouter } from "next/navigation";
+import { raiseDisputeDTO } from "@/schema/disputeSchema";
 const postJobs = async (data: postJobDTO) => {
   const imagesUrl = await Promise.all(
     data.images.map((file) => uploadToCloudinary(file, "job-image")),
@@ -62,6 +64,18 @@ const artisanCompleteJob = async (jobId: string) => {
 
 const artisanJobInProgress = async (jobId: string) => {
   const response = await apiClient.patch(`/jobs/${jobId}/in-progress`);
+  return response.data;
+};
+
+const raiseDispute = async ({
+  jobId,
+  data,
+}: {
+  jobId: string;
+  data: raiseDisputeDTO;
+}) => {
+  const response = await apiClient.post(`/jobs/${jobId}/dispute`, data);
+
   return response.data;
 };
 const usePostJobMutation = () => {
@@ -164,6 +178,22 @@ export const useArtisanJobInprogress = () => {
     onError(error: any) {
       const message =
         error?.response?.data.message || "Failed to turn job to in progress";
+      toast.error(message);
+    },
+  });
+};
+
+export const useRaiseDispute = () => {
+  const router = useRouter();
+  return useMutation({
+    mutationFn: raiseDispute,
+    onSuccess: () => {
+      toast.success("Dispute raised successfully");
+      router.push("/dashboard");
+    },
+    onError(error: any) {
+      const message =
+        error?.response?.data.message || "Failed to raise dispute";
       toast.error(message);
     },
   });
