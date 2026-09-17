@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { jobDetails } from "@/lib/types";
 import Button from "./button";
@@ -7,7 +6,7 @@ import toast from "react-hot-toast";
 import TextArea from "./TextArea";
 import Steppers from "./stepper";
 import { useCustomerReleasePayment } from "@/api/payment";
-import { useRaiseDispute } from "@/api/job";
+import { useRaiseDispute, useCustomerCancelJob } from "@/api/job";
 import { raiseDisputeDTO, raiseDisputeSchema } from "@/schema/disputeSchema";
 import { Form } from "./form";
 const stepLabels = [
@@ -47,7 +46,7 @@ export function CustomerActiveJob({ jobs }: { jobs: jobDetails }) {
   const { mutate: raiseDispute, isPending: isRaisingDispute } =
     useRaiseDispute();
   const isCompleted = jobs.status === "completed";
-
+  const { mutate: cancel, isPending: isCancelling } = useCustomerCancelJob();
   const statusLabel = jobs.status.replace("_", " ");
   const cancelJob = jobs.status === "pending" || jobs.status === "accepted";
   const isDisputed = jobs.status === "disputed";
@@ -189,7 +188,11 @@ export function CustomerActiveJob({ jobs }: { jobs: jobDetails }) {
 
             {cancelJob && (
               <Button
-                type="submit"
+                type="button"
+                onClick={() => cancel(jobs._id)}
+                isLoading={isCancelling}
+                loadingText="Cancelling..."
+                disabled={isCancelling}
                 className="border border-red-200 bg-red-600 font-bold text-white hover:bg-red-600/80 font-sans"
               >
                 Cancel Job

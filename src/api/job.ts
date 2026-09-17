@@ -74,7 +74,13 @@ const raiseDispute = async ({
   jobId: string;
   data: raiseDisputeDTO;
 }) => {
-  const response = await apiClient.post(`/jobs/${jobId}/dispute`, data);
+  const response = await apiClient.patch(`/jobs/${jobId}/dispute`, data);
+
+  return response.data;
+};
+
+const cancelJob = async (jobId: string) => {
+  const response = await apiClient.patch(`/jobs/${jobId}/cancel`);
 
   return response.data;
 };
@@ -194,6 +200,18 @@ export const useRaiseDispute = () => {
     onError(error: any) {
       const message =
         error?.response?.data.message || "Failed to raise dispute";
+      toast.error(message);
+    },
+  });
+};
+export const useCustomerCancelJob = () => {
+  return useMutation({
+    mutationFn: cancelJob,
+    onSuccess: () => {
+      toast.success("Job has been cancelled");
+    },
+    onError(error: any) {
+      const message = error?.response?.data.message || "Failed to cancel";
       toast.error(message);
     },
   });
