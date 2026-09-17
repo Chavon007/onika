@@ -59,8 +59,15 @@ export interface jobDetails {
     | "disputed"
     | "cancelled";
   images?: string[];
+  previousStatus?:
+    | "pending"
+    | "accepted"
+    | "in_progress"
+    | "awaiting_confirmation"
+    | "completed"
+    | "disputed"
+    | "cancelled"
+    | null;
   priority?: "ASAP" | "Today" | "This week" | "Flexible";
   createdAt: string;
 }
-
-
