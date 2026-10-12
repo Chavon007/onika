@@ -74,7 +74,13 @@ const raiseDispute = async ({
   jobId: string;
   data: raiseDisputeDTO;
 }) => {
-  const response = await apiClient.post(`/jobs/${jobId}/dispute`, data);
+  const response = await apiClient.patch(`/jobs/${jobId}/dispute`, data);
+
+  return response.data;
+};
+
+const cancelJob = async (jobId: string) => {
+  const response = await apiClient.patch(`/jobs/${jobId}/cancel`);
 
   return response.data;
 };
@@ -90,6 +96,10 @@ const usePostJobMutation = () => {
   });
 };
 
+export const customerJobHistory = async () => {
+  const response = await apiClient.get("/jobs/history");
+  return response.data;
+};
 export const useFindJobForArtisan = () => {
   return useQuery({
     queryKey: ["artisan-jobs"],
@@ -149,6 +159,13 @@ export const useCustomerActiveJob = () => {
     queryFn: customerActiveJobs,
   });
 };
+
+export const useCustomerJobHistory = () => {
+  return useQuery({
+    queryKey: ["customer-job-history"],
+    queryFn: customerJobHistory,
+  });
+};
 export const useArtisanCompleteJob = () => {
   const queryClient = useQueryClient();
 
@@ -194,6 +211,18 @@ export const useRaiseDispute = () => {
     onError(error: any) {
       const message =
         error?.response?.data.message || "Failed to raise dispute";
+      toast.error(message);
+    },
+  });
+};
+export const useCustomerCancelJob = () => {
+  return useMutation({
+    mutationFn: cancelJob,
+    onSuccess: () => {
+      toast.success("Job has been cancelled");
+    },
+    onError(error: any) {
+      const message = error?.response?.data.message || "Failed to cancel";
       toast.error(message);
     },
   });
