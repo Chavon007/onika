@@ -2,7 +2,7 @@
 
 import apiClient from "@/ultiz/axios";
 import { artisanProfileDTO } from "@/schema/ArtisanProfileSchema";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import uploadToCloudinary from "@/ultiz/cloudinary";
 import { ArtisanProfile } from "@/lib/types";
@@ -29,8 +29,10 @@ const verifyArtisanProfile = async (data: artisanProfileDTO) => {
   });
 };
 
-const fetchAllArtisan = async () => {
-  const res = await apiClient.get<ArtisanProfile[]>("/artisan/all");
+const fetchAllArtisan = async (skill?: string) => {
+  const res = await apiClient.get<ArtisanProfile[]>("/artisan/all", {
+    params: skill ? { skill } : {},
+  });
   return res.data;
 };
 
@@ -47,10 +49,11 @@ const useVerifyArtisanMutation = () => {
   });
 };
 
-export const useFetchAllArtisan = () => {
+export const useFetchAllArtisan = (skill?: string) => {
   return useQuery({
-    queryKey: ["fetch-all-artisan"],
-    queryFn: fetchAllArtisan,
+    queryKey: ["fetch-all-artisan", skill ?? "all"],
+    queryFn: () => fetchAllArtisan(skill),
+    placeholderData: keepPreviousData,
   });
 };
 
