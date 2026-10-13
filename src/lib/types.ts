@@ -75,6 +75,7 @@ export interface jobDetails {
 export interface ArtisanProfile {
   _id: string;
   User: {
+    _id: string;
     fullName: string;
     phoneNumber: string;
     lga: string;

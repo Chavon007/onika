@@ -1,5 +1,5 @@
 "use client";
-import apiClient from "@/ultiz/axios";
+import apiClient, { getErrorMessage } from "@/ultiz/axios";
 import { User } from "../lib/types";
 import toast from "react-hot-toast";
 import useAuthStore from "@/store/authStore";
@@ -25,7 +25,7 @@ const logout = async () => {
 
 // fetch user's profile
 const fetchMeFn = async (): Promise<User> => {
-  const response: any = await apiClient.get("/auth/me");
+  const response = await apiClient.get<User>("/auth/me");
 
   return response.data;
 };
@@ -51,6 +51,9 @@ const useLoginMutation = () => {
       useAuthStore.getState().login(user, user.isVerified);
       toast.success("Login successful");
     },
+    onError(error) {
+      toast.error(getErrorMessage(error, "Failed to log in"));
+    },
   });
 };
 
@@ -59,6 +62,9 @@ const useSignupMutation = () => {
     mutationFn: signupFn,
     onSuccess: () => {
       toast.success("Account created succesfully");
+    },
+    onError(error) {
+      toast.error(getErrorMessage(error, "Failed to create account"));
     },
   });
 };
@@ -74,6 +80,9 @@ const useVerifyOTP = () => {
       useAuthStore.getState().login(user, user.isVerified);
       toast.success("Account verified successfully");
     },
+    onError(error) {
+      toast.error(getErrorMessage(error, "Failed to verify account"));
+    },
   });
 };
 
@@ -83,8 +92,12 @@ const useResendOTP = () => {
     onSuccess: () => {
       toast.success("A new code has been sent");
     },
+    onError(error) {
+      toast.error(getErrorMessage(error, "Failed to resend code"));
+    },
   });
 };
+
 export default {
   useLoginMutation,
   useSignupMutation,

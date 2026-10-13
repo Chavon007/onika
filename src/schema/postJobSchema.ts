@@ -21,4 +21,23 @@ export const postJobSchema = z.object({
   address: z.string().min(1, "address  can't be less than 1 character"),
 });
 
+export const privateJobBookingSchema = z.object({
+  artisanId: z.string().min(1, "Artisan is required"),
+  description: z
+    .string()
+    .min(3, "Describe the job with enough information")
+    .max(600, "Too long"),
+  date: z
+    .string()
+    .min(1, "Please pick a date")
+    .refine((v) => new Date(v) > new Date(), "Date must be in the future"),
+  address: z.string().min(3, "Adress must be at least 3 characters long"),
+  images: z
+    .array(z.instanceof(File))
+    .min(3, "Please upload at least 3 images of he job")
+    .max(6, "You can upload a maximum of 6 images of the job"),
+  price: z.number().min(1),
+});
+
 export type postJobDTO = z.infer<typeof postJobSchema>;
+export type PrivetJobBookingDTO = z.infer<typeof privateJobBookingSchema>;

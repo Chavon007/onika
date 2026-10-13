@@ -7,6 +7,7 @@ interface BrowseArtisanProps {
   skill: string[];
   experience: string;
   faceVerification: string;
+  onBook: () => void;
 }
 function BrowseArtisan(data: BrowseArtisanProps) {
   return (
@@ -38,7 +39,12 @@ function BrowseArtisan(data: BrowseArtisanProps) {
           <span>{data.experience}</span>
         </p>
 
-        <Button>Book Now</Button>
+        <Button
+          className="border border-border bg-muted text-white hover:text-muted hover:bg-secondary"
+          onClick={data.onBook}
+        >
+          Book Now
+        </Button>
       </div>
     </div>
   );

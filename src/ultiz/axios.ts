@@ -89,7 +89,9 @@ apiClient.interceptors.response.use(
         toast.error("You are not authorized to perform this action");
       }
     } else if (error.request) {
-      toast.error("Network Error: Could not successfully communicate with the backend");
+      toast.error(
+        "Network Error: Could not successfully communicate with the backend",
+      );
     } else {
       toast.error(error.message);
     }
@@ -97,5 +99,13 @@ apiClient.interceptors.response.use(
     return Promise.reject(error);
   },
 );
+
+export const getErrorMessage = (error: unknown, fallback: string) => {
+  if (error instanceof AxiosError) {
+    return error.response?.data?.message || fallback;
+  }
+
+  return fallback;
+};
 
 export default apiClient;
