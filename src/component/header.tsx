@@ -21,7 +21,7 @@ const landingNav = [
 
 const customerNav = [
   { title: "Dashboard", link: "/dashboard" },
-  { title: "Browse", link: "/browse" },
+  { title: "Browse", link: "/browse-artisan" },
   { title: "Post a job", link: "/post-job" },
   { title: "Messages", link: "/messages" },
 ];
@@ -55,7 +55,11 @@ function Header() {
 
   const role = user?.role ?? "customer";
   const authedNav =
-    role === "customer" ? customerNav : role === "artisan" ? artisanNav : adminNav;
+    role === "customer"
+      ? customerNav
+      : role === "artisan"
+        ? artisanNav
+        : adminNav;
 
   return (
     <header className="w-full bg-background shadow-sm relative">

@@ -6,7 +6,7 @@ import Card from "@/component/card";
 import { useState } from "react";
 import Link from "next/link";
 import JobHistoryPage from "./jobHistoryPage";
-import { CustomerActiveJobPage } from "./CustoomerActiveJobPage";
+import { CustomerActiveJobPage } from "./CustomerActiveJobPage";
 const ActiveTab = [
   {
     title: "Overview",

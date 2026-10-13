@@ -2,10 +2,10 @@
 
 import apiClient from "@/ultiz/axios";
 import { artisanProfileDTO } from "@/schema/ArtisanProfileSchema";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import uploadToCloudinary from "@/ultiz/cloudinary";
-
+import { ArtisanProfile } from "@/lib/types";
 const verifyArtisanProfile = async (data: artisanProfileDTO) => {
   const [governmentIdUrl, faceVerificationUrl, workImageUrls] =
     await Promise.all([
@@ -29,6 +29,11 @@ const verifyArtisanProfile = async (data: artisanProfileDTO) => {
   });
 };
 
+const fetchAllArtisan = async () => {
+  const res = await apiClient.get<ArtisanProfile[]>("/artisan/all");
+  return res.data;
+};
+
 const useVerifyArtisanMutation = () => {
   return useMutation({
     mutationFn: verifyArtisanProfile,
@@ -41,4 +46,12 @@ const useVerifyArtisanMutation = () => {
     },
   });
 };
+
+export const useFetchAllArtisan = () => {
+  return useQuery({
+    queryKey: ["fetch-all-artisan"],
+    queryFn: fetchAllArtisan,
+  });
+};
+
 export default useVerifyArtisanMutation;
