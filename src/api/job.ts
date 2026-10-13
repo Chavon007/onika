@@ -7,7 +7,10 @@ import toast from "react-hot-toast";
 import uploadToCloudinary from "@/ultiz/cloudinary";
 import { jobDetails } from "@/lib/types";
 import { useRouter } from "next/navigation";
+import { PrivetJobBookingDTO } from "@/schema/postJobSchema";
 import { raiseDisputeDTO } from "@/schema/disputeSchema";
+import { getErrorMessage } from "@/ultiz/axios";
+
 const postJobs = async (data: postJobDTO) => {
   const imagesUrl = await Promise.all(
     data.images.map((file) => uploadToCloudinary(file, "job-image")),
@@ -26,16 +29,31 @@ const postJobs = async (data: postJobDTO) => {
   });
 };
 
-const findJobsForArtisan = async () => {
-  const response = apiClient.get("/jobs/pending");
+const privateBooking = async (data: PrivetJobBookingDTO) => {
+  const imagesUrl = await Promise.all(
+    data.images.map((file) => uploadToCloudinary(file, "job-image")),
+  );
 
-  return (await response).data;
+  return apiClient.post("/private-job", {
+    artisanId: data.artisanId,
+    address: data.address,
+    description: data.description,
+    price: data.price,
+    date: data.date,
+    images: imagesUrl,
+  });
+};
+
+const findJobsForArtisan = async () => {
+  const response = await apiClient.get("/jobs/pending");
+  return response.data;
 };
 
 const getJobDetails = async (jobId: string): Promise<jobDetails> => {
   const response = await apiClient.get(`/jobs/${jobId}`);
   return response.data;
 };
+
 const artisanAcceptJob = async (jobId: string) => {
   const response = await apiClient.patch(`/jobs/${jobId}/accept`);
   return response.data;
@@ -58,7 +76,6 @@ const customerActiveJobs = async () => {
 
 const artisanCompleteJob = async (jobId: string) => {
   const response = await apiClient.patch(`/jobs/${jobId}/complete`);
-
   return response.data;
 };
 
@@ -75,23 +92,22 @@ const raiseDispute = async ({
   data: raiseDisputeDTO;
 }) => {
   const response = await apiClient.patch(`/jobs/${jobId}/dispute`, data);
-
   return response.data;
 };
 
 const cancelJob = async (jobId: string) => {
   const response = await apiClient.patch(`/jobs/${jobId}/cancel`);
-
   return response.data;
 };
+
 const usePostJobMutation = () => {
   return useMutation({
     mutationFn: postJobs,
     onSuccess: () => {
       toast.success("Job posted successfully");
     },
-    onError() {
-      toast.error("Failed to post job");
+    onError(error) {
+      toast.error(getErrorMessage(error, "Failed to post job"));
     },
   });
 };
@@ -100,10 +116,23 @@ export const customerJobHistory = async () => {
   const response = await apiClient.get("/jobs/history");
   return response.data;
 };
+
 export const useFindJobForArtisan = () => {
   return useQuery({
     queryKey: ["artisan-jobs"],
     queryFn: findJobsForArtisan,
+  });
+};
+
+export const usePrivateJobBooking = () => {
+  return useMutation({
+    mutationFn: privateBooking,
+    onSuccess: () => {
+      toast.success("Job has been sent to artisan successfully");
+    },
+    onError(error) {
+      toast.error(getErrorMessage(error, "Failed to send job to artisan"));
+    },
   });
 };
 
@@ -114,6 +143,7 @@ export const useGetJobDetails = (jobId: string) => {
     enabled: !!jobId,
   });
 };
+
 export const useArtisanAcceptJob = () => {
   const queryClient = useQueryClient();
 
@@ -123,9 +153,8 @@ export const useArtisanAcceptJob = () => {
       toast.success("Job Accepted");
       queryClient.invalidateQueries({ queryKey: ["artisan-jobs"] });
     },
-    onError(error: any) {
-      const message = error?.response?.data.message || "Failed to accept job";
-      toast.error(message);
+    onError(error) {
+      toast.error(getErrorMessage(error, "Failed to accept job"));
     },
   });
 };
@@ -139,9 +168,8 @@ export const useArtisanRejectJob = () => {
       toast.success("Job Rejected");
       queryClient.invalidateQueries({ queryKey: ["artisan-jobs"] });
     },
-    onError(error: any) {
-      const message = error?.response?.data.message || "Failed to reject job";
-      toast.error(message);
+    onError(error) {
+      toast.error(getErrorMessage(error, "Failed to reject job"));
     },
   });
 };
@@ -166,6 +194,7 @@ export const useCustomerJobHistory = () => {
     queryFn: customerJobHistory,
   });
 };
+
 export const useArtisanCompleteJob = () => {
   const queryClient = useQueryClient();
 
@@ -176,15 +205,15 @@ export const useArtisanCompleteJob = () => {
       queryClient.invalidateQueries({ queryKey: ["artisan-jobs"] });
       queryClient.invalidateQueries({ queryKey: ["artisan-active-jobs"] });
     },
-    onError(error: any) {
-      const message = error?.response?.data.message || "Failed to complete job";
-      toast.error(message);
+    onError(error) {
+      toast.error(getErrorMessage(error, "Failed to complete job"));
     },
   });
 };
 
 export const useArtisanJobInprogress = () => {
   const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: artisanJobInProgress,
     onSuccess: () => {
@@ -192,39 +221,37 @@ export const useArtisanJobInprogress = () => {
       queryClient.invalidateQueries({ queryKey: ["artisan-jobs"] });
       queryClient.invalidateQueries({ queryKey: ["artisan-active-jobs"] });
     },
-    onError(error: any) {
-      const message =
-        error?.response?.data.message || "Failed to turn job to in progress";
-      toast.error(message);
+    onError(error) {
+      toast.error(getErrorMessage(error, "Failed to turn job to in progress"));
     },
   });
 };
 
 export const useRaiseDispute = () => {
   const router = useRouter();
+
   return useMutation({
     mutationFn: raiseDispute,
     onSuccess: () => {
       toast.success("Dispute raised successfully");
       router.push("/dashboard");
     },
-    onError(error: any) {
-      const message =
-        error?.response?.data.message || "Failed to raise dispute";
-      toast.error(message);
+    onError(error) {
+      toast.error(getErrorMessage(error, "Failed to raise dispute"));
     },
   });
 };
+
 export const useCustomerCancelJob = () => {
   return useMutation({
     mutationFn: cancelJob,
     onSuccess: () => {
       toast.success("Job has been cancelled");
     },
-    onError(error: any) {
-      const message = error?.response?.data.message || "Failed to cancel";
-      toast.error(message);
+    onError(error) {
+      toast.error(getErrorMessage(error, "Failed to cancel"));
     },
   });
 };
+
 export default usePostJobMutation;

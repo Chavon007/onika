@@ -1,5 +1,6 @@
 import { signupFormDTO, loginFormDTO } from "@/schema/userSchema";
 import { artisanProfileDTO } from "@/schema/ArtisanProfileSchema";
+import { ReactNode } from "react";
 
 export type { signupFormDTO, loginFormDTO };
 export type UserRole = "customer" | "artisan" | "admin";
@@ -71,5 +72,18 @@ export interface jobDetails {
   priority?: "ASAP" | "Today" | "This week" | "Flexible";
   createdAt: string;
 }
-
-
+export interface ArtisanProfile {
+  _id: string;
+  User: {
+    _id: string;
+    fullName: string;
+    phoneNumber: string;
+    lga: string;
+    state: string;
+  };
+  bio: string;
+  skills: string[];
+  experience: string;
+  faceVerification: string;
+  workImage: string[];
+}
