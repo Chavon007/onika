@@ -1,7 +1,6 @@
 import { signupFormDTO, loginFormDTO } from "@/schema/userSchema";
 import { artisanProfileDTO } from "@/schema/ArtisanProfileSchema";
 
-
 export type { signupFormDTO, loginFormDTO };
 export type UserRole = "customer" | "artisan" | "admin";
 export type { artisanProfileDTO };
@@ -27,6 +26,7 @@ export interface JobSummary {
   category: string;
   description: string;
   city: string;
+  date: string;
   lga: string;
   priority: "ASAP" | "Today" | "This week" | "Flexible";
   price: number;
@@ -35,6 +35,7 @@ export interface JobSummary {
 
 export interface jobDetails {
   _id: string;
+  type?: "public" | "private";
   customerId?: {
     fullName: string;
     phoneNumber: string;
@@ -43,7 +44,8 @@ export interface jobDetails {
     fullName: string;
     phoneNumber: string;
   };
-  category: string;
+  category?: string;
+  date?: string;
   description?: string;
   price: number;
   city?: string;

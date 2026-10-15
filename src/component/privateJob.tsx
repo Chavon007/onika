@@ -31,7 +31,9 @@ function PrivateJobRequest() {
   return (
     <div className="flex flex-col gap-5">
       {jobs && jobs.length > 0 ? (
-        jobs.map((job: any) => <JobCard key={job._id} job={job} />)
+        jobs.map((job: any) => (
+          <JobCard key={job._id} job={job} type="private" />
+        ))
       ) : (
         <div className="flex min-h-[60vh] items-center justify-center">
           <p className="rounded-xl border border-border font-heading bg-white px-8 py-5 font-sans text-sm font-medium text-muted shadow-sm">

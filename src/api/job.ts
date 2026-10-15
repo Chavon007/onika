@@ -104,6 +104,11 @@ const cancelJob = async (jobId: string) => {
   return response.data;
 };
 
+const fetchPrivateJobDetail = async (jobId: string): Promise<jobDetails> => {
+  const response = await apiClient.get(`/jobs/private-booking/${jobId}`);
+  return response.data;
+};
+
 const usePostJobMutation = () => {
   return useMutation({
     mutationFn: postJobs,
@@ -132,7 +137,6 @@ export const useFetchArtisanPrivateBooking = () => {
   return useQuery({
     queryKey: ["fetch-private-booking"],
     queryFn: fetchArtisanPrivateJobs,
-    retry: false,
   });
 };
 export const usePrivateJobBooking = () => {
@@ -147,10 +151,14 @@ export const usePrivateJobBooking = () => {
   });
 };
 
-export const useGetJobDetails = (jobId: string) => {
+export const useGetJobDetails = (
+  jobId: string,
+  type: "public" | "private" = "public",
+) => {
   return useQuery<jobDetails>({
-    queryKey: ["artisan-job-details", jobId],
-    queryFn: () => getJobDetails(jobId),
+    queryKey: ["artisan-job-details", type, jobId],
+    queryFn: () =>
+      type === "private" ? fetchPrivateJobDetail(jobId) : getJobDetails(jobId),
     enabled: !!jobId,
   });
 };
