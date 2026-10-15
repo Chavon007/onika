@@ -1,6 +1,6 @@
 import { signupFormDTO, loginFormDTO } from "@/schema/userSchema";
 import { artisanProfileDTO } from "@/schema/ArtisanProfileSchema";
-import { ReactNode } from "react";
+
 
 export type { signupFormDTO, loginFormDTO };
 export type UserRole = "customer" | "artisan" | "admin";
