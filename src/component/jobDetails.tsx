@@ -9,12 +9,14 @@ import Button from "./button";
 
 function JobDetails({
   jobId,
+  type = "public",
   onClose,
 }: {
   jobId: string;
+  type?: "public" | "private";
   onClose: () => void;
 }) {
-  const { data, isLoading, isError } = useGetJobDetails(jobId);
+  const { data, isLoading, isError } = useGetJobDetails(jobId, type);
   const { mutate: acceptJob, isPending: isAccepting } = useArtisanAcceptJob();
   const { mutate: rejectJob, isPending: isRejecting } = useArtisanRejectJob();
 
@@ -62,7 +64,7 @@ function JobDetails({
               Job Details{" "}
             </p>
             <h2 className="font-heading text-2xl font-bold text-text md:text-3xl">
-              {data.category}
+              {data.category ?? "Private booking"}
             </h2>
             <p className="mt-2 font-sans text-sm text-muted">
               Posted {formattedDate}
@@ -71,7 +73,7 @@ function JobDetails({
           <button
             type="button"
             onClick={onClose}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary text-xl text-text transition hover:bg-border"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full  text-xl text-text transition hover:bg-border"
           >
             ×
           </button>
@@ -122,9 +124,20 @@ function JobDetails({
               <p className="font-sans text-xs text-muted">Service</p>
 
               <p className="mt-1 font-sans text-base font-semibold capitalize text-text">
-                {data.category}
+                {data.category ?? "Private booking"}
               </p>
             </div>
+
+            {data.date && (
+              <div className="rounded-2xl border border-border p-4">
+                <p className="font-sans text-xs text-muted">Preferred date</p>
+                <p className="mt-1 font-sans text-base font-semibold text-text">
+                  {new Date(data.date).toLocaleDateString("en-NG", {
+                    dateStyle: "medium",
+                  })}
+                </p>
+              </div>
+            )}
           </div>
         </section>
 
@@ -143,10 +156,11 @@ function JobDetails({
               <div>
                 <p className="font-sans text-sm font-semibold text-text">
                   {[data.city, data.lga].filter(Boolean).join(" · ") ||
+                    data.address ||
                     "Location not provided"}
                 </p>
 
-                {data.address && (
+                {data.address && (data.city || data.lga) && (
                   <p className="mt-1 font-sans text-sm text-muted">
                     {data.address}
                   </p>
@@ -181,22 +195,22 @@ function JobDetails({
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-4">
                 <div className="flex h-11 w-11 items-center justify-center rounded-full bg-secondary font-heading text-lg font-bold text-main">
-                  {data.customerId.fullName.charAt(0).toUpperCase()}
+                  {data.customerId?.fullName?.charAt(0).toUpperCase()}
                 </div>
 
                 <div>
                   <p className="font-sans text-sm font-semibold text-text">
-                    {data.customerId.fullName}
+                    {data.customerId?.fullName}
                   </p>
 
                   <p className="mt-1 font-sans text-sm text-muted">
-                    {data.customerId.phoneNumber}
+                    {data.customerId?.phoneNumber}
                   </p>
                 </div>
               </div>
 
               <a
-                href={`tel:${data.customerId.phoneNumber}`}
+                href={`tel:${data.customerId?.phoneNumber}`}
                 className="rounded-xl bg-secondary px-4 py-2 font-sans text-xs font-semibold text-main transition hover:bg-main hover:text-white"
               >
                 Call

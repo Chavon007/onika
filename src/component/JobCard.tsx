@@ -3,74 +3,111 @@ import { JobSummary } from "@/lib/types";
 import Button from "@/component/button";
 import JobDetails from "./jobDetails";
 import { useArtisanAcceptJob, useArtisanRejectJob } from "@/api/job";
-function JobCard({ job }: { job: JobSummary }) {
+
+function JobCard({
+  job,
+  type = "public",
+}: {
+  job: JobSummary;
+  type?: "public" | "private";
+}) {
   const [showJobDetails, setShowJobDetails] = useState(false);
+  const { mutate: acceptJob, isPending: isAccepting } = useArtisanAcceptJob();
+  const { mutate: rejectJob, isPending: isRejecting } = useArtisanRejectJob();
+
   const formattedDate = new Date(job.createdAt).toLocaleString("en-NG", {
     dateStyle: "medium",
     timeStyle: "short",
   });
-  const { mutate: acceptJob, isPending: isAccepting } = useArtisanAcceptJob();
-  const { mutate: rejectJob, isPending: isRejecting } = useArtisanRejectJob();
+
+  const location = [job.city, job.lga].filter(Boolean).join(" · ");
+  const title = job.category ?? (type === "private" ? "Private booking" : "Job");
+  const initial = job.customerId?.fullName?.charAt(0).toUpperCase() ?? "?";
+
   return (
-    <div className="w-full rounded-2xl border border-border bg-white p-6 shadow-sm">
-      {/* Job Header */}
-      <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-        <div className="flex flex-col gap-3">
-          {/* Service + Priority */}
-          <div className="flex flex-wrap items-center gap-3">
-            <h3 className="font-heading text-2xl font-bold text-text">
-              {job.category}
-            </h3>
-
-            <span className="rounded-full bg-primary/10 px-3 py-1 font-sans text-xs font-semibold capitalize text-primary">
-              {job.priority}
-            </span>
+    <div className="w-full rounded-2xl border border-border bg-white p-5 shadow-sm transition hover:shadow-md md:p-6">
+      {/* Header */}
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex min-w-0 items-center gap-4">
+          <div className="hidden md:flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-secondary font-heading text-lg font-bold text-main">
+            {initial}
           </div>
 
-          {/* Customer */}
-          <p className="font-sans text-base text-muted">
-            Customer:{" "}
-            <span className="font-semibold text-text">
-              {job.customerId.fullName}
-            </span>
-          </p>
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="truncate font-heading text-xl font-bold text-text md:text-2xl">
+                {title}
+              </h3>
 
-          {/* Location + Price */}
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 font-sans text-sm text-muted">
-            <span className="flex items-center gap-1.5">
-              <span className="text-base">📍</span>
-              {job.city} · {job.lga}
-            </span>
+              {type === "private" && (
+                <span className="rounded-full bg-main/10 px-3 py-1 font-sans text-xs font-semibold text-main">
+                  Private
+                </span>
+              )}
 
-            <span>
-              Budget:{" "}
+              {job.priority && (
+                <span className="rounded-full bg-primary/10 px-3 py-1 font-sans text-xs font-semibold capitalize text-primary">
+                  {job.priority}
+                </span>
+              )}
+            </div>
+
+            <p className="mt-1 font-sans text-sm text-muted">
+              Customer:{" "}
               <span className="font-semibold text-text">
-                ₦{job.price.toLocaleString()}
+                {job.customerId?.fullName ?? "Unknown"}
               </span>
-            </span>
+            </p>
           </div>
         </div>
 
-        {/* Created Date */}
-        <div className="shrink-0">
-          <span className="font-sans text-sm text-muted">{formattedDate}</span>
-        </div>
+        <span className="shrink-0 font-sans text-xs text-muted md:text-sm">
+          {formattedDate}
+        </span>
       </div>
-      {/* Description */}
-      <div className="mt-5 border-t border-border pt-5">
-        <p className="mb-2 font-sans text-sm font-semibold text-text">
-          Job Description
-        </p>
 
-        <p className="max-w-4xl font-sans text-sm leading-6 text-muted">
-          {job.description}
+      {/* Meta */}
+      <div className="mt-4 flex flex-wrap gap-2 font-sans text-sm">
+        <span className="rounded-xl bg-background px-3 py-2 text-muted">
+          Budget:{" "}
+          <span className="font-semibold text-text">
+            ₦{job.price.toLocaleString()}
+          </span>
+        </span>
+
+        {location && (
+          <span className="rounded-xl bg-background px-3 py-2 text-muted">
+            📍 <span className="font-medium text-text">{location}</span>
+          </span>
+        )}
+
+        {job.date && (
+          <span className="rounded-xl bg-background px-3 py-2 text-muted">
+            Preferred date:{" "}
+            <span className="font-medium text-text">
+              {new Date(job.date).toLocaleDateString("en-NG", {
+                dateStyle: "medium",
+              })}
+            </span>
+          </span>
+        )}
+      </div>
+
+      {/* Description */}
+      <div className="mt-5 border-t border-border pt-4">
+        <p className="mb-1.5 font-sans text-xs font-bold uppercase tracking-wider text-muted">
+          Job description
+        </p>
+        <p className="line-clamp-3 max-w-4xl font-sans text-sm leading-6 text-text">
+          {job.description || "No description provided."}
         </p>
       </div>
+
       {/* Actions */}
-      <div className="mt-6 grid grid-cols-1 gap-3 border-t border-border pt-5 md:grid-cols-3">
+      <div className="mt-5 grid grid-cols-1 gap-3 border-t border-border pt-4 md:grid-cols-3">
         <Button
           loadingText="Accepting..."
-          type="submit"
+          type="button"
           onClick={() => acceptJob(job._id)}
           disabled={isAccepting || isRejecting}
           className="bg-main text-white hover:bg-main/90"
@@ -80,7 +117,7 @@ function JobCard({ job }: { job: JobSummary }) {
 
         <Button
           loadingText="Declining..."
-          type="submit"
+          type="button"
           onClick={() => rejectJob(job._id)}
           disabled={isAccepting || isRejecting}
           className="border border-border bg-white text-muted hover:bg-secondary"
@@ -96,7 +133,8 @@ function JobCard({ job }: { job: JobSummary }) {
           View Details
         </Button>
       </div>
-      {/* job details overlay */}
+
+      {/* Details overlay */}
       {showJobDetails && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
@@ -108,6 +146,7 @@ function JobCard({ job }: { job: JobSummary }) {
           >
             <JobDetails
               jobId={job._id}
+              type={type}
               onClose={() => setShowJobDetails(false)}
             />
           </div>

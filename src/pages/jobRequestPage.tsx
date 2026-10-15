@@ -17,7 +17,7 @@ function JobRequestpage() {
   const [activeTab, setActiveTab] = useState<jobProps>("public");
 
   return (
-    <div>
+    <div className=" flex flex-col gap-5">
       <div className="flex gap-2">
         {tabs.map((t) => (
           <button
