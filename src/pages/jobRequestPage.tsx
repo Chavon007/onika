@@ -1,42 +1,43 @@
-import { useFindJobForArtisan } from "@/api/job";
-import JobCard from "@/component/JobCard";
+import PublicJobRequest from "@/component/publicJob";
+import PrivateJobRequest from "@/component/privateJob";
+import { useState } from "react";
+type jobProps = "public" | "private";
 
+const tabs: { title: string; value: jobProps }[] = [
+  {
+    title: "Public Jobs",
+    value: "public",
+  },
+  {
+    title: "Private Jobs",
+    value: "private",
+  },
+];
 function JobRequestpage() {
-  const { data: jobs, isLoading, isError } = useFindJobForArtisan();
-
-  if (isLoading)
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-secondary border-t-main" />
-
-          <p className="font-sans text-sm font-medium text-muted">
-            Loading...
-          </p>
-        </div>
-      </div>
-    );
-
-  if (isError)
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <p className="font-sans text-sm font-medium text-muted">
-          Failed to load jobs
-        </p>
-      </div>
-    );
+  const [activeTab, setActiveTab] = useState<jobProps>("public");
 
   return (
-    <div className="flex flex-col gap-5">
-      {jobs && jobs.length > 0 ? (
-        jobs.map((job: any) => <JobCard key={job._id} job={job} />)
-      ) : (
-        <div className="flex min-h-[60vh] items-center justify-center">
-          <p className="rounded-xl border border-border font-heading bg-white px-8 py-5 font-sans text-sm font-medium text-muted shadow-sm">
-            No job update for you yet!
-          </p>
-        </div>
-      )}
+    <div>
+      <div className="flex gap-2">
+        {tabs.map((t) => (
+          <button
+            key={t.value}
+            type="button"
+            onClick={() => setActiveTab(t.value)}
+            className={`rounded-full border px-4 py-2 text-sm ${
+              activeTab === t.value
+                ? "bg-main text-white"
+                : "bg-white text-muted"
+            }`}
+          >
+            {t.title}
+          </button>
+        ))}
+      </div>
+
+      <div>
+        {activeTab === "public" ? <PublicJobRequest /> : <PrivateJobRequest />}
+      </div>
     </div>
   );
 }

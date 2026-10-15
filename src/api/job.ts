@@ -49,6 +49,10 @@ const findJobsForArtisan = async () => {
   return response.data;
 };
 
+const fetchArtisanPrivateJobs = async () => {
+  const response = await apiClient.get("/jobs/private-bookings");
+  return response.data;
+};
 const getJobDetails = async (jobId: string): Promise<jobDetails> => {
   const response = await apiClient.get(`/jobs/${jobId}`);
   return response.data;
@@ -124,6 +128,13 @@ export const useFindJobForArtisan = () => {
   });
 };
 
+export const useFetchArtisanPrivateBooking = () => {
+  return useQuery({
+    queryKey: ["fetch-private-booking"],
+    queryFn: fetchArtisanPrivateJobs,
+    retry: false,
+  });
+};
 export const usePrivateJobBooking = () => {
   return useMutation({
     mutationFn: privateBooking,
