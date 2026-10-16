@@ -75,7 +75,7 @@ apiClient.interceptors.response.use(
             await apiClient.post("/auth/refresh");
             isRefreshing = false;
             onRefreshed();
-            return apiClient(originalRequest); // retry the original request
+            return apiClient(originalRequest); 
           } catch (refreshError) {
             isRefreshing = false;
             onRefreshFailed(refreshError);

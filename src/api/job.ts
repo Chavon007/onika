@@ -2,7 +2,12 @@
 
 import apiClient from "@/ultiz/axios";
 import { postJobDTO } from "@/schema/postJobSchema";
-import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
+import {
+  useQueryClient,
+  useQuery,
+  useMutation,
+  keepPreviousData,
+} from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import uploadToCloudinary from "@/ultiz/cloudinary";
 import { jobDetails } from "@/lib/types";
@@ -10,6 +15,17 @@ import { useRouter } from "next/navigation";
 import { PrivetJobBookingDTO } from "@/schema/postJobSchema";
 import { raiseDisputeDTO } from "@/schema/disputeSchema";
 import { getErrorMessage } from "@/ultiz/axios";
+
+interface PaginatedResponse<T> {
+  success: boolean;
+  data: T[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
 
 const postJobs = async (data: postJobDTO) => {
   const imagesUrl = await Promise.all(
@@ -134,9 +150,12 @@ const usePostJobMutation = () => {
   });
 };
 
-export const customerJobHistory = async () => {
-  const response = await apiClient.get("/jobs/history");
-  return response.data;
+export const customerJobHistory = async (page = 1, limit = 6) => {
+  const response = await apiClient.get<unknown, PaginatedResponse<jobDetails>>(
+    "/jobs/history",
+    { params: { page, limit } },
+  );
+  return { jobs: response.data, pagination: response.pagination };
 };
 
 export const useFindJobForArtisan = () => {
@@ -249,10 +268,11 @@ export const useCustomerActiveJob = () => {
   });
 };
 
-export const useCustomerJobHistory = () => {
+export const useCustomerJobHistory = (page: number) => {
   return useQuery({
-    queryKey: ["customer-job-history"],
-    queryFn: customerJobHistory,
+    queryKey: ["customer-job-history", page],
+    queryFn: () => customerJobHistory(page),
+    placeholderData: keepPreviousData,
   });
 };
 
