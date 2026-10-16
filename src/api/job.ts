@@ -109,6 +109,19 @@ const fetchPrivateJobDetail = async (jobId: string): Promise<jobDetails> => {
   return response.data;
 };
 
+const acceptPrivateJobBooking = async (jobId: string) => {
+  const response = await apiClient.patch(
+    `/jobs/private-boooking/${jobId}/accept`,
+  );
+  return response.data;
+};
+
+const rejectPrivateJobBooking = async (jobId: string) => {
+  const response = await apiClient.patch(
+    `/jobs/private-booking/${jobId}/reject`,
+  );
+  return response.data;
+};
 const usePostJobMutation = () => {
   return useMutation({
     mutationFn: postJobs,
@@ -193,6 +206,35 @@ export const useArtisanRejectJob = () => {
   });
 };
 
+export const useAcceptPrivateJobBooking = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: acceptPrivateJobBooking,
+    onSuccess: () => {
+      toast.success("Job accepted");
+      queryClient.invalidateQueries({ queryKey: ["fetch-private-booking"] });
+    },
+    onError(error) {
+      toast.error(getErrorMessage(error, "Failed to accept job"));
+    },
+  });
+};
+
+export const useRejectPrivateJobBooking = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: rejectPrivateJobBooking,
+    onSuccess: () => {
+      toast.success("Job rejected");
+      queryClient.invalidateQueries({ queryKey: ["fetch-private-booking"] });
+    },
+    onError(error) {
+      toast.error(getErrorMessage(error, "Failed to reject job"));
+    },
+  });
+};
 export const useArtisanActiveJob = () => {
   return useQuery({
     queryKey: ["artisan-active-jobs"],

@@ -4,6 +4,8 @@ import {
   useGetJobDetails,
   useArtisanAcceptJob,
   useArtisanRejectJob,
+  useAcceptPrivateJobBooking,
+  useRejectPrivateJobBooking,
 } from "@/api/job";
 import Button from "./button";
 
@@ -16,10 +18,32 @@ function JobDetails({
   type?: "public" | "private";
   onClose: () => void;
 }) {
+  const isPrivate = type === "private";
   const { data, isLoading, isError } = useGetJobDetails(jobId, type);
   const { mutate: acceptJob, isPending: isAccepting } = useArtisanAcceptJob();
   const { mutate: rejectJob, isPending: isRejecting } = useArtisanRejectJob();
+  const { mutate: acceptPrivateJob, isPending: isAcceptingPrivate } =
+    useAcceptPrivateJobBooking();
+  const { mutate: rejectPrivateJob, isPending: isRejectingPrivate } =
+    useRejectPrivateJobBooking();
+  const isBusy =
+    isAccepting || isRejecting || isAcceptingPrivate || isRejectingPrivate;
 
+  const handleAccept = () => {
+    if (isPrivate) {
+      acceptPrivateJob(jobId, { onSuccess: onClose });
+    } else {
+      acceptJob(jobId);
+    }
+  };
+
+  const handleReject = () => {
+    if (isPrivate) {
+      rejectPrivateJob(jobId, { onSuccess: onClose });
+    } else {
+      rejectJob(jobId);
+    }
+  };
   if (isLoading) {
     return (
       <div className="flex h-full min-h-[60vh] items-center justify-center">
@@ -247,9 +271,9 @@ function JobDetails({
       <div className="grid shrink-0 grid-cols-2 gap-3 border-t border-border bg-white px-6 py-5 md:px-8">
         <Button
           loadingText="Accepting..."
-          type="submit"
-          onClick={() => acceptJob(data._id)}
-          disabled={isAccepting || isRejecting}
+          type="button"
+          onClick={handleAccept}
+          disabled={isBusy}
           className="bg-main text-white hover:bg-main/90"
         >
           Accept Job
@@ -257,9 +281,9 @@ function JobDetails({
 
         <Button
           loadingText="Declining..."
-          type="submit"
-          onClick={() => rejectJob(data._id)}
-          disabled={isAccepting || isRejecting}
+          type="button"
+          onClick={handleReject}
+          disabled={isBusy}
           className="border border-border bg-white text-muted hover:bg-secondary"
         >
           Decline
