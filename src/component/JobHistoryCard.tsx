@@ -47,7 +47,7 @@ function JobHistory({ jobs }: { jobs: jobDetails[] }) {
               className="border-b border-border last:border-b-0 transition-colors hover:bg-background"
             >
               <td className="px-5 py-4 text-sm font-medium text-main">
-                {j.category}
+                {j.category ?? (j.type === "private" ? "private booking" : "-")}
               </td>
               <td className="px-5 py-4 text-sm text-muted">
                 {j.artisanId?.fullName ?? "—"}
@@ -61,8 +61,9 @@ function JobHistory({ jobs }: { jobs: jobDetails[] }) {
               <td className="px-5 py-4">
                 <span
                   className={`inline-block rounded-full px-2.5 py-1 text-xs font-medium capitalize ${
-                    statusStyles[j.status?.toLowerCase().replace(/[-_\s]/g, "")] ??
-                    "bg-secondary text-muted"
+                    statusStyles[
+                      j.status?.toLowerCase().replace(/[-_\s]/g, "")
+                    ] ?? "bg-secondary text-muted"
                   }`}
                 >
                   {j.status?.replace(/[-_]/g, " ")}
