@@ -2,7 +2,12 @@ import { useState } from "react";
 import { JobSummary } from "@/lib/types";
 import Button from "@/component/button";
 import JobDetails from "./jobDetails";
-import { useArtisanAcceptJob, useArtisanRejectJob } from "@/api/job";
+import {
+  useArtisanAcceptJob,
+  useArtisanRejectJob,
+  useAcceptPrivateJobBooking,
+  useRejectPrivateJobBooking,
+} from "@/api/job";
 
 function JobCard({
   job,
@@ -11,17 +16,41 @@ function JobCard({
   job: JobSummary;
   type?: "public" | "private";
 }) {
+  const isPrivate = type === "private";
   const [showJobDetails, setShowJobDetails] = useState(false);
   const { mutate: acceptJob, isPending: isAccepting } = useArtisanAcceptJob();
   const { mutate: rejectJob, isPending: isRejecting } = useArtisanRejectJob();
+  const { mutate: acceptPrivateJob, isPending: isAcceptingPrivate } =
+    useAcceptPrivateJobBooking();
+  const { mutate: rejectPrivateJob, isPending: isRejectingPrivate } =
+    useRejectPrivateJobBooking();
 
+  const isBusy =
+    isAccepting || isRejecting || isAcceptingPrivate || isRejectingPrivate;
+
+  const handleAceept = () => {
+    if (isPrivate) {
+      acceptPrivateJob(job._id);
+    } else {
+      acceptJob(job._id);
+    }
+  };
+
+  const handleReject = () => {
+    if (isPrivate) {
+      rejectPrivateJob(job._id);
+    } else {
+      rejectJob(job._id);
+    }
+  };
   const formattedDate = new Date(job.createdAt).toLocaleString("en-NG", {
     dateStyle: "medium",
     timeStyle: "short",
   });
 
   const location = [job.city, job.lga].filter(Boolean).join(" · ");
-  const title = job.category ?? (type === "private" ? "Private booking" : "Job");
+  const title =
+    job.category ?? (type === "private" ? "Private booking" : "Job");
   const initial = job.customerId?.fullName?.charAt(0).toUpperCase() ?? "?";
 
   return (
@@ -108,8 +137,8 @@ function JobCard({
         <Button
           loadingText="Accepting..."
           type="button"
-          onClick={() => acceptJob(job._id)}
-          disabled={isAccepting || isRejecting}
+          onClick={handleAceept}
+          disabled={isBusy}
           className="bg-main text-white hover:bg-main/90"
         >
           Accept Job
@@ -118,8 +147,8 @@ function JobCard({
         <Button
           loadingText="Declining..."
           type="button"
-          onClick={() => rejectJob(job._id)}
-          disabled={isAccepting || isRejecting}
+          onClick={handleReject}
+          disabled={isBusy}
           className="border border-border bg-white text-muted hover:bg-secondary"
         >
           Decline
