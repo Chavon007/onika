@@ -111,7 +111,7 @@ const fetchPrivateJobDetail = async (jobId: string): Promise<jobDetails> => {
 
 const acceptPrivateJobBooking = async (jobId: string) => {
   const response = await apiClient.patch(
-    `/jobs/private-boooking/${jobId}/accept`,
+    `/jobs/private-booking/${jobId}/accept`,
   );
   return response.data;
 };

@@ -57,7 +57,7 @@ export interface jobDetails {
     | "pending"
     | "accepted"
     | "in_progress"
-    | "reject"
+    | "rejected"
     | "awaiting_confirmation"
     | "completed"
     | "disputed"

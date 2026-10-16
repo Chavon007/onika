@@ -24,9 +24,9 @@ function JobRequestpage() {
             key={t.value}
             type="button"
             onClick={() => setActiveTab(t.value)}
-            className={`rounded-full border px-4 py-2 text-sm ${
+            className={`rounded-full focus:outline-none border cursor-pointer px-4 py-2 text-sm ${
               activeTab === t.value
-                ? "bg-main text-white"
+                ? "bg-primary text-white"
                 : "bg-white text-muted"
             }`}
           >
