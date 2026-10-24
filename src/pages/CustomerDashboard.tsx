@@ -5,6 +5,7 @@ import Button from "@/component/button";
 import Card from "@/component/card";
 import { useState } from "react";
 import Link from "next/link";
+import EscrowAndWalletPage from "./escrowAndWalletPage";
 import JobHistoryPage from "./jobHistoryPage";
 import { CustomerActiveJobPage } from "./CustomerActiveJobPage";
 const ActiveTab = [
@@ -78,7 +79,7 @@ function CustomerDashboard() {
           </Link>
         </section>
 
-        <section className="w-full border-b border-border pb-3 mt-4">
+        <section className="w-full border-b border-border pb-3 mt-4 ">
           <div className="flex w-full md:w-[45%] justify-between items-center">
             {ActiveTab.map((a) => (
               <h4
@@ -101,7 +102,7 @@ function CustomerDashboard() {
             <div className="grid  grid-cols-2 md:grid-cols-4 gap-4">
               {cardContent.map((c) => (
                 <div
-                  className="bg-[#fff] w-full p-3 h-35 rounded rounded-xl border border-border"
+                  className="bg-[#fff] w-full p-3 h-auto rounded rounded-xl border border-border"
                   key={c.description}
                 >
                   <Card
@@ -129,7 +130,7 @@ function CustomerDashboard() {
 
           {isActive === "Wallet & Escrow" && (
             <div>
-              <p>coming</p>
+              <EscrowAndWalletPage />
             </div>
           )}
         </section>

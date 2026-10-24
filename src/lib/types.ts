@@ -91,3 +91,22 @@ export interface ArtisanProfile {
   faceVerification: string;
   workImage: string[];
 }
+
+export interface Transaction {
+  _id: string;
+  reference: string;
+  type:
+    | "funding"
+    | "escrow_hold"
+    | "escrow_release"
+    | "refund"
+    | "withdrawal"
+    | "commission";
+  direction: "credit" | "debit";
+  date: string;
+  amount: number;
+  status: "successful" | "failed" | "pending";
+  jobId: string | null;
+  description?: string;
+  createdAt: string;
+}
