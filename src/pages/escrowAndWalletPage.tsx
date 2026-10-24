@@ -1,6 +1,8 @@
 import Card from "@/component/card";
 import { formatNaira } from "@/ultiz/formatMoney";
-
+import TransactionHistorysection from "@/component/transactionHistory";
+import Button from "@/component/button";
+import { GoPlus } from "react-icons/go";
 const walletStats = [
   {
     icon: "🛅",
@@ -26,7 +28,7 @@ const walletStats = [
 ];
 function EscrowAndWalletPage() {
   return (
-    <div>
+    <div className=" flex flex-col gap-4">
       <div className="grid  grid-cols-2 md:grid-cols-3 gap-4">
         {walletStats.map((w) => (
           <div
@@ -42,6 +44,16 @@ function EscrowAndWalletPage() {
             />
           </div>
         ))}
+      </div>
+
+      <div className="bg-[#fff] border border-border rounded-2xl">
+        <div className=" flex justify-between items-center border-b p-3 border-muted/30">
+          <h4 className="text-text font-sans text-sm font-bold">Transaction History</h4>
+          <Button className="w-[130px] text-xs font-heading font-semibold bg-muted hover:bg-muted/70">
+            <GoPlus /> Top up wallet
+          </Button>
+        </div>
+        <TransactionHistorysection />
       </div>
     </div>
   );
