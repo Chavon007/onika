@@ -1,6 +1,4 @@
 import { jobDetails } from "@/lib/types";
-import { useState } from "react";
-import { useCustomerJobHistory } from "@/api/job";
 const historyHead = [
   {
     title: "Service",
