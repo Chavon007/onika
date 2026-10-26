@@ -8,6 +8,7 @@ import apiClient, { getErrorMessage } from "@/ultiz/axios";
 import { Transaction } from "@/lib/types";
 import { walletFundingDTO } from "@/schema/walletFundingSchema";
 import toast from "react-hot-toast";
+import { WalletDetails } from "@/lib/types";
 interface PaginatedResponse<T> {
   success: boolean;
   data: T[];
@@ -65,6 +66,12 @@ const getFundingReference = async (
   return body?.paid !== undefined ? body : body?.data;
 };
 
+const getWallet = async () => {
+  const response = await apiClient.get("/wallet");
+
+  return response.data;
+};
+
 export const useFetchTransactionHistory = (page = 1, limit = 6) => {
   return useQuery({
     queryKey: ["transaction-history", page, limit],
@@ -98,5 +105,12 @@ export const useGetFundingReference = (reference: string | null) => {
     enabled: Boolean(reference),
     refetchOnWindowFocus: false,
     retry: false,
+  });
+};
+
+export const useGetWallet = () => {
+  return useQuery<WalletDetails>({
+    queryKey: ["wallet"],
+    queryFn: getWallet,
   });
 };

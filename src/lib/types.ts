@@ -110,3 +110,9 @@ export interface Transaction {
   description?: string;
   createdAt: string;
 }
+
+export interface WalletDetails {
+  balance?: number;
+  status?: "active" | "frozen";
+  currency?: string;
+}

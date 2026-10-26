@@ -10,8 +10,8 @@ import {
   walletFundingDTO,
   walletFundingSchema,
 } from "@/schema/walletFundingSchema";
-import { useFundingWallet } from "@/api/wallet";
-
+import { useFundingWallet, useGetWallet } from "@/api/wallet";
+import { WalletDetails } from "@/lib/types";
 const walletStats = [
   {
     icon: "🛅",
@@ -38,9 +38,11 @@ const walletStats = [
 function EscrowAndWalletPage() {
   const [openModal, setOpenModal] = useState(false);
   const { mutate, isPending } = useFundingWallet();
+  const { data, isError } = useGetWallet();
   const onSubmit = (data: walletFundingDTO) => {
     mutate({ ...data });
   };
+
   return (
     <div className=" flex flex-col gap-4">
       <div className="grid  grid-cols-2 md:grid-cols-3 gap-4">
@@ -51,7 +53,7 @@ function EscrowAndWalletPage() {
           >
             <Card
               desc={w.desc}
-              amount={formatNaira(w.amount)}
+              amount={formatNaira(data?.balance ?? 0)}
               text={w.title}
               icon={w.icon}
               background={w.background}
