@@ -28,6 +28,15 @@ export const verifySchema = z.object({
     .regex(/^\d+$/, "OTP must contain only numbers"),
 });
 
+export const profileSchema = z.object({
+  fullName: z.string().min(1, "Full name is required"),
+  email: z.string().email("Invalid email address"),
+  phoneNumber: z.string().min(10, "Phone number can't be less than 10"),
+  state: z.string().min(1, "State is required"),
+  lga: z.string().min(1, "Please put your Local Government area"),
+});
+
 export type signupFormDTO = z.infer<typeof signUpSchema>;
 export type loginFormDTO = z.infer<typeof loginSchema>;
 export type verifyFormDTO = z.infer<typeof verifySchema>;
+export type profileFormDTO = z.infer<typeof profileSchema>;
