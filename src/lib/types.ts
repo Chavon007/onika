@@ -116,3 +116,11 @@ export interface WalletDetails {
   status?: "active" | "frozen";
   currency?: string;
 }
+
+export interface BankDetails {
+  _id: string;
+  bankName: string;
+  accountName: string;
+  accountNumber: string;
+  createdAt: string;
+}
