@@ -6,13 +6,14 @@ import { GoPlus } from "react-icons/go";
 import { useState } from "react";
 import { Form } from "../component/form";
 import { InputField } from "../component/inputField";
+import useAuthStore from "@/store/authStore";
 import {
   walletFundingDTO,
   walletFundingSchema,
 } from "@/schema/walletFundingSchema";
 import { useFundingWallet, useGetWallet } from "@/api/wallet";
-import { WalletDetails } from "@/lib/types";
-const walletStats = [
+
+const customerWalletStats = [
   {
     icon: "🛅",
     title: "Wallet Balance",
@@ -23,7 +24,7 @@ const walletStats = [
   {
     icon: "🔒",
     title: "In Escrow",
-    amount: "70000",
+    amount: "700000",
     desc: "Held for active jobs",
     background: "#fef3c7",
   },
@@ -35,10 +36,37 @@ const walletStats = [
     background: "#fef3c7",
   },
 ];
+
+const artisanWalletStats = [
+  {
+    title: "Wallet Balance",
+    amount: "1000000",
+    desc: "Ready to withdraw",
+  },
+  {
+    title: "This Month",
+    amount: "936000",
+    desc: "July 2026",
+  },
+  {
+    title: "All-time Earned",
+    amount: "210000000",
+    desc: "Since Jan 2025",
+  },
+];
 function EscrowAndWalletPage() {
+  const role = useAuthStore((s) => s.user?.role);
   const [openModal, setOpenModal] = useState(false);
   const { mutate, isPending } = useFundingWallet();
-  const { data, isError } = useGetWallet();
+  const { data: wallet } = useGetWallet();
+  const balance = wallet?.balance ?? 0;
+
+  const baseStats =
+    role === "artisan" ? artisanWalletStats : customerWalletStats;
+
+  const stats = baseStats.map((s) =>
+    s.title === "Wallet Balance" ? { ...s, amount: balance } : s,
+  );
   const onSubmit = (data: walletFundingDTO) => {
     mutate({ ...data });
   };
@@ -46,17 +74,17 @@ function EscrowAndWalletPage() {
   return (
     <div className=" flex flex-col gap-4">
       <div className="grid  grid-cols-2 md:grid-cols-3 gap-4">
-        {walletStats.map((w) => (
+        {stats.map((w) => (
           <div
             key={w.title}
             className="bg-[#fff] w-full p-3 h-auto  rounded-xl border border-border"
           >
             <Card
               desc={w.desc}
-              amount={formatNaira(data?.balance ?? 0)}
+              amount={formatNaira(w.amount)}
               text={w.title}
-              icon={w.icon}
-              background={w.background}
+              icon={"icon" in w ? w.icon : undefined}
+              background={"background" in w ? w.background : undefined}
             />
           </div>
         ))}
@@ -67,12 +95,32 @@ function EscrowAndWalletPage() {
           <h4 className="text-text font-sans text-sm font-bold">
             Transaction History
           </h4>
-          <Button
-            onClick={() => setOpenModal(true)}
-            className="w-[130px] text-xs font-heading font-semibold bg-muted hover:bg-muted/70"
-          >
-            <GoPlus /> Top up wallet
-          </Button>
+
+          {role === "customer" && (
+            <div className="flex items-center gap-3">
+              <Button
+                onClick={() => setOpenModal(true)}
+                className="w-[130px] text-xs font-heading font-semibold bg-muted hover:bg-muted/70"
+              >
+                <GoPlus /> Top up wallet
+              </Button>
+              <Button
+                onClick={() => setOpenModal(true)}
+                className="w-[130px] text-xs font-heading font-semibold bg-white hover:bg-muted/30 hover:border-none text-black border border-muted"
+              >
+                Withdraw Funds
+              </Button>
+            </div>
+          )}
+
+          {role === "artisan" && (
+            <Button
+              onClick={() => setOpenModal(false)}
+              className="w-[130px] text-xs font-heading font-semibold bg-muted hover:bg-muted/70"
+            >
+              Withdraw Funds
+            </Button>
+          )}
         </div>
         <TransactionHistorysection />
       </div>
@@ -153,7 +201,7 @@ function EscrowAndWalletPage() {
 
                       <p className="mt-2 text-xs leading-5 text-muted">
                         Enter the amount you want to add to your wallet in
-                        naira. Minimum funding amount is ₦10,000.
+                        naira. Minimum funding amount is ₦100.
                       </p>
                     </div>
 

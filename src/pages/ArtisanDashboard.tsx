@@ -5,6 +5,7 @@ import Card from "@/component/card";
 import { useState } from "react";
 import JobRequestpage from "./jobRequestPage";
 import ActiveJobPage from "./ActiveJobpage";
+import EscrowAndWalletPage from "./escrowAndWalletPage";
 const ActiveTab = [
   {
     title: "Overview",
@@ -137,7 +138,7 @@ function ArtisanDashboard() {
           )}
           {isActive === "Earnings" && (
             <div>
-              <p>coming soon</p>
+              <EscrowAndWalletPage />
             </div>
           )}
         </section>

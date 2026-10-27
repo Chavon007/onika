@@ -105,14 +105,14 @@ function Header() {
             </Link>
           ) : (
             <div className="flex items-center gap-3">
-              <div className="text-right">
+              <Link href="/profile" className="text-right">
                 <h4 className="font-sans text-sm font-bold text-muted">
                   {user?.fullName}
                 </h4>
                 <p className="font-sans text-xs capitalize text-muted/60">
                   {user?.role}
                 </p>
-              </div>
+              </Link>
               <button
                 type="button"
                 onClick={handleLogout}
