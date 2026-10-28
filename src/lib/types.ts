@@ -124,3 +124,8 @@ export interface BankDetails {
   accountNumber: string;
   createdAt: string;
 }
+
+export interface UserBankResponse {
+  success: boolean;
+  data: BankDetails[];
+}

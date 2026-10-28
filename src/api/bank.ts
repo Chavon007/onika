@@ -2,8 +2,7 @@ import apiClient, { getErrorMessage } from "@/ultiz/axios";
 import toast from "react-hot-toast";
 import { bankAccountDTO, bankAccountSchema } from "@/schema/bankSchema";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { string } from "zod";
-import { id } from "zod/locales";
+import {  UserBankResponse } from "@/lib/types";
 
 const getBankList = async () => {
   const response = await apiClient.get("/bank/list");
@@ -26,8 +25,8 @@ const addBankAccount = async (data: bankAccountDTO) => {
   return response.data;
 };
 
-const getUserBank = async () => {
-  const response = await apiClient.get("/bank");
+const getUserBank = async ():Promise<UserBankResponse> => {
+  const response = await apiClient.get<UserBankResponse>("/bank");
   return response.data;
 };
 
