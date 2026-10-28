@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import ProfileForm from "@/component/profileForm";
+import Banking from "@/component/addBankAccount";
 function Profile() {
   const ActiveTab = [
     {
@@ -55,7 +56,7 @@ function Profile() {
           )}
           {isActive === "Account" && (
             <div>
-              <h2>Account</h2>
+              <Banking/>
             </div>
           )}
 
