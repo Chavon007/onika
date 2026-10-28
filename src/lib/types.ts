@@ -75,6 +75,7 @@ export interface jobDetails {
     | null;
   priority?: "ASAP" | "Today" | "This week" | "Flexible";
   createdAt: string;
+  faceVerification?: string;
 }
 export interface ArtisanProfile {
   _id: string;
