@@ -43,6 +43,9 @@ export interface jobDetails {
   artisanId?: {
     fullName: string;
     phoneNumber: string;
+    artisanProfile?: {
+      faceVerification?: string;
+    };
   };
   category?: string;
   date?: string;

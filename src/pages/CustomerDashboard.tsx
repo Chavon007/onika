@@ -133,7 +133,7 @@ function CustomerDashboard() {
 
         <section className="w-full ">
           {isActive === "Overview" && (
-            <div>
+            <div className="flex flex-col gap-8">
               <div className="grid  grid-cols-2 md:grid-cols-4 gap-4">
                 {cardContent.map((c) => (
                   <div
@@ -150,11 +150,11 @@ function CustomerDashboard() {
                 ))}
               </div>
 
-              <div>
-                <section>
-                  <h3>Active Jobs</h3>
+              <div className="bg-white rounded-2xl py-2">
+                <section className="flex justify-between p-3 items-center  border-b border-border">
+                  <h3 className="text-text font-heading font-bold uppercase text-sm">Active Jobs</h3>
 
-                  <button
+                  <button className="flex items-center  hover:text-accent/60 cursor-pointer text-xs font-sans text-accent"
                     type="button"
                     onClick={() => setIsActiveTab("Active Jobs")}
                   >
