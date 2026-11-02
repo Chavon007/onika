@@ -43,6 +43,9 @@ export interface jobDetails {
   artisanId?: {
     fullName: string;
     phoneNumber: string;
+    artisanProfile?: {
+      faceVerification?: string;
+    };
   };
   category?: string;
   date?: string;
@@ -75,6 +78,7 @@ export interface jobDetails {
     | null;
   priority?: "ASAP" | "Today" | "This week" | "Flexible";
   createdAt: string;
+  faceVerification?: string;
 }
 export interface ArtisanProfile {
   _id: string;

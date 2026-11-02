@@ -46,10 +46,10 @@ function Banking() {
     useAddBankAccount();
 
   const banks = Array.isArray(bankListData)
-  ? bankListData
-  : Array.isArray(bankListData?.data)
-    ? bankListData.data
-    : [];
+    ? bankListData
+    : Array.isArray(bankListData?.data)
+      ? bankListData.data
+      : [];
   const userBanks = userBankData?.data ?? [];
   const accountLimitReached = userBanks.length >= 3;
 
@@ -318,6 +318,7 @@ function Banking() {
                     {/* Modal footer */}
                     <div className="flex flex-col-reverse gap-3 border-t border-border bg-secondary/40 px-5 py-5 sm:flex-row sm:justify-end sm:px-7">
                       <Button
+                        className="bg-white text-black hover:bg-accent/20"
                         type="button"
                         onClick={closeModal}
                         disabled={addBankPending}
