@@ -60,6 +60,7 @@ const reviewFieldLabels: {
   { key: "landmark", label: "Landmark" },
   { key: "state", label: "State" },
   { key: "lga", label: "LGA" },
+  { key: "price", label: "Budget" },
 ];
 
 function PostJobForm() {

@@ -7,6 +7,7 @@ import {
   useQuery,
   useMutation,
   keepPreviousData,
+  QueryClient,
 } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import uploadToCloudinary from "@/ultiz/cloudinary";
@@ -27,6 +28,35 @@ interface PaginatedResponse<T> {
   };
 }
 
+// ---------------------------------------------------------------------------
+// Query keys
+// These match the keys in the wallet hooks file:
+//   balance  -> ["wallet"]
+//   history  -> ["transaction-history", page, limit]
+// Using just ["transaction-history"] refreshes every page of the history.
+// ---------------------------------------------------------------------------
+const WALLET_KEYS = [["wallet"], ["transaction-history"]];
+const CUSTOMER_KEYS = [["customer-active-jobs"], ["customer-job-history"]];
+const ARTISAN_KEYS = [
+  ["artisan-jobs"],
+  ["artisan-active-jobs"],
+  ["fetch-private-booking"],
+];
+
+// Refreshes a group of queries so the screen updates straight away.
+const refresh = (queryClient: QueryClient, ...groups: string[][][]) => {
+  groups.flat().forEach((queryKey) => {
+    queryClient.invalidateQueries({ queryKey });
+  });
+};
+
+// ---------------------------------------------------------------------------
+// API calls
+// The backend stores money in KOBO. The user types NAIRA, so we multiply by
+// 100 here, in ONE place, before sending. Do not convert anywhere else.
+// ---------------------------------------------------------------------------
+const toKobo = (naira: number) => Math.round(naira * 100);
+
 const postJobs = async (data: postJobDTO) => {
   const imagesUrl = await Promise.all(
     data.images.map((file) => uploadToCloudinary(file, "job-image")),
@@ -37,7 +67,7 @@ const postJobs = async (data: postJobDTO) => {
     description: data.description,
     state: data.state,
     lga: data.lga,
-    price: data.price,
+    price: toKobo(data.price),
     priority: data.priority,
     images: imagesUrl,
     landmark: data.landmark,
@@ -54,7 +84,7 @@ const privateBooking = async (data: PrivetJobBookingDTO) => {
     artisanId: data.artisanId,
     address: data.address,
     description: data.description,
-    price: data.price,
+    price: toKobo(data.price),
     date: data.date,
     images: imagesUrl,
   });
@@ -69,6 +99,7 @@ const fetchArtisanPrivateJobs = async () => {
   const response = await apiClient.get("/jobs/private-bookings");
   return response.data;
 };
+
 const getJobDetails = async (jobId: string): Promise<jobDetails> => {
   const response = await apiClient.get(`/jobs/${jobId}`);
   return response.data;
@@ -138,17 +169,6 @@ const rejectPrivateJobBooking = async (jobId: string) => {
   );
   return response.data;
 };
-const usePostJobMutation = () => {
-  return useMutation({
-    mutationFn: postJobs,
-    onSuccess: () => {
-      toast.success("Job posted successfully");
-    },
-    onError(error) {
-      toast.error(getErrorMessage(error, "Failed to post job"));
-    },
-  });
-};
 
 export const customerJobHistory = async (page = 1, limit = 6) => {
   const response = await apiClient.get<unknown, PaginatedResponse<jobDetails>>(
@@ -157,6 +177,93 @@ export const customerJobHistory = async (page = 1, limit = 6) => {
   );
   return { jobs: response.data, pagination: response.pagination };
 };
+
+// ---------------------------------------------------------------------------
+// Customer hooks
+// ---------------------------------------------------------------------------
+
+// Posting a job takes money from the wallet, so refresh the wallet too.
+const usePostJobMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: postJobs,
+    onSuccess: () => {
+      toast.success("Job posted successfully");
+      refresh(queryClient, CUSTOMER_KEYS, WALLET_KEYS);
+    },
+    onError(error) {
+      toast.error(getErrorMessage(error, "Failed to post job"));
+    },
+  });
+};
+
+export const usePrivateJobBooking = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: privateBooking,
+    onSuccess: () => {
+      toast.success("Job has been sent to artisan successfully");
+      refresh(queryClient, CUSTOMER_KEYS, WALLET_KEYS);
+    },
+    onError(error) {
+      toast.error(getErrorMessage(error, "Failed to send job to artisan"));
+    },
+  });
+};
+
+export const useCustomerActiveJob = () => {
+  return useQuery({
+    queryKey: ["customer-active-jobs"],
+    queryFn: customerActiveJobs,
+  });
+};
+
+export const useCustomerJobHistory = (page: number) => {
+  return useQuery({
+    queryKey: ["customer-job-history", page],
+    queryFn: () => customerJobHistory(page),
+    placeholderData: keepPreviousData,
+  });
+};
+
+// Cancelling refunds the customer, so the lists AND the wallet must refresh.
+export const useCustomerCancelJob = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: cancelJob,
+    onSuccess: () => {
+      toast.success("Job has been cancelled");
+      refresh(queryClient, CUSTOMER_KEYS, ARTISAN_KEYS, WALLET_KEYS);
+    },
+    onError(error) {
+      toast.error(getErrorMessage(error, "Failed to cancel"));
+    },
+  });
+};
+
+export const useRaiseDispute = () => {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: raiseDispute,
+    onSuccess: () => {
+      toast.success("Dispute raised successfully");
+      refresh(queryClient, CUSTOMER_KEYS, ARTISAN_KEYS, WALLET_KEYS);
+      router.push("/dashboard");
+    },
+    onError(error) {
+      toast.error(getErrorMessage(error, "Failed to raise dispute"));
+    },
+  });
+};
+
+// ---------------------------------------------------------------------------
+// Artisan hooks
+// ---------------------------------------------------------------------------
 
 export const useFindJobForArtisan = () => {
   return useQuery({
@@ -169,17 +276,6 @@ export const useFetchArtisanPrivateBooking = () => {
   return useQuery({
     queryKey: ["fetch-private-booking"],
     queryFn: fetchArtisanPrivateJobs,
-  });
-};
-export const usePrivateJobBooking = () => {
-  return useMutation({
-    mutationFn: privateBooking,
-    onSuccess: () => {
-      toast.success("Job has been sent to artisan successfully");
-    },
-    onError(error) {
-      toast.error(getErrorMessage(error, "Failed to send job to artisan"));
-    },
   });
 };
 
@@ -202,7 +298,7 @@ export const useArtisanAcceptJob = () => {
     mutationFn: artisanAcceptJob,
     onSuccess: () => {
       toast.success("Job Accepted");
-      queryClient.invalidateQueries({ queryKey: ["artisan-jobs"] });
+      refresh(queryClient, ARTISAN_KEYS, CUSTOMER_KEYS);
     },
     onError(error) {
       toast.error(getErrorMessage(error, "Failed to accept job"));
@@ -217,7 +313,7 @@ export const useArtisanRejectJob = () => {
     mutationFn: artisanRejectJob,
     onSuccess: () => {
       toast.success("Job Rejected");
-      queryClient.invalidateQueries({ queryKey: ["artisan-jobs"] });
+      refresh(queryClient, ARTISAN_KEYS);
     },
     onError(error) {
       toast.error(getErrorMessage(error, "Failed to reject job"));
@@ -232,7 +328,7 @@ export const useAcceptPrivateJobBooking = () => {
     mutationFn: acceptPrivateJobBooking,
     onSuccess: () => {
       toast.success("Job accepted");
-      queryClient.invalidateQueries({ queryKey: ["fetch-private-booking"] });
+      refresh(queryClient, ARTISAN_KEYS, CUSTOMER_KEYS);
     },
     onError(error) {
       toast.error(getErrorMessage(error, "Failed to accept job"));
@@ -240,6 +336,7 @@ export const useAcceptPrivateJobBooking = () => {
   });
 };
 
+// Rejecting a private job refunds the customer in full.
 export const useRejectPrivateJobBooking = () => {
   const queryClient = useQueryClient();
 
@@ -247,32 +344,18 @@ export const useRejectPrivateJobBooking = () => {
     mutationFn: rejectPrivateJobBooking,
     onSuccess: () => {
       toast.success("Job rejected");
-      queryClient.invalidateQueries({ queryKey: ["fetch-private-booking"] });
+      refresh(queryClient, ARTISAN_KEYS, CUSTOMER_KEYS, WALLET_KEYS);
     },
     onError(error) {
       toast.error(getErrorMessage(error, "Failed to reject job"));
     },
   });
 };
+
 export const useArtisanActiveJob = () => {
   return useQuery({
     queryKey: ["artisan-active-jobs"],
     queryFn: artisanActiveJobs,
-  });
-};
-
-export const useCustomerActiveJob = () => {
-  return useQuery({
-    queryKey: ["customer-active-jobs"],
-    queryFn: customerActiveJobs,
-  });
-};
-
-export const useCustomerJobHistory = (page: number) => {
-  return useQuery({
-    queryKey: ["customer-job-history", page],
-    queryFn: () => customerJobHistory(page),
-    placeholderData: keepPreviousData,
   });
 };
 
@@ -283,8 +366,7 @@ export const useArtisanCompleteJob = () => {
     mutationFn: artisanCompleteJob,
     onSuccess: () => {
       toast.success("Job completed");
-      queryClient.invalidateQueries({ queryKey: ["artisan-jobs"] });
-      queryClient.invalidateQueries({ queryKey: ["artisan-active-jobs"] });
+      refresh(queryClient, ARTISAN_KEYS, CUSTOMER_KEYS);
     },
     onError(error) {
       toast.error(getErrorMessage(error, "Failed to complete job"));
@@ -299,38 +381,10 @@ export const useArtisanJobInprogress = () => {
     mutationFn: artisanJobInProgress,
     onSuccess: () => {
       toast.success("Job has started");
-      queryClient.invalidateQueries({ queryKey: ["artisan-jobs"] });
-      queryClient.invalidateQueries({ queryKey: ["artisan-active-jobs"] });
+      refresh(queryClient, ARTISAN_KEYS, CUSTOMER_KEYS);
     },
     onError(error) {
       toast.error(getErrorMessage(error, "Failed to turn job to in progress"));
-    },
-  });
-};
-
-export const useRaiseDispute = () => {
-  const router = useRouter();
-
-  return useMutation({
-    mutationFn: raiseDispute,
-    onSuccess: () => {
-      toast.success("Dispute raised successfully");
-      router.push("/dashboard");
-    },
-    onError(error) {
-      toast.error(getErrorMessage(error, "Failed to raise dispute"));
-    },
-  });
-};
-
-export const useCustomerCancelJob = () => {
-  return useMutation({
-    mutationFn: cancelJob,
-    onSuccess: () => {
-      toast.success("Job has been cancelled");
-    },
-    onError(error) {
-      toast.error(getErrorMessage(error, "Failed to cancel"));
     },
   });
 };

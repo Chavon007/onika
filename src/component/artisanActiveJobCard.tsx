@@ -1,18 +1,26 @@
+
 "use client";
 
 import { jobDetails } from "@/lib/types";
 import Button from "./button";
-import toast from "react-hot-toast";
 import { useArtisanCompleteJob, useArtisanJobInprogress } from "@/api/job";
+import { formatNaira } from "@/ultiz/formatMoney";
 
 export function ActiveJobCard({ job }: { job: jobDetails }) {
   const formattedDate = new Date(job.createdAt).toLocaleString("en-NG");
-  const { mutate: completed, isPending: isCompleted } = useArtisanCompleteJob();
+
+  const { mutate: completed, isPending: isCompleted } =
+    useArtisanCompleteJob();
+
   const { mutate: in_progress, isPending: isInprogress } =
     useArtisanJobInprogress();
 
-  return (  
-    <div className="w-full rounded-2xl border border-border bg-white p-6 shadow-sm">
+  const isJobInProgress = job.status === "in_progress";
+  const isJobCompleted = job.status === "completed";
+  const canCompleteJob = isJobInProgress;
+
+  return (
+    <div className="w-full rounded-2xl border border-border bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div className="flex flex-col gap-3">
           <div className="flex flex-wrap items-center gap-3">
@@ -25,8 +33,7 @@ export function ActiveJobCard({ job }: { job: jobDetails }) {
             </span>
           </div>
 
-          {/* customer */}
-          <p className="font-sans text-base text-muted">
+          <p className="font-sans text-sm text-muted">
             Customer:{" "}
             <span className="font-semibold text-text">
               {job.customerId?.fullName}
@@ -35,57 +42,81 @@ export function ActiveJobCard({ job }: { job: jobDetails }) {
 
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2 font-sans text-sm text-muted">
             <span className="flex items-center gap-1.5">
-              <span className="text-base">📍</span>
+              <span>📍</span>
               {job.address}
             </span>
 
             <span>
               Budget:{" "}
               <span className="font-semibold text-text">
-                ₦{job.price.toLocaleString()}
+                {formatNaira(job.price)}
               </span>
             </span>
           </div>
         </div>
 
-        <div className="shrink-0">
-          <span className="font-sans text-sm text-muted">{formattedDate}</span>
-        </div>
+        <span className="shrink-0 font-sans text-xs text-muted">
+          {formattedDate}
+        </span>
       </div>
 
       {/* Actions */}
       <div className="mt-6 grid grid-cols-1 gap-3 border-t border-border pt-5 md:grid-cols-3">
+        {/* Start Job */}
         <Button
           loadingText="Starting..."
-          type="submit"
-          className="bg-main text-white hover:bg-main/90"
+          type="button"
+          className={`transition-colors ${
+            isJobInProgress
+              ? "cursor-default border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-50"
+              : isJobCompleted
+                ? "cursor-not-allowed bg-gray-100 text-gray-400"
+                : "bg-main text-white hover:bg-main/90"
+          }`}
           onClick={() => in_progress(job._id)}
-          disabled={isCompleted || isInprogress || job.status !== "accepted"}
+          disabled={
+            isCompleted ||
+            isInprogress ||
+            job.status !== "accepted"
+          }
         >
-          {job.status === "in_progress" || job.status === "completed"
-            ? "Job is in progress"
+          {isJobInProgress || isJobCompleted
+            ? "✓ Job in progress"
             : "Mark job as in progress"}
         </Button>
 
+        {/* Complete Job */}
         <Button
           loadingText="Completing..."
-          type="submit"
-          className="border border-border bg-white text-muted hover:bg-secondary"
+          type="button"
+          className={`transition-colors ${
+            isJobCompleted
+              ? "cursor-default border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-50"
+              : canCompleteJob
+                ? "bg-emerald-600 text-white hover:bg-emerald-700"
+                : "cursor-not-allowed border border-gray-200 bg-gray-100 text-gray-400 opacity-70"
+          }`}
           onClick={() => {
-            if (job.status !== "in_progress") {
-              toast.error("Start the job before marking it completed");
-              return;
+            if (canCompleteJob) {
+              completed(job._id);
             }
-            completed(job._id);
           }}
-          disabled={isCompleted || isInprogress || job.status !== "in_progress"}
+          disabled={
+            isCompleted ||
+            isInprogress ||
+            !canCompleteJob ||
+            isJobCompleted
+          }
         >
-          {job.status === "completed" ? "Completed" : "Mark job as completed"}
+          {isJobCompleted
+            ? "✓ Job completed"
+            : "Mark job as completed"}
         </Button>
 
+        {/* Message Customer */}
         <Button
           type="button"
-          className="border border-border bg-white text-main hover:bg-secondary"
+          className="border border-border bg-white text-main transition-colors hover:bg-secondary"
         >
           Message Customer
         </Button>

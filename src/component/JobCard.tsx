@@ -8,7 +8,7 @@ import {
   useAcceptPrivateJobBooking,
   useRejectPrivateJobBooking,
 } from "@/api/job";
-
+import { formatNaira } from "@/ultiz/formatMoney";
 function JobCard({
   job,
   type = "public",
@@ -99,9 +99,9 @@ function JobCard({
       <div className="mt-4 flex flex-wrap gap-2 font-sans text-sm">
         <span className="rounded-xl bg-background px-3 py-2 text-muted">
           Budget:{" "}
-          <span className="font-semibold text-text">
-            ₦{job.price.toLocaleString()}
-          </span>
+         <span className="font-semibold text-text">
+  {formatNaira(job.price)}
+</span>
         </span>
 
         {location && (

@@ -6,6 +6,9 @@ import { useState } from "react";
 import JobRequestpage from "./jobRequestPage";
 import ActiveJobPage from "./ActiveJobpage";
 import EscrowAndWalletPage from "./escrowAndWalletPage";
+import ArtisanJobRequest from "@/component/artisanJobRequest";
+import { MdArrowRightAlt } from "react-icons/md";
+import { useFindJobForArtisan } from "@/api/job";
 const ActiveTab = [
   {
     title: "Overview",
@@ -51,8 +54,38 @@ const cardContent = [
 function ArtisanDashboard() {
   const user = useAuthStore((state) => state.user);
   const [isActive, setIsActiveTab] = useState("Overview");
+  const { data: job, isError, isLoading } = useFindJobForArtisan();
+
+  const lateastJobRequest = [...(job ?? [])]
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    )
+    .slice(0, 3);
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-secondary border-t-main" />
+
+          <p className="font-sans text-sm font-medium text-muted">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <p className="font-sans text-sm font-medium text-muted">
+          Failed to load jobs
+        </p>
+      </div>
+    );
+  }
   return (
-    <div className="min-h-screen w-full overflow-hidden pt-8 bg-background">
+   <div className="min-h-screen w-full overflow-hidden bg-background pt-24">
       <div className="container mx-auto w-full lg:w-[80%] flex flex-col gap-[30px] p-3">
         <section className="flex items-center justify-between">
           {/* Welcome */}
@@ -108,22 +141,53 @@ function ArtisanDashboard() {
           </div>
         </section>
         <section className="w-full">
-          {" "}
           {isActive === "Overview" && (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {cardContent.map((c) => (
-                <div
-                  className="bg-[#fff] w-full p-3 h-35 rounded rounded-xl border border-border"
-                  key={c.description}
-                >
-                  <Card
-                    desc={c.description}
-                    amount={c.amount}
-                    icon={c.icon}
-                    background={c.background}
-                  />
-                </div>
-              ))}
+            <div className="flex flex-col gap-8">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {cardContent.map((c) => (
+                  <div
+                    className="bg-[#fff] w-full p-3 h-35 rounded rounded-xl border border-border"
+                    key={c.description}
+                  >
+                    <Card
+                      desc={c.description}
+                      amount={c.amount}
+                      icon={c.icon}
+                      background={c.background}
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <div className="bg-white rounded-2xl py-2">
+                <section className="flex justify-between p-3 items-center  border-b border-border">
+                  <h3 className="text-text font-heading font-bold uppercase text-sm">
+                    New Job Requests
+                  </h3>
+                  <button
+                    className="flex items-center  hover:text-accent/60 cursor-pointer text-xs font-sans text-accent"
+                    type="button"
+                    onClick={() => setIsActiveTab("Job Requests")}
+                  >
+                    <span>View all</span>
+                    <MdArrowRightAlt />
+                  </button>
+                </section>
+
+                <section>
+                  {lateastJobRequest.length > 0 ? (
+                    lateastJobRequest.map((j) => (
+                      <ArtisanJobRequest key={j._id} job={j} />
+                    ))
+                  ) : (
+                    <div className="flex h-auto py-4 items-center justify-center">
+                      <p className="rounded-xl border border-border font-heading bg-white px-8 py-5 font-sans text-sm font-medium text-muted shadow-sm">
+                        You have no job Request yet!
+                      </p>
+                    </div>
+                  )}
+                </section>
+              </div>
             </div>
           )}
           {isActive === "Job Requests" && (
