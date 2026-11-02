@@ -1,27 +1,34 @@
 "use client";
 
-import apiClient from "@/ultiz/axios";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import apiClient, { getErrorMessage } from "@/ultiz/axios";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+
 const customerReleasePayment = async (jobId: string) => {
   const response = await apiClient.post(`/jobs/${jobId}/release-payment`);
-
   return response.data;
 };
 
 export const useCustomerReleasePayment = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: customerReleasePayment,
     onSuccess: () => {
-      toast.success("Artisan has been schedule for payment");
+      toast.success("Job confirmed. Payment will be released to the artisan shortly.");
+      [
+        ["customer-active-jobs"],
+        ["customer-job-history"],
+        ["artisan-active-jobs"],
+        ["wallet"],
+        ["transaction-history"],
+      ].forEach((queryKey) => queryClient.invalidateQueries({ queryKey }));
       router.push("/dashboard");
     },
-    onError: (error: any) => {
-      const message =
-        error?.response?.data.message || "Failed to processs payment";
-      toast.error(message);
+    onError(error) {
+      toast.error(getErrorMessage(error, "Failed to process payment"));
     },
   });
 };

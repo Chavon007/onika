@@ -93,7 +93,7 @@ function CustomerDashboard() {
   }
 
   return (
-    <div className="min-h-screen w-full overflow-hidden pt-8 bg-background">
+   <div className="min-h-screen w-full overflow-hidden bg-background pt-24">
       <div className="container mx-auto w-full lg:w-[80%] flex flex-col gap-[30px] p-3">
         <section className="flex justify-between items-center">
           <div className="w-[50%] flex flex-col md:gap-1">

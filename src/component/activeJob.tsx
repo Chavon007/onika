@@ -1,7 +1,7 @@
 import { jobDetails } from "@/lib/types";
 import Image from "next/image";
 import { FaMapPin } from "react-icons/fa";
-
+import { formatNaira } from "@/ultiz/formatMoney";
 interface ActiveJobProps {
   job: jobDetails;
 }
@@ -10,20 +10,13 @@ function ActiveJob({ job }: ActiveJobProps) {
   const artisanImage = job.artisanId?.artisanProfile?.faceVerification;
 
   const statusStyles: Record<string, string> = {
-    pending:
-      "bg-amber-50 text-amber-700 border-amber-200",
-    accepted:
-      "bg-blue-50 text-blue-700 border-blue-200",
-    in_progress:
-      "bg-orange-50 text-primary border-orange-200",
-    completed:
-      "bg-emerald-50 text-emerald-700 border-emerald-200",
-    cancelled:
-      "bg-red-50 text-red-700 border-red-200",
-    rejected:
-      "bg-red-50 text-red-700 border-red-200",
-    disputed:
-      "bg-purple-50 text-purple-700 border-purple-200",
+    pending: "bg-amber-50 text-amber-700 border-amber-200",
+    accepted: "bg-blue-50 text-blue-700 border-blue-200",
+    in_progress: "bg-orange-50 text-primary border-orange-200",
+    completed: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    cancelled: "bg-red-50 text-red-700 border-red-200",
+    rejected: "bg-red-50 text-red-700 border-red-200",
+    disputed: "bg-purple-50 text-purple-700 border-purple-200",
   };
 
   const status = job.status.toLowerCase();
@@ -94,11 +87,7 @@ function ActiveJob({ job }: ActiveJobProps) {
           </p>
 
           <h4 className="font-heading text-lg font-bold text-main">
-            {job.price.toLocaleString("en-NG", {
-              style: "currency",
-              currency: "NGN",
-              maximumFractionDigits: 0,
-            })}
+            {formatNaira(job.price)}
           </h4>
         </div>
 

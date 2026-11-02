@@ -8,6 +8,7 @@ import Steppers from "./stepper";
 import { useCustomerReleasePayment } from "@/api/payment";
 import { useRaiseDispute, useCustomerCancelJob } from "@/api/job";
 import { raiseDisputeDTO, raiseDisputeSchema } from "@/schema/disputeSchema";
+import { formatNaira } from "@/ultiz/formatMoney";
 import { Form } from "./form";
 const stepLabels = [
   { label: "Job Posted" },
@@ -107,7 +108,7 @@ export function CustomerActiveJob({ jobs }: { jobs: jobDetails }) {
               </p>
 
               <p className="mt-0.5 font-heading text-xl font-bold text-text">
-                ₦{jobs.price.toLocaleString()}
+                {formatNaira(jobs.price)}
               </p>
             </div>
           </div>
