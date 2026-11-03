@@ -1,4 +1,5 @@
 import { jobDetails } from "@/lib/types";
+import { formatNaira } from "@/ultiz/formatMoney";
 const historyHead = [
   {
     title: "Service",
@@ -70,7 +71,7 @@ function JobHistory({
                   {new Date(j.createdAt).toLocaleDateString("en-NG")}
                 </td>
                 <td className="px-5 py-4 text-sm font-medium text-main">
-                  ₦{j.price.toLocaleString()}
+                  {formatNaira(j.price)}
                 </td>
                 <td className="px-5 py-4">
                   <span

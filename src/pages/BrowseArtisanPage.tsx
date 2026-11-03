@@ -38,6 +38,8 @@ const otherSkills = [
   "Painting & Decoration",
 ];
 
+const allSkills = [...topSkills, ...otherSkills];
+
 function FetchAllArtisanPage() {
   const [filterService, setFilterService] = useState<string | null>(null);
   const [showMore, setShowMore] = useState(false);
@@ -49,8 +51,13 @@ function FetchAllArtisanPage() {
   const { mutate, isPending } = usePrivateJobBooking();
   const [selectedArtisan, setSelectedArtisan] = useState<string | null>(null);
 
+  // Desktop
   const isOtherSelected =
     filterService !== null && otherSkills.includes(filterService);
+
+  // Mobile: All | one skill | More
+  const mobileSkill = filterService ?? topSkills[0];
+  const mobileMoreSkills = allSkills.filter((skill) => skill !== mobileSkill);
 
   const handlePrivateBooking = (data: BookingFormData) => {
     if (!selectedArtisan) return;
@@ -84,8 +91,8 @@ function FetchAllArtisanPage() {
 
   return (
     <>
-      <div className="w-full min-h-screen bg-background overflow-hidden pt-5">
-        <div className="container mx-auto w-[90%] flex flex-col gap-[30px] p-3">
+      <div className="w-full min-h-screen bg-background overflow-hidden pt-20 md:pt-24">
+        <div className="container mx-auto lg:w-[90%] flex flex-col gap-[30px] p-3">
           <div className="flex flex-col gap-1">
             <h2 className="font-bold text-text text-3xl font-heading">
               Browse Artisans
@@ -95,7 +102,67 @@ function FetchAllArtisanPage() {
             </p>
           </div>
 
-          <div className="relative flex items-center gap-2 pb-2">
+          {/* ---------- MOBILE FILTER*/}
+          <div className="relative flex items-center gap-2 pb-2 md:hidden">
+            <button
+              type="button"
+              onClick={() => setFilterService(null)}
+              className={`shrink-0 rounded-full border px-4 py-2 text-sm ${
+                filterService === null
+                  ? "bg-main text-white"
+                  : "bg-white text-muted"
+              }`}
+            >
+              All
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setFilterService(mobileSkill)}
+              className={`min-w-0 max-w-[55%] truncate rounded-full border px-4 py-2 text-sm ${
+                filterService === mobileSkill
+                  ? "bg-main text-white"
+                  : "bg-white text-muted"
+              }`}
+            >
+              {mobileSkill}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowMore((prev) => !prev)}
+              className="shrink-0 rounded-full border bg-white px-4 py-2 text-sm text-muted"
+            >
+              More ▾
+            </button>
+
+            {showMore && (
+              <>
+                <div
+                  className="fixed inset-0 z-10"
+                  onClick={() => setShowMore(false)}
+                />
+                <div className="absolute right-0 top-full z-20 mt-2 max-h-64 w-64 overflow-y-auto rounded-xl border bg-white p-2 shadow-lg">
+                  {mobileMoreSkills.map((skill) => (
+                    <button
+                      key={skill}
+                      type="button"
+                      onClick={() => {
+                        setFilterService(skill);
+                        setShowMore(false);
+                      }}
+                      className="block w-full rounded-lg px-3 py-2 text-left text-sm text-muted hover:bg-secondary"
+                    >
+                      {skill}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* ---------- DESKTOP FILTER ---------- */}
+          <div className="relative hidden items-center gap-2 pb-2 md:flex">
             <div className="flex flex-1 gap-2 overflow-x-auto whitespace-nowrap">
               <button
                 type="button"

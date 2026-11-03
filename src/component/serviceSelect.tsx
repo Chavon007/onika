@@ -48,7 +48,7 @@ export const ServiceSelect = ({
       <label className="text-sm font-semibold text-heading">{label}</label>
       <small className="text-xs text-gray-400">{small}</small>
 
-      <div className="grid  grid-col-2 lg:grid-cols-4 gap-3">
+      <div className="grid  grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
         {options.map((option) => {
           const selected = isSelected(option.title);
           return (

@@ -85,7 +85,7 @@ function ArtisanDashboard() {
     );
   }
   return (
-   <div className="min-h-screen w-full overflow-hidden bg-background pt-24">
+    <div className="min-h-screen w-full overflow-hidden bg-background pt-24">
       <div className="container mx-auto w-full lg:w-[80%] flex flex-col gap-[30px] p-3">
         <section className="flex items-center justify-between">
           {/* Welcome */}
@@ -124,7 +124,7 @@ function ArtisanDashboard() {
         </section>
 
         <section className="w-full border-b border-border pb-3 mt-4">
-          <div className="flex w-full md:w-[45%] justify-between items-center">
+          <div className="flex w-full md:w-[60%] lg:w-[45%] justify-between items-center">
             {ActiveTab.map((a) => (
               <h4
                 className={`text-sm cursor-pointer font-sans font-bold pb-3 border-b-2 -mb-3 transition-colors ${

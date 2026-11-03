@@ -81,7 +81,7 @@ function PostJobForm() {
     }, 3000);
   };
   return (
-    <div className="min-h-screen p-4 bg-background">
+    <div className="min-h-screen px-4 pb-4 pt-24 bg-background">
       <div className="container w-full max-w-3xl mx-auto flex flex-col gap-3">
         <Link href="/dashboard" className=" flex gap-1 items-center">
           <span className="text-text/80 text-2xl">
