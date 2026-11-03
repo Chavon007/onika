@@ -99,9 +99,9 @@ function JobCard({
       <div className="mt-4 flex flex-wrap gap-2 font-sans text-sm">
         <span className="rounded-xl bg-background px-3 py-2 text-muted">
           Budget:{" "}
-         <span className="font-semibold text-text">
-  {formatNaira(job.price)}
-</span>
+          <span className="font-semibold text-text">
+            {formatNaira(job.price)}
+          </span>
         </span>
 
         {location && (
@@ -133,31 +133,35 @@ function JobCard({
       </div>
 
       {/* Actions */}
+
       <div className="mt-5 grid grid-cols-1 gap-3 border-t border-border pt-4 md:grid-cols-3">
+        {/* Accept Job */}
         <Button
           loadingText="Accepting..."
           type="button"
           onClick={handleAceept}
           disabled={isBusy}
-          className="bg-main text-white hover:bg-main/90"
+          className="bg-emerald-600 text-white shadow-sm hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
         >
           Accept Job
         </Button>
 
+        {/* Decline */}
         <Button
           loadingText="Declining..."
           type="button"
           onClick={handleReject}
           disabled={isBusy}
-          className="border border-border bg-white text-muted hover:bg-secondary"
+          className="border border-red-200 bg-red-50 text-red-600 hover:border-red-300 hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50"
         >
           Decline
         </Button>
 
+        {/* View Details */}
         <Button
           type="button"
           onClick={() => setShowJobDetails(true)}
-          className="border border-border bg-white text-main hover:bg-secondary"
+          className="border border-border bg-secondary text-main hover:bg-secondary/70"
         >
           View Details
         </Button>

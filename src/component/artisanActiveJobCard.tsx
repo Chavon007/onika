@@ -1,4 +1,3 @@
-
 "use client";
 
 import { jobDetails } from "@/lib/types";
@@ -9,8 +8,7 @@ import { formatNaira } from "@/ultiz/formatMoney";
 export function ActiveJobCard({ job }: { job: jobDetails }) {
   const formattedDate = new Date(job.createdAt).toLocaleString("en-NG");
 
-  const { mutate: completed, isPending: isCompleted } =
-    useArtisanCompleteJob();
+  const { mutate: completed, isPending: isCompleted } = useArtisanCompleteJob();
 
   const { mutate: in_progress, isPending: isInprogress } =
     useArtisanJobInprogress();
@@ -71,14 +69,10 @@ export function ActiveJobCard({ job }: { job: jobDetails }) {
               ? "cursor-default border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-50"
               : isJobCompleted
                 ? "cursor-not-allowed bg-gray-100 text-gray-400"
-                : "bg-main text-white hover:bg-main/90"
+                : "bg-green-500 text-white hover:bg-main/90"
           }`}
           onClick={() => in_progress(job._id)}
-          disabled={
-            isCompleted ||
-            isInprogress ||
-            job.status !== "accepted"
-          }
+          disabled={isCompleted || isInprogress || job.status !== "accepted"}
         >
           {isJobInProgress || isJobCompleted
             ? "✓ Job in progress"
@@ -102,15 +96,10 @@ export function ActiveJobCard({ job }: { job: jobDetails }) {
             }
           }}
           disabled={
-            isCompleted ||
-            isInprogress ||
-            !canCompleteJob ||
-            isJobCompleted
+            isCompleted || isInprogress || !canCompleteJob || isJobCompleted
           }
         >
-          {isJobCompleted
-            ? "✓ Job completed"
-            : "Mark job as completed"}
+          {isJobCompleted ? "✓ Job completed" : "Mark job as completed"}
         </Button>
 
         {/* Message Customer */}

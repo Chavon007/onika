@@ -167,7 +167,7 @@ function CustomerDashboard() {
                   {latestJobs.length > 0 ? (
                     latestJobs.map((j) => <ActiveJob key={j._id} job={j} />)
                   ) : (
-                    <div className="flex min-h-[60vh] items-center justify-center">
+                    <div className="flex h-auto py-4 items-center justify-center">
                       <p className="rounded-xl border border-border font-heading bg-white px-8 py-5 font-sans text-sm font-medium text-muted shadow-sm">
                         You have no active jobs yet!
                       </p>
