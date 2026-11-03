@@ -19,9 +19,9 @@ function Profile() {
   ];
   const [isActive, setIsActiveTab] = useState("Profile");
   return (
-    <div className="min-h-screen w-full overflow-hidden pt-8 bg-background">
+    <div className="min-h-screen w-full overflow-hidden pt-20 md:pt-24 bg-background">
       <div className="container mx-auto w-full lg:w-[65%] flex flex-col gap-[30px] p-3">
-        <section className="flex flex-col gap-2">
+        <section className="flex flex-col md:gap-2">
           <h2 className="text-base md:text-[30px] tracking-wide leading-10 font-heading text-[#1c1917] font-extrabold">
             Account Settings
           </h2>

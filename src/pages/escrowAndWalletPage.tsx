@@ -92,7 +92,7 @@ function EscrowAndWalletPage() {
 
       <div className="bg-[#fff] border border-border rounded-2xl">
         <div className=" flex justify-between items-center border-b p-3 border-muted/30">
-          <h4 className="text-text font-sans text-sm font-bold">
+          <h4 className="text-text font-sans text-xs md:text-sm font-bold">
             Transaction History
           </h4>
 
@@ -100,13 +100,13 @@ function EscrowAndWalletPage() {
             <div className="flex items-center gap-3">
               <Button
                 onClick={() => setOpenModal(true)}
-                className="w-[130px] text-xs font-heading font-semibold bg-muted hover:bg-muted/70"
+                className="w-25 md:w-[130px] text-[10px] md:text-xs font-heading font-semibold bg-muted hover:bg-muted/70"
               >
-                <GoPlus /> Top up wallet
+                <GoPlus className="hidden md:flex" /> Top up wallet
               </Button>
               <Button
                 onClick={() => setOpenModal(true)}
-                className="w-[130px] text-xs font-heading font-semibold bg-white hover:bg-muted/30 hover:border-none text-black border border-muted"
+                className=" w-25 md:w-[130px] text-[9px] md:text-xs font-heading font-semibold bg-white hover:bg-muted/30 hover:border-none text-black border border-muted"
               >
                 Withdraw Funds
               </Button>

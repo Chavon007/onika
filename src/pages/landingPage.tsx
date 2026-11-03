@@ -14,8 +14,6 @@ const bRating = [
   { title: "Avg. Rating", num: "4.8", icon: <IoIosStar /> },
 ];
 
-
-
 const howItWorks = [
   {
     stage: "01",
@@ -167,7 +165,7 @@ function LandingPage() {
           <div className="w-[90%] max-w-6xl mx-auto flex flex-col gap-10">
             <div className="text-center max-w-xl mx-auto">
               <h2 className="font-heading font-bold text-2xl sm:text-3xl pt-3 text-muted">
-                How Onkia works
+                How Onika works
               </h2>
               <p className="text-black/75 font-sans font-light text-sm sm:text-base mt-1">
                 From posting a job to paying only when it's done in four honest
