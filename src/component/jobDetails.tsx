@@ -7,6 +7,7 @@ import {
   useAcceptPrivateJobBooking,
   useRejectPrivateJobBooking,
 } from "@/api/job";
+import { formatNaira } from "@/ultiz/formatMoney";
 import Button from "./button";
 
 function JobDetails({
@@ -139,8 +140,8 @@ function JobDetails({
             <div className="rounded-2xl border border-border p-4">
               <p className="font-sans text-xs text-muted">Budget</p>
 
-              <p className="mt-1 font-sans text-lg font-bold text-text">
-                ₦{data.price.toLocaleString()}
+              <p className="mt-1 font-sans text-lg font-bold text-main">
+                {formatNaira(data.price)}
               </p>
             </div>
 
@@ -267,24 +268,26 @@ function JobDetails({
           </section>
         )}
       </div>
-      {/* Actions — fixed, never scrolls */}
+      {/* Actions  */}
       <div className="grid shrink-0 grid-cols-2 gap-3 border-t border-border bg-white px-6 py-5 md:px-8">
+        {/* Accept Job */}
         <Button
           loadingText="Accepting..."
           type="button"
           onClick={handleAccept}
           disabled={isBusy}
-          className="bg-main text-white hover:bg-main/90"
+          className="bg-emerald-600 text-white shadow-sm hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
         >
           Accept Job
         </Button>
 
+        {/* Decline */}
         <Button
           loadingText="Declining..."
           type="button"
           onClick={handleReject}
           disabled={isBusy}
-          className="border border-border bg-white text-muted hover:bg-secondary"
+          className="border border-red-200 bg-red-50 text-red-600 hover:border-red-300 hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50"
         >
           Decline
         </Button>

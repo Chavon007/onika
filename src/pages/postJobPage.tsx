@@ -363,9 +363,10 @@ function PostJobForm() {
                             Escrow-protected payment
                           </p>
                           <p className="text-sm text-amber-800">
-                            When you select an artisan, you'll pay into escrow.
-                            The artisan only receives payment after you confirm
-                            the job is done.
+                            Once you post this job, payment is deducted from
+                            your wallet and held securely in escrow. The artisan
+                            receives payment only after you confirm the job is
+                            completed to your satisfaction
                           </p>
                         </div>
                       </div>
