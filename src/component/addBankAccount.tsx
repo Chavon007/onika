@@ -214,7 +214,10 @@ function Banking() {
                           <option value="">Choose your bank</option>
 
                           {banks.map((bank: { name: string; code: string }) => (
-                            <option key={bank.code} value={bank.code}>
+                            <option
+                              key={`${bank.code}-${bank.name}`}
+                              value={bank.code}
+                            >
                               {bank.name}
                             </option>
                           ))}
@@ -271,7 +274,27 @@ function Banking() {
                           Account verification
                         </p>
 
-                        {bankDetailsLoading ? (
+                        {bankDetails?.accountName ? (
+                          <div className="space-y-3">
+                            <div>
+                              <p className="text-xs text-muted">Account name</p>
+                              <p className="mt-1 break-words text-sm font-semibold text-text">
+                                {bankDetails.accountName}
+                              </p>
+                            </div>
+
+                            <div className="border-t border-border pt-3">
+                              <p className="text-xs text-muted">Bank</p>
+                              <p className="mt-1 text-sm font-medium text-text">
+                                {bankDetails.bankName}
+                              </p>
+                            </div>
+
+                            <p className="text-xs text-green-700">
+                              Account details verified.
+                            </p>
+                          </div>
+                        ) : bankDetailsLoading ? (
                           <div className="flex items-center gap-3 text-sm text-muted">
                             <AiOutlineLoading3Quarters className="animate-spin text-primary" />
                             Verifying account details...
@@ -284,26 +307,6 @@ function Banking() {
                             <p className="mt-1 text-xs leading-5 text-muted">
                               Check the selected bank and account number, then
                               try again.
-                            </p>
-                          </div>
-                        ) : bankDetails?.data?.accountName ? (
-                          <div className="space-y-3">
-                            <div>
-                              <p className="text-xs text-muted">Account name</p>
-                              <p className="mt-1 break-words text-sm font-semibold text-text">
-                                {bankDetails.data.accountName}
-                              </p>
-                            </div>
-
-                            <div className="border-t border-border pt-3">
-                              <p className="text-xs text-muted">Bank</p>
-                              <p className="mt-1 text-sm font-medium text-text">
-                                {bankDetails.data.bankName}
-                              </p>
-                            </div>
-
-                            <p className="text-xs text-green-700">
-                              Account details verified.
                             </p>
                           </div>
                         ) : (
@@ -333,7 +336,7 @@ function Banking() {
                           bankListLoading ||
                           !bankCode ||
                           !/^\d{10}$/.test(accountNumber) ||
-                          !bankDetails?.data?.accountName
+                          !bankDetails?.accountName
                         }
                         loadingText="Adding..."
                       >
