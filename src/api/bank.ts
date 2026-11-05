@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import { bankAccountDTO, bankAccountSchema } from "@/schema/bankSchema";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {  UserBankResponse } from "@/lib/types";
-
+import { BankDetails } from "@/lib/types";
 const getBankList = async () => {
   const response = await apiClient.get("/bank/list");
   return response.data;
@@ -25,8 +25,8 @@ const addBankAccount = async (data: bankAccountDTO) => {
   return response.data;
 };
 
-const getUserBank = async ():Promise<UserBankResponse> => {
-  const response = await apiClient.get<UserBankResponse>("/bank");
+const getUserBank = async (): Promise<BankDetails[]> => {
+  const response = await apiClient.get<BankDetails[]>("/bank");
   return response.data;
 };
 
@@ -65,7 +65,7 @@ export const useAddBankAccount = () => {
 };
 
 export const useGetUserBank = () => {
-  return useQuery({
+  return useQuery<BankDetails[]>({
     queryKey: ["bank"],
     queryFn: getUserBank,
   });

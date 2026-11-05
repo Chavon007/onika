@@ -50,7 +50,7 @@ function Banking() {
     : Array.isArray(bankListData?.data)
       ? bankListData.data
       : [];
-  const userBanks = userBankData?.data ?? [];
+ const userBanks = userBankData ?? [];
   const accountLimitReached = userBanks.length >= 3;
 
   const onSubmit = (data: bankAccountDTO) => {
