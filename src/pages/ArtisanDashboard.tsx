@@ -9,6 +9,8 @@ import EscrowAndWalletPage from "./escrowAndWalletPage";
 import ArtisanJobRequest from "@/component/artisanJobRequest";
 import { MdArrowRightAlt } from "react-icons/md";
 import { useFindJobForArtisan } from "@/api/job";
+import { useGetWallet } from "@/api/wallet";
+import { formatNaira } from "@/ultiz/formatMoney";
 const ActiveTab = [
   {
     title: "Overview",
@@ -24,45 +26,45 @@ const ActiveTab = [
   },
 ];
 
-const cardContent = [
-  {
-    description: "Pending Requests",
-    icon: "📥",
-    amount: 3,
-    background: "#dbeafe",
-  },
-  {
-    description: "Jobs Completed",
-    icon: "✅",
-    amount: 312,
-    background: "#dbeafe",
-  },
-  {
-    description: "Wallet Balance",
-    icon: "💰",
-    amount: 70000,
-    background: "#fef3c7",
-  },
-  {
-    description: "Rating",
-    icon: "⭐",
-    amount: 4,
-    background: "#fef3c7",
-  },
-];
-
 function ArtisanDashboard() {
   const user = useAuthStore((state) => state.user);
   const [isActive, setIsActiveTab] = useState("Overview");
   const { data: job, isError, isLoading } = useFindJobForArtisan();
-
+  const { data: wallet } = useGetWallet();
   const lateastJobRequest = [...(job ?? [])]
     .sort(
       (a, b) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     )
     .slice(0, 3);
-
+  const totalPendingJobRequest = job?.length ?? 0;
+  const balance = wallet?.balance ?? 0;
+  const cardContent = [
+    {
+      description: "Pending Requests",
+      icon: "📥",
+      amount: totalPendingJobRequest,
+      background: "#dbeafe",
+    },
+    {
+      description: "Jobs Completed",
+      icon: "✅",
+      amount: 312,
+      background: "#dbeafe",
+    },
+    {
+      description: "Wallet Balance",
+      icon: "💰",
+      amount: formatNaira(balance),
+      background: "#fef3c7",
+    },
+    {
+      description: "Rating",
+      icon: "⭐",
+      amount: 4,
+      background: "#fef3c7",
+    },
+  ];
   if (isLoading) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
