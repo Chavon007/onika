@@ -1,4 +1,5 @@
 "use client";
+import { useEffect } from "react";
 import useAuthStore from "@/store/authStore";
 import { GoPlus } from "react-icons/go";
 import Button from "@/component/button";
@@ -11,6 +12,7 @@ import { CustomerActiveJobPage } from "./CustomerActiveJobPage";
 import { useCustomerActiveJob } from "@/api/job";
 import { MdArrowRightAlt } from "react-icons/md";
 import ActiveJob from "@/component/activeJob";
+
 const ActiveTab = [
   {
     title: "Overview",
@@ -26,32 +28,6 @@ const ActiveTab = [
   },
 ];
 
-const cardContent = [
-  {
-    description: "Active Jobs",
-    icon: "🔨",
-    amount: 2,
-    background: "#dbeafe",
-  },
-  {
-    description: "Jobs Completed",
-    icon: "✅",
-    amount: 11,
-    background: "#dbeafe",
-  },
-  {
-    description: "In Escrow",
-    icon: "🔒",
-    amount: "₦70000",
-    background: "#fef3c7",
-  },
-  {
-    description: "Total Spent",
-    icon: "💸",
-    amount: "₦200000",
-    background: "#c9c6d8",
-  },
-];
 function CustomerDashboard() {
   const date = new Date().toLocaleDateString("en-US", {
     weekday: "long",
@@ -69,6 +45,35 @@ function CustomerDashboard() {
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     )
     .slice(0, 3);
+
+  const totalActiveJob = job?.length ?? 0;
+
+  const cardContent = [
+    {
+      description: "Active Jobs",
+      icon: "🔨",
+      amount: totalActiveJob,
+      background: "#dbeafe",
+    },
+    {
+      description: "Jobs Completed",
+      icon: "✅",
+      amount: 11,
+      background: "#dbeafe",
+    },
+    {
+      description: "In Escrow",
+      icon: "🔒",
+      amount: "₦70000",
+      background: "#fef3c7",
+    },
+    {
+      description: "Total Spent",
+      icon: "💸",
+      amount: "₦200000",
+      background: "#c9c6d8",
+    },
+  ];
 
   if (isLoading) {
     return (
@@ -93,7 +98,7 @@ function CustomerDashboard() {
   }
 
   return (
-   <div className="min-h-screen w-full overflow-hidden bg-background pt-24">
+    <div className="min-h-screen w-full overflow-hidden bg-background pt-24">
       <div className="container mx-auto w-full lg:w-[80%] flex flex-col gap-[30px] p-3">
         <section className="flex justify-between items-center">
           <div className="w-[50%] flex flex-col md:gap-1">
@@ -152,9 +157,12 @@ function CustomerDashboard() {
 
               <div className="bg-white rounded-2xl py-2">
                 <section className="flex justify-between p-3 items-center  border-b border-border">
-                  <h3 className="text-text font-heading font-bold uppercase text-sm">Active Jobs</h3>
+                  <h3 className="text-text font-heading font-bold uppercase text-sm">
+                    Active Jobs
+                  </h3>
 
-                  <button className="flex items-center  hover:text-accent/60 cursor-pointer text-xs font-sans text-accent"
+                  <button
+                    className="flex items-center  hover:text-accent/60 cursor-pointer text-xs font-sans text-accent"
                     type="button"
                     onClick={() => setIsActiveTab("Active Jobs")}
                   >
