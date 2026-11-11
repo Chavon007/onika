@@ -10,6 +10,7 @@ import ArtisanJobRequest from "@/component/artisanJobRequest";
 import { MdArrowRightAlt } from "react-icons/md";
 import { useFindJobForArtisan } from "@/api/job";
 import { useGetWallet } from "@/api/wallet";
+import { useArtisanCompletedJobNos } from "@/api/job";
 import { formatNaira } from "@/ultiz/formatMoney";
 const ActiveTab = [
   {
@@ -31,6 +32,7 @@ function ArtisanDashboard() {
   const [isActive, setIsActiveTab] = useState("Overview");
   const { data: job, isError, isLoading } = useFindJobForArtisan();
   const { data: wallet } = useGetWallet();
+  const { data: completed } = useArtisanCompletedJobNos();
   const lateastJobRequest = [...(job ?? [])]
     .sort(
       (a, b) =>
@@ -39,6 +41,7 @@ function ArtisanDashboard() {
     .slice(0, 3);
   const totalPendingJobRequest = job?.length ?? 0;
   const balance = wallet?.balance ?? 0;
+  const jobCompleted = completed?.length ?? 0;
   const cardContent = [
     {
       description: "Pending Requests",
@@ -49,7 +52,7 @@ function ArtisanDashboard() {
     {
       description: "Jobs Completed",
       icon: "✅",
-      amount: 312,
+      amount: jobCompleted,
       background: "#dbeafe",
     },
     {

@@ -12,7 +12,8 @@ import { CustomerActiveJobPage } from "./CustomerActiveJobPage";
 import { useCustomerActiveJob } from "@/api/job";
 import { MdArrowRightAlt } from "react-icons/md";
 import ActiveJob from "@/component/activeJob";
-
+import { useCustomerTotalSpent } from "@/api/job";
+import { formatNaira } from "@/ultiz/formatMoney";
 const ActiveTab = [
   {
     title: "Overview",
@@ -38,7 +39,7 @@ function CustomerDashboard() {
   const user = useAuthStore((state) => state.user);
   const [isActive, setIsActiveTab] = useState("Overview");
   const { data: job, isError, isLoading } = useCustomerActiveJob();
-
+  const { data: totalSpent } = useCustomerTotalSpent();
   const latestJobs = [...(job ?? [])]
     .sort(
       (a, b) =>
@@ -70,7 +71,7 @@ function CustomerDashboard() {
     {
       description: "Total Spent",
       icon: "💸",
-      amount: "₦200000",
+      amount: formatNaira(totalSpent),
       background: "#c9c6d8",
     },
   ];

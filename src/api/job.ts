@@ -170,6 +170,15 @@ const rejectPrivateJobBooking = async (jobId: string) => {
   return response.data;
 };
 
+const artisanCompletedJobsNos = async () => {
+  const response = await apiClient.get("/jobs/completed");
+  return response.data;
+};
+
+const customerTotalSpent = async () => {
+  const response = await apiClient.get("/jobs/total-spent");
+  return response.data;
+};
 export const customerJobHistory = async (page = 1, limit = 6) => {
   const response = await apiClient.get<unknown, PaginatedResponse<jobDetails>>(
     "/jobs/history",
@@ -225,6 +234,13 @@ export const useCustomerJobHistory = (page: number) => {
     queryKey: ["customer-job-history", page],
     queryFn: () => customerJobHistory(page),
     placeholderData: keepPreviousData,
+  });
+};
+
+export const useArtisanCompletedJobNos = () => {
+  return useQuery({
+    queryKey: ["artisan-completed-job-nos"],
+    queryFn: artisanCompletedJobsNos,
   });
 };
 
@@ -389,4 +405,10 @@ export const useArtisanJobInprogress = () => {
   });
 };
 
+export const useCustomerTotalSpent = () => {
+  return useQuery({
+    queryKey: ["customer-total-spent"],
+    queryFn: customerTotalSpent,
+  });
+};
 export default usePostJobMutation;
