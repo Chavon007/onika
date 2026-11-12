@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 import { PrivetJobBookingDTO } from "@/schema/postJobSchema";
 import { raiseDisputeDTO } from "@/schema/disputeSchema";
 import { getErrorMessage } from "@/ultiz/axios";
-
+import useAuthStore from "@/store/authStore";
 interface PaginatedResponse<T> {
   success: boolean;
   data: T[];
@@ -410,9 +410,11 @@ export const useArtisanJobInprogress = () => {
 };
 
 export const useCustomerTotalSpent = () => {
+  const role = useAuthStore((s) => s.user?.role);
   return useQuery({
     queryKey: ["customer-total-spent"],
     queryFn: customerTotalSpent,
+    enabled: role === "customer",
   });
 };
 

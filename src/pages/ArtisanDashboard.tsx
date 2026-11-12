@@ -12,6 +12,7 @@ import { useFindJobForArtisan } from "@/api/job";
 import { useGetWallet } from "@/api/wallet";
 import { useArtisanCompletedJobNos } from "@/api/job";
 import { formatNaira } from "@/ultiz/formatMoney";
+
 const ActiveTab = [
   {
     title: "Overview",
@@ -33,6 +34,7 @@ function ArtisanDashboard() {
   const { data: job, isError, isLoading } = useFindJobForArtisan();
   const { data: wallet } = useGetWallet();
   const { data: completed } = useArtisanCompletedJobNos();
+  
   const lateastJobRequest = [...(job ?? [])]
     .sort(
       (a, b) =>

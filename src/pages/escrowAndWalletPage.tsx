@@ -7,6 +7,8 @@ import { useState } from "react";
 import { Form } from "../component/form";
 import { InputField } from "../component/inputField";
 import useAuthStore from "@/store/authStore";
+import { useGetArtisanCurrentMonthEarnings } from "@/api/earnings";
+import { useShallow } from "zustand/shallow";
 import {
   walletFundingDTO,
   walletFundingSchema,
@@ -14,33 +16,32 @@ import {
 import { useFundingWallet, useGetWallet } from "@/api/wallet";
 import { useCustomerTotalSpent } from "@/api/job";
 import { useCustomerAmountInEscrow } from "@/api/escrow";
-
-const artisanWalletStats = [
-  {
-    title: "Wallet Balance",
-    amount: "1000000",
-    desc: "Ready to withdraw",
-  },
-  {
-    title: "This Month",
-    amount: "936000",
-    desc: "July 2026",
-  },
-  {
-    title: "All-time Earned",
-    amount: "210000000",
-    desc: "Since Jan 2025",
-  },
-];
+import { useGetArtisanAllTimeEarnings } from "@/api/earnings";
 function EscrowAndWalletPage() {
-  const role = useAuthStore((s) => s.user?.role);
+  const { role, joined } = useAuthStore(
+    useShallow((s) => ({
+      role: s.user?.role,
+      joined: s.user?.createdAt,
+    })),
+  );
+  const joinedDate = joined
+    ? new Date(joined).toLocaleDateString("en-US", {
+        month: "long",
+        year: "numeric",
+      })
+    : "Recently Joined";
   const [openModal, setOpenModal] = useState(false);
   const { mutate, isPending } = useFundingWallet();
   const { data: wallet } = useGetWallet();
   const { data: escrowBalance } = useCustomerAmountInEscrow();
   const { data: totalSpent } = useCustomerTotalSpent();
+  const { data: monthEarnings } = useGetArtisanCurrentMonthEarnings();
+  const { data: allTimeEarnings } = useGetArtisanAllTimeEarnings();
   const balance = wallet?.balance ?? 0;
-
+  const date = new Date().toLocaleDateString("en-US", {
+    month: "long",
+    year: "numeric",
+  });
   const onSubmit = (data: walletFundingDTO) => {
     mutate({ ...data });
   };
@@ -65,6 +66,24 @@ function EscrowAndWalletPage() {
       amount: formatNaira(totalSpent),
       desc: "All-time",
       background: "#fef3c7",
+    },
+  ];
+
+  const artisanWalletStats = [
+    {
+      title: "Wallet Balance",
+      amount: formatNaira(balance),
+      desc: "Ready to withdraw",
+    },
+    {
+      title: "This Month",
+      amount: formatNaira(monthEarnings),
+      desc: date,
+    },
+    {
+      title: "All-time Earned",
+      amount: formatNaira(allTimeEarnings),
+      desc: joinedDate,
     },
   ];
 
