@@ -175,6 +175,10 @@ const artisanCompletedJobsNos = async () => {
   return response.data;
 };
 
+const customerCompletedJobsNos = async () => {
+  const response = await apiClient.get("/jobs/completed/customer");
+  return response.data;
+};
 const customerTotalSpent = async () => {
   const response = await apiClient.get("/jobs/total-spent");
   return response.data;
@@ -409,6 +413,13 @@ export const useCustomerTotalSpent = () => {
   return useQuery({
     queryKey: ["customer-total-spent"],
     queryFn: customerTotalSpent,
+  });
+};
+
+export const useCustomerCompletedJobsNos = () => {
+  return useQuery({
+    queryKey: ["customer-completed-jobs-nos"],
+    queryFn: customerCompletedJobsNos,
   });
 };
 export default usePostJobMutation;

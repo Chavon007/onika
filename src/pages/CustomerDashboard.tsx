@@ -13,7 +13,9 @@ import { useCustomerActiveJob } from "@/api/job";
 import { MdArrowRightAlt } from "react-icons/md";
 import ActiveJob from "@/component/activeJob";
 import { useCustomerTotalSpent } from "@/api/job";
+import { useCustomerCompletedJobsNos } from "@/api/job";
 import { formatNaira } from "@/ultiz/formatMoney";
+import { useCustomerAmountInEscrow } from "@/api/escrow";
 const ActiveTab = [
   {
     title: "Overview",
@@ -40,6 +42,8 @@ function CustomerDashboard() {
   const [isActive, setIsActiveTab] = useState("Overview");
   const { data: job, isError, isLoading } = useCustomerActiveJob();
   const { data: totalSpent } = useCustomerTotalSpent();
+  const { data: completedJobs } = useCustomerCompletedJobsNos();
+  const { data: amount } = useCustomerAmountInEscrow();
   const latestJobs = [...(job ?? [])]
     .sort(
       (a, b) =>
@@ -48,7 +52,8 @@ function CustomerDashboard() {
     .slice(0, 3);
 
   const totalActiveJob = job?.length ?? 0;
-
+  const completedJob = completedJobs?.length ?? 0;
+  const escrowBalance = amount ?? 0;
   const cardContent = [
     {
       description: "Active Jobs",
@@ -59,13 +64,13 @@ function CustomerDashboard() {
     {
       description: "Jobs Completed",
       icon: "✅",
-      amount: 11,
+      amount: completedJob,
       background: "#dbeafe",
     },
     {
       description: "In Escrow",
       icon: "🔒",
-      amount: "₦70000",
+      amount: formatNaira(escrowBalance),
       background: "#fef3c7",
     },
     {

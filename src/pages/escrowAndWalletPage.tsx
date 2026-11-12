@@ -12,30 +12,8 @@ import {
   walletFundingSchema,
 } from "@/schema/walletFundingSchema";
 import { useFundingWallet, useGetWallet } from "@/api/wallet";
-
-const customerWalletStats = [
-  {
-    icon: "🛅",
-    title: "Wallet Balance",
-    amount: "1000000",
-    desc: "Available to spend",
-    background: "#dbeafe",
-  },
-  {
-    icon: "🔒",
-    title: "In Escrow",
-    amount: "700000",
-    desc: "Held for active jobs",
-    background: "#fef3c7",
-  },
-  {
-    icon: "📊",
-    title: "Total Spent",
-    amount: "234000",
-    desc: "All-time",
-    background: "#fef3c7",
-  },
-];
+import { useCustomerTotalSpent } from "@/api/job";
+import { useCustomerAmountInEscrow } from "@/api/escrow";
 
 const artisanWalletStats = [
   {
@@ -59,18 +37,43 @@ function EscrowAndWalletPage() {
   const [openModal, setOpenModal] = useState(false);
   const { mutate, isPending } = useFundingWallet();
   const { data: wallet } = useGetWallet();
+  const { data: escrowBalance } = useCustomerAmountInEscrow();
+  const { data: totalSpent } = useCustomerTotalSpent();
   const balance = wallet?.balance ?? 0;
+
+  const onSubmit = (data: walletFundingDTO) => {
+    mutate({ ...data });
+  };
+  const customerWalletStats = [
+    {
+      icon: "🛅",
+      title: "Wallet Balance",
+      amount: formatNaira(balance),
+      desc: "Available to spend",
+      background: "#dbeafe",
+    },
+    {
+      icon: "🔒",
+      title: "In Escrow",
+      amount: formatNaira(escrowBalance),
+      desc: "Held for active jobs",
+      background: "#fef3c7",
+    },
+    {
+      icon: "📊",
+      title: "Total Spent",
+      amount: formatNaira(totalSpent),
+      desc: "All-time",
+      background: "#fef3c7",
+    },
+  ];
 
   const baseStats =
     role === "artisan" ? artisanWalletStats : customerWalletStats;
 
   const stats = baseStats.map((s) =>
-    s.title === "Wallet Balance" ? { ...s, amount: balance } : s,
+    s.title === "Wallet Balance" ? { ...s, amount: formatNaira(balance) } : s,
   );
-  const onSubmit = (data: walletFundingDTO) => {
-    mutate({ ...data });
-  };
-
   return (
     <div className=" flex flex-col gap-4">
       <div className="grid  grid-cols-2 md:grid-cols-3 gap-4">
@@ -81,7 +84,7 @@ function EscrowAndWalletPage() {
           >
             <Card
               desc={w.desc}
-              amount={formatNaira(w.amount)}
+              amount={w.amount}
               text={w.title}
               icon={"icon" in w ? w.icon : undefined}
               background={"background" in w ? w.background : undefined}
