@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 import { PrivetJobBookingDTO } from "@/schema/postJobSchema";
 import { raiseDisputeDTO } from "@/schema/disputeSchema";
 import { getErrorMessage } from "@/ultiz/axios";
-
+import useAuthStore from "@/store/authStore";
 interface PaginatedResponse<T> {
   success: boolean;
   data: T[];
@@ -170,6 +170,19 @@ const rejectPrivateJobBooking = async (jobId: string) => {
   return response.data;
 };
 
+const artisanCompletedJobsNos = async () => {
+  const response = await apiClient.get("/jobs/completed");
+  return response.data;
+};
+
+const customerCompletedJobsNos = async () => {
+  const response = await apiClient.get("/jobs/completed/customer");
+  return response.data;
+};
+const customerTotalSpent = async () => {
+  const response = await apiClient.get("/jobs/total-spent");
+  return response.data;
+};
 export const customerJobHistory = async (page = 1, limit = 6) => {
   const response = await apiClient.get<unknown, PaginatedResponse<jobDetails>>(
     "/jobs/history",
@@ -225,6 +238,13 @@ export const useCustomerJobHistory = (page: number) => {
     queryKey: ["customer-job-history", page],
     queryFn: () => customerJobHistory(page),
     placeholderData: keepPreviousData,
+  });
+};
+
+export const useArtisanCompletedJobNos = () => {
+  return useQuery({
+    queryKey: ["artisan-completed-job-nos"],
+    queryFn: artisanCompletedJobsNos,
   });
 };
 
@@ -389,4 +409,19 @@ export const useArtisanJobInprogress = () => {
   });
 };
 
+export const useCustomerTotalSpent = () => {
+  const role = useAuthStore((s) => s.user?.role);
+  return useQuery({
+    queryKey: ["customer-total-spent"],
+    queryFn: customerTotalSpent,
+    enabled: role === "customer",
+  });
+};
+
+export const useCustomerCompletedJobsNos = () => {
+  return useQuery({
+    queryKey: ["customer-completed-jobs-nos"],
+    queryFn: customerCompletedJobsNos,
+  });
+};
 export default usePostJobMutation;
