@@ -42,7 +42,7 @@ export const InputField: React.FC<InputFieldProps> = ({
       <div className="p-2">
         <label
           className={twMerge(
-            ` text-black/90 text-sm font-light font-sans`,
+            "font-sans text-sm font-light text-text",
             labelClassName,
           )}
         >
@@ -52,11 +52,11 @@ export const InputField: React.FC<InputFieldProps> = ({
         {labelRight && <div>{labelRight}</div>}
       </div>
       {/* icon */}
-      <div className="flex relative">
+      <div className="relative flex">
         {icon && <div>{icon}</div>}
         <input
           type={inputType}
-          className="bg-transparent border border-black rounded-xl text-xs text-black/80 font-bold focus:outline-none p-3  w-full"
+          className="w-full rounded-xl border border-text/40 bg-transparent p-3 font-sans text-xs font-bold text-text placeholder:text-muted/60 focus:border-primary focus:outline-none"
           {...registration}
           {...props}
           onChange={(e) => {
@@ -67,9 +67,9 @@ export const InputField: React.FC<InputFieldProps> = ({
         {isPasswordType && (
           <button
             type="button"
-            className="text-text absolute top-2.5  right-2"
+            className="absolute right-2 top-2.5 text-text"
             onClick={() => setShowPassword((prev) => !prev)}
-            aria-label={showPassword ? "Hide pssword" : "Show password"}
+            aria-label={showPassword ? "Hide password" : "Show password"}
           >
             {showPassword ? <FaRegEye /> : <FaRegEyeSlash />}
           </button>
@@ -77,8 +77,8 @@ export const InputField: React.FC<InputFieldProps> = ({
       </div>
 
       {error?.message && (
-        <p className="text-red-500 text-xs font-sans">{error.message}</p>
+        <p className="font-sans text-xs text-red-500">{error.message}</p>
       )}
     </div>
   );
-};
+}

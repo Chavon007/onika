@@ -1,29 +1,45 @@
 @import "tailwindcss";
 
-@theme {
-  /* Main page background */
-  --color-background: #fafaf7;
+/* Make `dark:` variants respond to the .dark class (next-themes) */
+@custom-variant dark (&:where(.dark, .dark *));
 
-  /* second background color */
-  --color-main: #1a2d4a;
-  
-  /* Primary text color (dark blue) */
-  --color-text: #293e5a;
+/* 1. Real values live in plain CSS variables */
+:root {
+  color-scheme: light;
 
-  /* Secondary text / slated blue */
-  --color-muted: #566984;
+  --background: #fafaf7;
+  --main: #1a2d4a;
+  --text: #293e5a;
+  --muted: #566984;
+  --primary: #ec6b2a;
+  --accent: #ec6b2a;
+  --secondary: #e8edf4;
+  --border: #e8edf4;
+}
 
-  /* Primary brand color (orange) */
-  --color-primary: #ec6b2a;
+.dark {
+  color-scheme: dark;
 
-  /* Secondary background / light blue gray / sections */
-  --color-secondary: #e8edf4;
+  --background: #111827;
+  --main: #0b1220;
+  --text: #f1f5f9;
+  --muted: #a6b3c5;
+  --primary: #ec6b2a;
+  --accent: #ec6b2a;
+  --secondary: #1e293b;
+  --border: #334155;
+}
 
-  /* Accent color (using the brand orange) */
-  --color-accent: #ec6b2a;
-
-  /* Borders and dividers */
-  --color-border: #e8edf4;
+/* 2. Tailwind utilities reference those variables at runtime */
+@theme inline {
+  --color-background: var(--background);
+  --color-main: var(--main);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-primary: var(--primary);
+  --color-accent: var(--accent);
+  --color-secondary: var(--secondary);
+  --color-border: var(--border);
 
   --font-sans: var(--font-plus-jakarta);
   --font-heading: var(--font-fraunces);

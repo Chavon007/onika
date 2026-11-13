@@ -54,11 +54,11 @@ function JobCard({
   const initial = job.customerId?.fullName?.charAt(0).toUpperCase() ?? "?";
 
   return (
-    <div className="w-full rounded-2xl border border-border bg-white p-5 shadow-sm transition hover:shadow-md md:p-6">
+    <div className="w-full rounded-2xl border border-border bg-white p-5 shadow-sm transition hover:shadow-md dark:bg-secondary md:p-6">
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div className="flex min-w-0 items-center gap-4">
-          <div className="hidden md:flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-secondary font-heading text-lg font-bold text-main">
+          <div className="hidden md:flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-secondary font-heading text-lg font-bold text-text dark:bg-background">
             {initial}
           </div>
 
@@ -69,7 +69,7 @@ function JobCard({
               </h3>
 
               {type === "private" && (
-                <span className="rounded-full bg-main/10 px-3 py-1 font-sans text-xs font-semibold text-main">
+                <span className="rounded-full bg-text/10 px-3 py-1 font-sans text-xs font-semibold text-text">
                   Private
                 </span>
               )}
@@ -133,7 +133,6 @@ function JobCard({
       </div>
 
       {/* Actions */}
-
       <div className="mt-5 grid grid-cols-1 gap-3 border-t border-border pt-4 md:grid-cols-3">
         {/* Accept Job */}
         <Button
@@ -152,7 +151,7 @@ function JobCard({
           type="button"
           onClick={handleReject}
           disabled={isBusy}
-          className="border border-red-200 bg-red-50 text-red-600 hover:border-red-300 hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50"
+          className="border border-red-200 bg-red-50 text-red-600 hover:border-red-300 hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-red-400/30 dark:bg-red-500/10 dark:text-red-400 dark:hover:border-red-400/50 dark:hover:bg-red-500/20"
         >
           Decline
         </Button>
@@ -161,7 +160,7 @@ function JobCard({
         <Button
           type="button"
           onClick={() => setShowJobDetails(true)}
-          className="border border-border bg-secondary text-main hover:bg-secondary/70"
+          className="border border-border bg-secondary text-text hover:bg-secondary/70 dark:bg-background dark:hover:bg-background/70"
         >
           View Details
         </Button>
