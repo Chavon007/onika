@@ -1,5 +1,6 @@
+
 "use client";
-import { useEffect } from "react";
+
 import useAuthStore from "@/store/authStore";
 import { GoPlus } from "react-icons/go";
 import Button from "@/component/button";
@@ -16,19 +17,12 @@ import { useCustomerTotalSpent } from "@/api/job";
 import { useCustomerCompletedJobsNos } from "@/api/job";
 import { formatNaira } from "@/ultiz/formatMoney";
 import { useCustomerAmountInEscrow } from "@/api/escrow";
+
 const ActiveTab = [
-  {
-    title: "Overview",
-  },
-  {
-    title: "Active Jobs",
-  },
-  {
-    title: "History",
-  },
-  {
-    title: "Wallet & Escrow",
-  },
+  { title: "Overview" },
+  { title: "Active Jobs" },
+  { title: "History" },
+  { title: "Wallet & Escrow" },
 ];
 
 function CustomerDashboard() {
@@ -38,12 +32,15 @@ function CustomerDashboard() {
     month: "long",
     year: "numeric",
   });
+
   const user = useAuthStore((state) => state.user);
   const [isActive, setIsActiveTab] = useState("Overview");
+
   const { data: job, isError, isLoading } = useCustomerActiveJob();
   const { data: totalSpent } = useCustomerTotalSpent();
   const { data: completedJobs } = useCustomerCompletedJobsNos();
   const { data: amount } = useCustomerAmountInEscrow();
+
   const latestJobs = [...(job ?? [])]
     .sort(
       (a, b) =>
@@ -54,6 +51,7 @@ function CustomerDashboard() {
   const totalActiveJob = job?.length ?? 0;
   const completedJob = completedJobs?.length ?? 0;
   const escrowBalance = amount ?? 0;
+
   const cardContent = [
     {
       description: "Active Jobs",
@@ -83,11 +81,12 @@ function CustomerDashboard() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center">
+      <div className="flex min-h-[60vh] items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-3">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-secondary border-t-main" />
-
-          <p className="font-sans text-sm font-medium text-muted">Loading...</p>
+          <p className="font-sans text-sm font-medium text-muted">
+            Loading...
+          </p>
         </div>
       </div>
     );
@@ -95,7 +94,7 @@ function CustomerDashboard() {
 
   if (isError) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center">
+      <div className="flex min-h-[60vh] items-center justify-center bg-background">
         <p className="font-sans text-sm font-medium text-muted">
           Failed to load jobs
         </p>
@@ -104,34 +103,38 @@ function CustomerDashboard() {
   }
 
   return (
-    <div className="min-h-screen w-full overflow-hidden bg-background pt-24">
-      <div className="container mx-auto w-full lg:w-[80%] flex flex-col gap-[30px] p-3">
-        <section className="flex justify-between items-center">
-          <div className="w-[50%] flex flex-col md:gap-1">
-            <h3 className="text-base md:text-[30px] tracking-wide leading-10 font-serif text-[#1c1917] font-extrabold">
+    <div className="min-h-screen w-full overflow-hidden bg-background pt-24 transition-colors duration-300">
+      <div className="container mx-auto flex w-full flex-col gap-[30px] p-3 lg:w-[80%]">
+        {/* Welcome */}
+        <section className="flex items-center justify-between gap-3">
+          <div className="flex flex w-[50%] flex-col md:gap-1">
+            <h3 className="font-serif text-base font-extrabold leading-10 tracking-wide text-text md:text-[30px]">
               Welcome, {user?.fullName?.split(" ")[0]}
             </h3>
-            <p className="text-xs tracking-wide pl-1 font-light text-muted font-sans">
+
+            <p className="pl-1 font-sans text-xs font-light tracking-wide text-muted">
               {date}
             </p>
           </div>
+
           <Link
             href="/post-job"
-            className="max-w-30 bg-primary w-full text-sm font-bold text-background rounded-xl p-3 flex flex-row items-center justify-center gap-2 hover:bg-accent/70"
+            className="flex w-full max-w-30 flex-row items-center justify-center gap-2 rounded-xl bg-primary p-3 font-sans text-sm font-bold text-white transition-colors hover:bg-primary/80"
           >
             <GoPlus className="shrink-0" />
             <span>Post a job</span>
           </Link>
         </section>
 
-        <section className="w-full border-b border-border pb-3 mt-4 ">
-          <div className="flex w-full md:w-[60%] lg:w-[45%] justify-between items-center">
+        {/* Tabs */}
+        <section className="mt-4 w-full border-b border-border pb-3">
+          <div className="flex w-full items-center justify-between md:w-[60%] lg:w-[45%]">
             {ActiveTab.map((a) => (
               <h4
-                className={`text-sm cursor-pointer font-sans font-bold pb-3 border-b-2 -mb-3 transition-colors ${
+                className={`-mb-3 cursor-pointer border-b-2 pb-3 font-sans text-sm font-bold transition-colors ${
                   isActive === a.title
-                    ? "text-muted border-text"
-                    : "text-[#1c1917]/50 border-transparent"
+                    ? "border-primary text-primary"
+                    : "border-transparent text-muted/60 hover:text-text"
                 }`}
                 key={a.title}
                 onClick={() => setIsActiveTab(a.title)}
@@ -142,13 +145,15 @@ function CustomerDashboard() {
           </div>
         </section>
 
-        <section className="w-full ">
+        {/* Dashboard content */}
+        <section className="w-full">
           {isActive === "Overview" && (
             <div className="flex flex-col gap-8">
-              <div className="grid  grid-cols-2 md:grid-cols-4 gap-4">
+              {/* Summary cards */}
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                 {cardContent.map((c) => (
                   <div
-                    className="bg-[#fff] w-full p-3 h-auto rounded rounded-xl border border-border"
+                    className="h-auto w-full rounded-xl border border-border bg-background p-3 transition-colors duration-300"
                     key={c.description}
                   >
                     <Card
@@ -161,14 +166,15 @@ function CustomerDashboard() {
                 ))}
               </div>
 
-              <div className="bg-white rounded-2xl py-2">
-                <section className="flex justify-between p-3 items-center  border-b border-border">
-                  <h3 className="text-text font-heading font-bold uppercase text-sm">
+              {/* Active jobs */}
+              <div className="rounded-2xl border border-border bg-background py-2 transition-colors duration-300">
+                <section className="flex items-center justify-between border-b border-border p-3">
+                  <h3 className="font-heading text-sm font-bold uppercase text-text">
                     Active Jobs
                   </h3>
 
                   <button
-                    className="flex items-center  hover:text-accent/60 cursor-pointer text-xs font-sans text-accent"
+                    className="flex cursor-pointer items-center font-sans text-xs text-primary transition-colors hover:text-primary/60"
                     type="button"
                     onClick={() => setIsActiveTab("Active Jobs")}
                   >
@@ -179,10 +185,12 @@ function CustomerDashboard() {
 
                 <section>
                   {latestJobs.length > 0 ? (
-                    latestJobs.map((j) => <ActiveJob key={j._id} job={j} />)
+                    latestJobs.map((j) => (
+                      <ActiveJob key={j._id} job={j} />
+                    ))
                   ) : (
-                    <div className="flex h-auto py-4 items-center justify-center">
-                      <p className="rounded-xl border border-border font-heading bg-white px-8 py-5 font-sans text-sm font-medium text-muted shadow-sm">
+                    <div className="flex h-auto items-center justify-center py-4">
+                      <p className="rounded-xl border border-border bg-secondary px-8 py-5 font-sans text-sm font-medium text-muted shadow-sm">
                         You have no active jobs yet!
                       </p>
                     </div>
@@ -192,23 +200,11 @@ function CustomerDashboard() {
             </div>
           )}
 
-          {isActive === "Active Jobs" && (
-            <div>
-              <CustomerActiveJobPage />
-            </div>
-          )}
+          {isActive === "Active Jobs" && <CustomerActiveJobPage />}
 
-          {isActive === "History" && (
-            <div>
-              <JobHistoryPage />
-            </div>
-          )}
+          {isActive === "History" && <JobHistoryPage />}
 
-          {isActive === "Wallet & Escrow" && (
-            <div>
-              <EscrowAndWalletPage />
-            </div>
-          )}
+          {isActive === "Wallet & Escrow" && <EscrowAndWalletPage />}
         </section>
       </div>
     </div>

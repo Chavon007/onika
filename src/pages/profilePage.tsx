@@ -1,7 +1,10 @@
+
 "use client";
+
 import { useState } from "react";
 import ProfileForm from "@/component/profileForm";
 import Banking from "@/component/addBankAccount";
+
 function Profile() {
   const ActiveTab = [
     {
@@ -17,28 +20,31 @@ function Profile() {
       title: "Loyalty",
     },
   ];
+
   const [isActive, setIsActiveTab] = useState("Profile");
+
   return (
-    <div className="min-h-screen w-full overflow-hidden pt-20 md:pt-24 bg-background">
-      <div className="container mx-auto w-full lg:w-[65%] flex flex-col gap-[30px] p-3">
+    <div className="min-h-screen w-full overflow-hidden bg-background pt-20 transition-colors duration-300 md:pt-24">
+      <div className="container mx-auto flex w-full flex-col gap-[30px] p-3 lg:w-[65%]">
         <section className="flex flex-col md:gap-2">
-          <h2 className="text-base md:text-[30px] tracking-wide leading-10 font-heading text-[#1c1917] font-extrabold">
+          <h2 className="font-heading text-base font-extrabold leading-10 tracking-wide text-text md:text-[30px]">
             Account Settings
           </h2>
-          <p className="font-sans text-sm font-semibold text-muted/70">
+
+          <p className="font-sans text-sm font-semibold text-muted">
             Manage your profile and preferences
           </p>
         </section>
 
-        <section className="w-full border-b border-border pb-3 mt-4">
-          <div className="flex w-full md:w-[45%] justify-between items-center">
+        <section className="mt-4 w-full border-b border-border pb-3">
+          <div className="flex w-full items-center justify-between md:w-[45%]">
             {ActiveTab.map((a) => (
               <h3
                 onClick={() => setIsActiveTab(a.title)}
-                className={`text-sm cursor-pointer font-sans font-bold pb-3 border-b-2 -mb-3 transition-colors ${
+                className={`-mb-3 cursor-pointer border-b-2 pb-3 font-sans text-sm font-bold transition-colors ${
                   isActive === a.title
-                    ? "text-muted border-text"
-                    : "text-[#1c1917]/50 border-transparent"
+                    ? "border-primary text-primary"
+                    : "border-transparent text-muted hover:text-text"
                 }`}
                 key={a.title}
               >
@@ -54,19 +60,21 @@ function Profile() {
               <ProfileForm />
             </div>
           )}
+
           {isActive === "Account" && (
             <div>
-              <Banking/>
+              <Banking />
             </div>
           )}
 
           {isActive === "Favorites" && (
-            <div>
+            <div className="text-text">
               <p>Favorites</p>
             </div>
           )}
+
           {isActive === "Loyalty" && (
-            <div>
+            <div className="text-text">
               <p>Loyalty</p>
             </div>
           )}
@@ -75,4 +83,5 @@ function Profile() {
     </div>
   );
 }
+
 export default Profile;

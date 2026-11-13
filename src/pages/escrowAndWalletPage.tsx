@@ -1,3 +1,4 @@
+
 import Card from "@/component/card";
 import { formatNaira } from "@/ultiz/formatMoney";
 import TransactionHistorysection from "@/component/transactionHistory";
@@ -17,6 +18,7 @@ import { useFundingWallet, useGetWallet } from "@/api/wallet";
 import { useCustomerTotalSpent } from "@/api/job";
 import { useCustomerAmountInEscrow } from "@/api/escrow";
 import { useGetArtisanAllTimeEarnings } from "@/api/earnings";
+
 function EscrowAndWalletPage() {
   const { role, joined } = useAuthStore(
     useShallow((s) => ({
@@ -24,12 +26,14 @@ function EscrowAndWalletPage() {
       joined: s.user?.createdAt,
     })),
   );
+
   const joinedDate = joined
     ? new Date(joined).toLocaleDateString("en-US", {
         month: "long",
         year: "numeric",
       })
     : "Recently Joined";
+
   const [openModal, setOpenModal] = useState(false);
   const { mutate, isPending } = useFundingWallet();
   const { data: wallet } = useGetWallet();
@@ -37,35 +41,39 @@ function EscrowAndWalletPage() {
   const { data: totalSpent } = useCustomerTotalSpent();
   const { data: monthEarnings } = useGetArtisanCurrentMonthEarnings();
   const { data: allTimeEarnings } = useGetArtisanAllTimeEarnings();
+
   const balance = wallet?.balance ?? 0;
+
   const date = new Date().toLocaleDateString("en-US", {
     month: "long",
     year: "numeric",
   });
+
   const onSubmit = (data: walletFundingDTO) => {
     mutate({ ...data });
   };
+
   const customerWalletStats = [
     {
       icon: "🛅",
       title: "Wallet Balance",
       amount: formatNaira(balance),
       desc: "Available to spend",
-      background: "#dbeafe",
+      background: "var(--secondary)",
     },
     {
       icon: "🔒",
       title: "In Escrow",
       amount: formatNaira(escrowBalance),
       desc: "Held for active jobs",
-      background: "#fef3c7",
+      background: "var(--secondary)",
     },
     {
       icon: "📊",
       title: "Total Spent",
       amount: formatNaira(totalSpent),
       desc: "All-time",
-      background: "#fef3c7",
+      background: "var(--secondary)",
     },
   ];
 
@@ -93,13 +101,14 @@ function EscrowAndWalletPage() {
   const stats = baseStats.map((s) =>
     s.title === "Wallet Balance" ? { ...s, amount: formatNaira(balance) } : s,
   );
+
   return (
-    <div className=" flex flex-col gap-4">
-      <div className="grid  grid-cols-2 md:grid-cols-3 gap-4">
+    <div className="flex flex-col gap-4 bg-background transition-colors duration-300">
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
         {stats.map((w) => (
           <div
             key={w.title}
-            className="bg-[#fff] w-full p-3 h-auto  rounded-xl border border-border"
+            className="h-auto w-full rounded-xl border border-border bg-background p-3"
           >
             <Card
               desc={w.desc}
@@ -112,9 +121,9 @@ function EscrowAndWalletPage() {
         ))}
       </div>
 
-      <div className="bg-[#fff] border border-border rounded-2xl">
-        <div className=" flex justify-between items-center border-b p-3 border-muted/30">
-          <h4 className="text-text font-sans text-xs md:text-sm font-bold">
+      <div className="rounded-2xl border border-border bg-background">
+        <div className="flex items-center justify-between border-b border-border p-3">
+          <h4 className="font-sans text-xs font-bold text-text md:text-sm">
             Transaction History
           </h4>
 
@@ -122,13 +131,14 @@ function EscrowAndWalletPage() {
             <div className="flex items-center gap-3">
               <Button
                 onClick={() => setOpenModal(true)}
-                className="w-25 md:w-[130px] text-[10px] md:text-xs font-heading font-semibold bg-muted hover:bg-muted/70"
+                className="w-25 bg-main font-heading text-[10px] font-semibold text-white hover:bg-main/90 md:w-[130px] md:text-xs"
               >
                 <GoPlus className="hidden md:flex" /> Top up wallet
               </Button>
+
               <Button
                 onClick={() => setOpenModal(true)}
-                className=" w-25 md:w-[130px] text-[9px] md:text-xs font-heading font-semibold bg-white hover:bg-muted/30 hover:border-none text-black border border-muted"
+                className="w-25 border border-border bg-background font-heading text-[9px] font-semibold text-text hover:bg-secondary hover:border-border md:w-[130px] md:text-xs"
               >
                 Withdraw Funds
               </Button>
@@ -138,26 +148,27 @@ function EscrowAndWalletPage() {
           {role === "artisan" && (
             <Button
               onClick={() => setOpenModal(false)}
-              className="w-[130px] text-xs font-heading font-semibold bg-muted hover:bg-muted/70"
+              className="w-[130px] bg-main font-heading text-xs font-semibold text-white hover:bg-main/90"
             >
               Withdraw Funds
             </Button>
           )}
         </div>
+
         <TransactionHistorysection />
       </div>
 
       {openModal && (
         <div
           onClick={() => setOpenModal(false)}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-[#1a2d4a]/50 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-main/50 p-4 backdrop-blur-sm"
         >
           <div
             onClick={(e) => e.stopPropagation()}
             className="relative w-full max-w-md overflow-hidden rounded-3xl border border-border bg-background shadow-2xl"
           >
             {/* Header */}
-            <div className="border-b border-border bg-white px-6 pb-5 pt-6 sm:px-8">
+            <div className="border-b border-border bg-background px-6 pb-5 pt-6 sm:px-8">
               <div className="mb-5 flex items-start justify-between">
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                   <GoPlus size={26} />
@@ -166,14 +177,14 @@ function EscrowAndWalletPage() {
                 <button
                   type="button"
                   onClick={() => setOpenModal(false)}
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-transparent text-muted transition-colors hover:bg-transparent hover:text-muted"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-transparent text-muted transition-colors hover:text-text"
                   aria-label="Close modal"
                 >
                   <span className="text-2xl leading-none">&times;</span>
                 </button>
               </div>
 
-              <h3 className="font-heading text-2xl font-bold text-main">
+              <h3 className="font-heading text-2xl font-bold text-text">
                 Fund your wallet
               </h3>
 
@@ -185,8 +196,8 @@ function EscrowAndWalletPage() {
 
             {/* Form */}
             <div className="px-6 py-6 sm:px-8">
-              <div className="mb-5 flex items-center gap-3 rounded-xl border border-border bg-white p-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary text-main">
+              <div className="mb-5 flex items-center gap-3 rounded-xl border border-border bg-secondary p-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-background text-text">
                   <span className="text-lg font-bold">₦</span>
                 </div>
 
@@ -199,7 +210,7 @@ function EscrowAndWalletPage() {
                   </p>
                 </div>
 
-                <div className="ml-auto rounded-full bg-green-50 px-2.5 py-1 text-xs font-semibold text-green-700">
+                <div className="ml-auto rounded-full bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-700 dark:bg-green-950/50 dark:text-green-400">
                   Secure
                 </div>
               </div>
@@ -232,7 +243,7 @@ function EscrowAndWalletPage() {
                         type="button"
                         disabled={isPending}
                         onClick={() => setOpenModal(false)}
-                        className="w-full rounded-xl border border-border bg-white px-5 py-3 text-sm font-semibold text-text transition hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+                        className="w-full rounded-xl border border-border bg-background px-5 py-3 text-sm font-semibold text-text transition hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
                       >
                         Cancel
                       </Button>
@@ -252,7 +263,7 @@ function EscrowAndWalletPage() {
             </div>
 
             {/* Footer */}
-            <div className="flex items-center justify-center gap-2 border-t border-border bg-white px-6 py-3.5">
+            <div className="flex items-center justify-center gap-2 border-t border-border bg-background px-6 py-3.5">
               <span className="text-xs text-muted">
                 <span className="font-semibold text-text">Paystack</span> secure
                 checkout · Your payment details are protected
