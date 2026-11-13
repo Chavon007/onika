@@ -1,3 +1,4 @@
+
 "use client";
 
 interface ServiceOption {
@@ -25,18 +26,20 @@ export const ServiceSelect = ({
   value,
   onChange,
   error,
-  ...props
 }: ServiceSelectProps) => {
   const isSelected = (title: string) =>
-    multiple ? Array.isArray(value) && value.includes(title) : value === title;
+    multiple
+      ? Array.isArray(value) && value.includes(title)
+      : value === title;
 
   const handleSelect = (title: string) => {
     if (multiple) {
       const current = Array.isArray(value) ? value : [];
+
       onChange(
         current.includes(title)
           ? current.filter((v) => v !== title)
-          : [...current, title]
+          : [...current, title],
       );
     } else {
       onChange(title);
@@ -45,30 +48,38 @@ export const ServiceSelect = ({
 
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-sm font-semibold text-heading">{label}</label>
-      <small className="text-xs text-gray-400">{small}</small>
+      <label className="font-sans text-sm font-semibold text-text">
+        {label}
+      </label>
 
-      <div className="grid  grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+      {small && (
+        <small className="font-sans text-xs text-muted">{small}</small>
+      )}
+
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
         {options.map((option) => {
           const selected = isSelected(option.title);
+
           return (
             <button
               type="button"
               key={option.title}
               onClick={() => handleSelect(option.title)}
-              className={`flex flex-col items-center gap-1.5 p-2 rounded-xl border text-sm transition-colors font-sans ${
+              aria-pressed={selected}
+              className={`flex flex-col items-center gap-1.5 rounded-xl border p-2 font-sans text-sm transition-all duration-200 ${
                 selected
-                  ? "border-primary bg-primary/10 text-primary font-medium"
-                  : `border-gray-200 ${option.bg} text-gray-700`
+                  ? "border-primary bg-primary/10 font-medium text-primary"
+                  : `border-border ${option.bg} text-text hover:border-primary/50`
               }`}
             >
               <span>{option.icon}</span>
-              <span>{option.title}</span>
+              <span className="text-center">{option.title}</span>
             </button>
           );
         })}
       </div>
-      {error && <p className="text-xs text-red-500">{error}</p>}
+
+      {error && <p className="font-sans text-xs text-red-500">{error}</p>}
     </div>
   );
 };

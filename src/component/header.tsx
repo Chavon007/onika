@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -66,7 +65,7 @@ function Header() {
 
   return (
     <>
-      <header className="fixed left-0 top-0 z-50 w-full border-b border-border bg-background/95 shadow-sm backdrop-blur-md">
+      <header className="fixed left-0 top-0 z-50 w-full border-b border-border bg-background/95 shadow-sm backdrop-blur-md transition-colors duration-300">
         <div className="container mx-auto flex w-[90%] items-center justify-between py-3">
           {/* Logo */}
           <section className="flex items-center gap-2">
@@ -84,7 +83,7 @@ function Header() {
                     <Link
                       key={item.title}
                       href={item.href}
-                      className="font-sans text-sm font-bold text-main/60 transition-colors hover:text-primary"
+                      className="font-sans text-sm font-bold text-text/70 transition-colors hover:text-primary"
                     >
                       {item.title}
                     </Link>
@@ -93,7 +92,7 @@ function Header() {
                     <Link
                       key={item.title}
                       href={item.link}
-                      className="font-sans text-sm font-bold text-main/60 transition-colors hover:text-primary"
+                      className="font-sans text-sm font-bold text-text/70 transition-colors hover:text-primary"
                     >
                       {item.title}
                     </Link>
@@ -185,7 +184,7 @@ function Header() {
                   key={item.title}
                   href={item.href}
                   onClick={() => setIsOpen(false)}
-                  className="font-sans text-lg font-semibold text-main/70 transition-colors hover:text-primary"
+                  className="font-sans text-lg font-semibold text-text/80 transition-colors hover:text-primary"
                 >
                   {item.title}
                 </Link>
@@ -195,7 +194,7 @@ function Header() {
                   key={item.title}
                   href={item.link}
                   onClick={() => setIsOpen(false)}
-                  className="font-sans text-lg font-semibold text-main/70 transition-colors hover:text-primary"
+                  className="font-sans text-lg font-semibold text-text/80 transition-colors hover:text-primary"
                 >
                   {item.title}
                 </Link>

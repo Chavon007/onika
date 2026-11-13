@@ -1,4 +1,6 @@
+
 "use client";
+
 import useAuthStore from "@/store/authStore";
 import { FiToggleRight } from "react-icons/fi";
 import Card from "@/component/card";
@@ -14,36 +16,31 @@ import { useArtisanCompletedJobNos } from "@/api/job";
 import { formatNaira } from "@/ultiz/formatMoney";
 
 const ActiveTab = [
-  {
-    title: "Overview",
-  },
-  {
-    title: "Job Requests",
-  },
-  {
-    title: "Active Jobs",
-  },
-  {
-    title: "Earnings",
-  },
+  { title: "Overview" },
+  { title: "Job Requests" },
+  { title: "Active Jobs" },
+  { title: "Earnings" },
 ];
 
 function ArtisanDashboard() {
   const user = useAuthStore((state) => state.user);
   const [isActive, setIsActiveTab] = useState("Overview");
+
   const { data: job, isError, isLoading } = useFindJobForArtisan();
   const { data: wallet } = useGetWallet();
   const { data: completed } = useArtisanCompletedJobNos();
-  
+
   const lateastJobRequest = [...(job ?? [])]
     .sort(
       (a, b) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     )
     .slice(0, 3);
+
   const totalPendingJobRequest = job?.length ?? 0;
   const balance = wallet?.balance ?? 0;
   const jobCompleted = completed?.length ?? 0;
+
   const cardContent = [
     {
       description: "Pending Requests",
@@ -70,13 +67,15 @@ function ArtisanDashboard() {
       background: "#fef3c7",
     },
   ];
+
   if (isLoading) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center">
+      <div className="flex min-h-[60vh] items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-3">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-secondary border-t-main" />
-
-          <p className="font-sans text-sm font-medium text-muted">Loading...</p>
+          <p className="font-sans text-sm font-medium text-muted">
+            Loading...
+          </p>
         </div>
       </div>
     );
@@ -84,26 +83,27 @@ function ArtisanDashboard() {
 
   if (isError) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center">
+      <div className="flex min-h-[60vh] items-center justify-center bg-background">
         <p className="font-sans text-sm font-medium text-muted">
           Failed to load jobs
         </p>
       </div>
     );
   }
+
   return (
-    <div className="min-h-screen w-full overflow-hidden bg-background pt-24">
-      <div className="container mx-auto w-full lg:w-[80%] flex flex-col gap-[30px] p-3">
-        <section className="flex items-center justify-between">
-          {/* Welcome */}
+    <div className="min-h-screen w-full overflow-hidden bg-background pt-24 transition-colors duration-300">
+      <div className="container mx-auto flex w-full flex-col gap-[30px] p-3 lg:w-[80%]">
+        {/* Welcome */}
+        <section className="flex items-center justify-between gap-3">
           <div className="flex flex-col gap-2">
-            <h3 className="text-base md:text-[30px] tracking-wide leading-10 font-serif text-[#1c1917] font-extrabold">
+            <h3 className="font-serif text-base font-extrabold leading-10 tracking-wide text-text md:text-[30px]">
               Welcome, {user?.fullName?.split(" ")[0]}
             </h3>
 
-            <div className="flex items-center gap-2 text-sm text-muted font-sans">
+            <div className="flex items-center gap-2 font-sans text-sm text-muted">
               <span>{user?.role}</span>
-              <span className="text-gray-300">•</span>
+              <span className="text-muted/50">•</span>
               <span>
                 {user?.state}, {user?.lga}
               </span>
@@ -112,17 +112,17 @@ function ArtisanDashboard() {
 
           <div className="flex items-center gap-3">
             <div className="flex flex-col items-end">
-              <span className="text-sm font-medium text-[#1c1917] font-sans">
+              <span className="font-sans text-sm font-medium text-text">
                 Available for jobs
               </span>
-              <span className="text-xs text-muted font-sans">
+              <span className="font-sans text-xs text-muted">
                 Let clients know you're available
               </span>
             </div>
 
             <button
               type="button"
-              className="text-[#1c1917] hover:opacity-70 transition-opacity"
+              className="text-text transition-opacity hover:opacity-70"
               aria-label="Toggle job availability"
             >
               <FiToggleRight className="text-3xl" />
@@ -130,14 +130,15 @@ function ArtisanDashboard() {
           </div>
         </section>
 
-        <section className="w-full border-b border-border pb-3 mt-4">
-          <div className="flex w-full md:w-[60%] lg:w-[45%] justify-between items-center">
+        {/* Tabs */}
+        <section className="mt-4 w-full border-b border-border pb-3">
+          <div className="flex w-full items-center justify-between md:w-[60%] lg:w-[45%]">
             {ActiveTab.map((a) => (
               <h4
-                className={`text-sm cursor-pointer font-sans font-bold pb-3 border-b-2 -mb-3 transition-colors ${
+                className={`-mb-3 cursor-pointer border-b-2 pb-3 font-sans text-sm font-bold transition-colors ${
                   isActive === a.title
-                    ? "text-muted border-text"
-                    : "text-[#1c1917]/50 border-transparent"
+                    ? "border-primary text-primary"
+                    : "border-transparent text-muted/60 hover:text-text"
                 }`}
                 key={a.title}
                 onClick={() => setIsActiveTab(a.title)}
@@ -147,13 +148,16 @@ function ArtisanDashboard() {
             ))}
           </div>
         </section>
+
+        {/* Dashboard content */}
         <section className="w-full">
           {isActive === "Overview" && (
             <div className="flex flex-col gap-8">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {/* Summary cards */}
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                 {cardContent.map((c) => (
                   <div
-                    className="bg-[#fff] w-full p-3 h-35 rounded rounded-xl border border-border"
+                    className="h-35 w-full rounded-xl border border-border bg-background p-3 transition-colors duration-300"
                     key={c.description}
                   >
                     <Card
@@ -166,13 +170,15 @@ function ArtisanDashboard() {
                 ))}
               </div>
 
-              <div className="bg-white rounded-2xl py-2">
-                <section className="flex justify-between p-3 items-center  border-b border-border">
-                  <h3 className="text-text font-heading font-bold uppercase text-sm">
+              {/* Latest job requests */}
+              <div className="rounded-2xl border border-border bg-background py-2 transition-colors duration-300">
+                <section className="flex items-center justify-between border-b border-border p-3">
+                  <h3 className="font-heading text-sm font-bold uppercase text-text">
                     New Job Requests
                   </h3>
+
                   <button
-                    className="flex items-center  hover:text-accent/60 cursor-pointer text-xs font-sans text-accent"
+                    className="flex cursor-pointer items-center font-sans text-xs text-primary transition-colors hover:text-primary/60"
                     type="button"
                     onClick={() => setIsActiveTab("Job Requests")}
                   >
@@ -187,9 +193,9 @@ function ArtisanDashboard() {
                       <ArtisanJobRequest key={j._id} job={j} />
                     ))
                   ) : (
-                    <div className="flex h-auto py-4 items-center justify-center">
-                      <p className="rounded-xl border border-border font-heading bg-white px-8 py-5 font-sans text-sm font-medium text-muted shadow-sm">
-                        You have no job Request yet!
+                    <div className="flex h-auto items-center justify-center py-4">
+                      <p className="rounded-xl border border-border bg-secondary px-8 py-5 font-sans text-sm font-medium text-muted shadow-sm">
+                        You have no job requests yet!
                       </p>
                     </div>
                   )}
@@ -197,21 +203,12 @@ function ArtisanDashboard() {
               </div>
             </div>
           )}
-          {isActive === "Job Requests" && (
-            <div>
-              <JobRequestpage />
-            </div>
-          )}
-          {isActive === "Active Jobs" && (
-            <div>
-              <ActiveJobPage />
-            </div>
-          )}
-          {isActive === "Earnings" && (
-            <div>
-              <EscrowAndWalletPage />
-            </div>
-          )}
+
+          {isActive === "Job Requests" && <JobRequestpage />}
+
+          {isActive === "Active Jobs" && <ActiveJobPage />}
+
+          {isActive === "Earnings" && <EscrowAndWalletPage />}
         </section>
       </div>
     </div>

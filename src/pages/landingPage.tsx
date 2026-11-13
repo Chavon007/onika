@@ -1,4 +1,5 @@
 "use client";
+
 import Header from "@/component/header";
 import banner from "../../public/banner.avif";
 import { MdOutlineVerifiedUser } from "react-icons/md";
@@ -8,6 +9,7 @@ import { FaLongArrowAltRight, FaLongArrowAltDown } from "react-icons/fa";
 import Image from "next/image";
 import Footer from "@/component/footer";
 import { serviceCard } from "@/constants/serviceCategories";
+
 const bRating = [
   { title: "Verified Artisans", num: "500+" },
   { title: "Jobs Completed", num: "10000+" },
@@ -63,96 +65,104 @@ const talking = [
 
 function LandingPage() {
   return (
-    <div className="min-h-screen p-2 ">
-      <div className=" w-full">
-        {/* header */}
+    <div className="min-h-screen bg-background p-2 transition-colors duration-300">
+      <div className="w-full">
+        {/* Header */}
         <Header />
 
-        {/* banner */}
+        {/* Banner (always dark, so it uses fixed white text) */}
         <section
-          className="bg-cover bg-center relative min-h-[600px] sm:min-h-[650px] lg:min-h-screen flex items-center"
+          className="relative flex min-h-[600px] items-center bg-cover bg-center sm:min-h-[650px] lg:min-h-screen"
           style={{ backgroundImage: `url(${banner.src})` }}
         >
-          <div className=" absolute inset-0 bg-[#1a2d4a]/90" />
-          <div className="relative z-10 w-[90%] max-w-2xl lg:max-w-6xl mx-auto flex flex-col gap-5 py-14 sm:py-20">
-            <small className="bg-primary/25 font-sans text-sm text-primary font-medium flex gap-1 items-center justify-center w-fit px-3 py-1.5 rounded-2xl">
-              <span className="text-xl shrink-0">
+          <div className="absolute inset-0 bg-[#1a2d4a]/90 dark:bg-main/90" />
+
+          <div className="relative z-10 mx-auto flex w-[90%] max-w-2xl flex-col gap-5 py-14 sm:py-20 lg:max-w-6xl">
+            <small className="flex w-fit items-center justify-center gap-1 rounded-2xl bg-primary/25 px-3 py-1.5 font-sans text-sm font-medium text-primary">
+              <span className="shrink-0 text-xl">
                 <MdOutlineVerifiedUser />
               </span>
+
               <span className="whitespace-nowrap">
                 NIN & BVN verified pros only
               </span>
             </small>
 
-            <h2 className="text-white font-heading text-4xl sm:text-6xl lg:text-6xl font-bold leading-[1.15] tracking-wide">
+            <h2 className="font-heading text-4xl font-bold leading-[1.15] tracking-wide text-white sm:text-6xl lg:text-6xl">
               Book real <br />
-              <span className="text-primary">artisans.</span> <br /> Pay when
-              the job <br /> is <span className="text-primary">actually</span>{" "}
-              done.
+              <span className="text-primary">artisans.</span> <br />
+              Pay when the job <br />
+              is <span className="text-primary">actually</span> done.
             </h2>
 
-            <p className="w-full max-w-md sm:max-w-xl leading-[26px] text-gray-300 tracking-wide font-light font-sans text-sm sm:text-base">
+            <p className="w-full max-w-md font-sans text-sm font-light leading-[26px] tracking-wide text-gray-300 sm:max-w-xl sm:text-base">
               Connect with verified local artisans for cleaning, plumbing, car
               wash, electrical work, and more. Booked in minutes, done right.
             </p>
 
-            <div className="flex flex-col gap-3 sm:flex-row w-full max-w-xl justify-between items-stretch mt-2">
-              <div className="flex items-center gap-2 bg-[#30415a] w-full sm:w-[70%] py-3.5 text-gray-300 border border-gray-500 rounded-xl px-3">
-                <CiSearch className="text-xl font-bold shrink-0" />
+            <div className="mt-2 flex w-full max-w-xl flex-col items-stretch justify-between gap-3 sm:flex-row">
+              <div className="flex w-full items-center gap-2 rounded-xl border border-gray-500 bg-[#30415a] px-3 py-3.5 text-gray-300 dark:bg-secondary/80 sm:w-[70%]">
+                <CiSearch className="shrink-0 text-xl font-bold" />
+
                 <input
-                  className="focus:outline-none w-full bg-transparent font-sans font-light text-sm"
+                  className="w-full bg-transparent font-sans text-sm font-light text-white placeholder:text-gray-400 focus:outline-none"
                   placeholder="What service do you need?"
                 />
               </div>
+
               <button
-                className="bg-primary p-3 w-full sm:w-auto sm:px-8 text-center text-white font-sans text-sm font-bold rounded-xl hover:bg-primary/80 cursor-pointer"
+                className="w-full cursor-pointer rounded-xl bg-primary p-3 text-center font-sans text-sm font-bold text-white hover:bg-primary/80 sm:w-auto sm:px-8"
                 type="submit"
               >
                 Find Artisan
               </button>
             </div>
 
-            <div className="flex justify-between sm:justify-start sm:gap-14 items-center mt-4 w-full max-w-md">
+            <div className="mt-4 flex w-full max-w-md items-center justify-between sm:justify-start sm:gap-14">
               {bRating.map((r) => (
                 <section
-                  className="font-sans text-base sm:text-lg font-bold text-white"
+                  className="font-sans text-base font-bold text-white sm:text-lg"
                   key={r.title}
                 >
                   <h3 className="flex items-center gap-1">
                     {r.num} {r.icon}
                   </h3>
-                  <p className="text-gray-400 text-sm font-light">{r.title}</p>
+
+                  <p className="text-sm font-light text-gray-400">{r.title}</p>
                 </section>
               ))}
             </div>
           </div>
         </section>
 
-        {/* service cat */}
-        <section className="bg-background py-10 flex flex-col justify-center h-auto lg::min-h-[70vh]">
-          <div className="w-[90%] max-w-6xl mx-auto flex flex-col gap-8">
+        {/* Service Categories */}
+        <section className="flex h-auto flex-col justify-center bg-background py-10 transition-colors duration-300 lg:min-h-[70vh]">
+          <div className="mx-auto flex w-[90%] max-w-6xl flex-col gap-8">
             <div>
-              <h2 className="font-heading font-bold text-2xl sm:text-3xl text-muted">
+              <h2 className="font-heading text-2xl font-bold text-muted sm:text-3xl">
                 Browse by service
               </h2>
-              <p className="text-black/75 font-sans font-light text-sm sm:text-base mt-1">
+
+              <p className="mt-1 font-sans text-sm font-light text-text/75 sm:text-base">
                 From quick fixes to major overhauls. We have a specialist for
                 every job.
               </p>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-6">
               {serviceCard.map((s) => (
                 <div
-                  className={`${s.bg} min-h-[130px] rounded-3xl p-4 text-2xl flex flex-col gap-2 justify-center`}
+                  className={`${s.bg} flex min-h-[130px] flex-col justify-center gap-2 rounded-3xl p-4 text-2xl transition-colors duration-300`}
                   key={s.title}
                 >
                   <span>{s.icon}</span>
-                  <h4 className="text-sm font-sans font-bold text-black/70">
+
+                  <h4 className="font-sans text-sm font-bold text-text">
                     {s.title}
                   </h4>
+
                   {s.num && (
-                    <p className="text-xs font-sans text-black/60">{s.num}</p>
+                    <p className="font-sans text-xs text-muted">{s.num}</p>
                   )}
                 </div>
               ))}
@@ -160,44 +170,48 @@ function LandingPage() {
           </div>
         </section>
 
-        {/* how it works */}
-        <section className="bg-[#f0efe9] flex flex-col justify-center py-10 lg:min-h-[65vh]">
-          <div className="w-[90%] max-w-6xl mx-auto flex flex-col gap-10">
-            <div className="text-center max-w-xl mx-auto">
-              <h2 className="font-heading font-bold text-2xl sm:text-3xl pt-3 text-muted">
+        {/* How It Works */}
+        <section className="flex flex-col justify-center bg-[#f0efe9] py-10 transition-colors duration-300 dark:bg-secondary lg:min-h-[65vh]">
+          <div className="mx-auto flex w-[90%] max-w-6xl flex-col gap-10">
+            <div className="mx-auto max-w-xl text-center">
+              <h2 className="pt-3 font-heading text-2xl font-bold text-muted sm:text-3xl">
                 How Onika works
               </h2>
-              <p className="text-black/75 font-sans font-light text-sm sm:text-base mt-1">
+
+              <p className="mt-1 font-sans text-sm font-light text-text/75 sm:text-base">
                 From posting a job to paying only when it's done in four honest
                 steps.
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row justify-center lg:justify-between items-center sm:items-start gap-y-8">
+            <div className="flex flex-col items-center justify-center gap-y-8 sm:flex-row sm:items-start lg:justify-between">
               {howItWorks.map((w, i) => (
                 <div
                   key={w.title}
-                  className="w-full sm:w-auto flex flex-col sm:flex-row items-center"
+                  className="flex w-full flex-col items-center sm:w-auto sm:flex-row"
                 >
                   <div className="w-full max-w-[260px] p-3 text-center sm:text-left">
                     <button
                       type="button"
-                      className="bg-[#1a2d4a] p-5 rounded-xl lg:rounded-2xl text-white font-heading font-bold text-base lg:text-2xl"
+                      className="rounded-xl bg-[#1a2d4a] p-5 font-heading text-base font-bold text-white dark:bg-main lg:rounded-2xl lg:text-2xl"
                     >
                       {w.stage}
                     </button>
-                    <h4 className="font-sans text-black md:text-xs lg:text-base font-bold py-2">
+
+                    <h4 className="py-2 font-sans text-sm font-bold text-text md:text-xs lg:text-base">
                       {w.title}
                     </h4>
-                    <p className="mt-1 font-sans font-light text-xs text-black/80">
+
+                    <p className="mt-1 font-sans text-xs font-light text-muted">
                       {w.desc}
                     </p>
                   </div>
 
                   {i < howItWorks.length - 1 && (
                     <>
-                      <FaLongArrowAltRight className="hidden sm:block w-8 h-6 lg:w-10 text-[#1a2d4a]/70 shrink-0" />
-                      <FaLongArrowAltDown className="block sm:hidden my-3 w-8 h-6 text-[#1a2d4a]/70" />
+                      <FaLongArrowAltRight className="hidden h-6 w-8 shrink-0 text-[#1a2d4a]/70 dark:text-muted sm:block lg:w-10" />
+
+                      <FaLongArrowAltDown className="my-3 block h-6 w-8 text-[#1a2d4a]/70 dark:text-muted sm:hidden" />
                     </>
                   )}
                 </div>
@@ -206,27 +220,29 @@ function LandingPage() {
           </div>
         </section>
 
-        {/* testimonials */}
-        <section className="bg-main flex flex-col justify-center h-auto lg:min-h-[70vh] py-10">
-          <div className="w-[90%] max-w-6xl mx-auto flex flex-col gap-8">
-            <div className="text-center max-w-xl mx-auto">
-              <h2 className="font-heading font-bold text-2xl sm:text-3xl text-background">
+        {/* Testimonials (always dark, so it uses fixed white text) */}
+        <section className="flex h-auto flex-col justify-center bg-main py-10 transition-colors duration-300 lg:min-h-[70vh]">
+          <div className="mx-auto flex w-[90%] max-w-6xl flex-col gap-8">
+            <div className="mx-auto max-w-xl text-center">
+              <h2 className="font-heading text-2xl font-bold text-white sm:text-3xl">
                 What people are saying
               </h2>
-              <p className="text-background/50 font-sans font-light text-sm sm:text-base mt-1">
+
+              <p className="mt-1 font-sans text-sm font-light text-white/50 sm:text-base">
                 Real stories from customers and artisans.
               </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-5">
+            <div className="grid gap-5 md:grid-cols-3">
               {talking.map((t) => (
                 <div
-                  className="bg-[#30496c] border h-auto min-h-[180px] border-white/10 p-4 rounded-2xl flex flex-col justify-between"
+                  className="flex h-auto min-h-[180px] flex-col justify-between rounded-2xl border border-white/10 bg-[#30496c] p-4 dark:bg-secondary"
                   key={t.name}
                 >
-                  <p className="font-sans text-xs leading-6 tracking-normal text-gray-300 font-medium">
+                  <p className="font-sans text-xs font-medium leading-6 tracking-normal text-gray-300 dark:text-muted">
                     {t.text}
                   </p>
+
                   <div className="mt-5 flex items-center gap-2">
                     {t.image && (
                       <Image
@@ -234,14 +250,16 @@ function LandingPage() {
                         alt={t.name}
                         width={36}
                         height={36}
-                        className="rounded-full object-cover shrink-0"
+                        className="shrink-0 rounded-full object-cover"
                       />
                     )}
+
                     <h3 className="flex flex-col">
-                      <strong className="font-heading text-background text-base font-semibold">
+                      <strong className="font-heading text-base font-semibold text-white">
                         {t.name}
                       </strong>
-                      <span className="font-sans text-xs font-medium text-gray-400">
+
+                      <span className="font-sans text-xs font-medium text-gray-400 dark:text-muted">
                         {t.postion}
                       </span>
                     </h3>
@@ -252,31 +270,32 @@ function LandingPage() {
           </div>
         </section>
 
-        {/* join */}
-        <section className="w-full bg-[#f0efe9] py-16 flex items-center">
-          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center w-[90%] max-w-6xl mx-auto bg-background rounded-4xl px-6 sm:px-10 py-10 gap-8">
-            <div className="w-full lg:w-1/2 flex flex-col gap-3">
-              <h3 className="text-2xl sm:text-3xl sm:tracking-wide sm:leading-9 font-heading font-extrabold text-black/90">
+        {/* Join Onika */}
+        <section className="flex w-full items-center bg-[#f0efe9] py-16 transition-colors duration-300 dark:bg-secondary">
+          <div className="mx-auto flex w-[90%] max-w-6xl flex-col gap-8 rounded-4xl bg-background px-6 py-10 transition-colors duration-300 sm:px-10 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex w-full flex-col gap-3 lg:w-1/2">
+              <h3 className="font-heading text-2xl font-extrabold text-text/90 sm:text-3xl sm:leading-9 sm:tracking-wide">
                 Get paid for real work. Build a reputation you own.
               </h3>
 
-              <p className="text-xs sm:text-sm w-full max-w-md font-sans text-black/55 font-bold tracking-wide">
+              <p className="w-full max-w-md font-sans text-xs font-bold tracking-wide text-muted sm:text-sm">
                 Join thousands of verified Nigerian artisans earning weekly on
-                Sabi. Free to join. NIN required. Payouts to any Nigerian bank.
+                Onika. Free to join. NIN required. Payouts to any Nigerian
+                bank.
               </p>
             </div>
 
-            <div className="w-full lg:w-auto flex flex-col sm:flex-row gap-4 items-center">
+            <div className="flex w-full flex-col items-center gap-4 sm:flex-row lg:w-auto">
               <button
                 type="button"
-                className="w-full sm:w-auto bg-amber-200 hover:bg-transparent hover:border hover:border-amuted cursor-pointer px-6 py-3 text-xs text-black/50 rounded-4xl font-sans font-bold"
+                className="w-full cursor-pointer rounded-4xl bg-amber-200 px-6 py-3 font-sans text-xs font-bold text-black/50 hover:bg-amber-300 dark:bg-primary/20 dark:text-primary dark:hover:bg-primary/30 sm:w-auto"
               >
                 Become an artisan
               </button>
 
               <button
                 type="button"
-                className="w-full sm:w-auto bg-transparent hover:bg-amber-200 hover:border-none cursor-pointer border border-muted px-6 py-3 text-xs text-black/50 rounded-4xl font-sans font-bold"
+                className="w-full cursor-pointer rounded-4xl border border-muted bg-transparent px-6 py-3 font-sans text-xs font-bold text-text/70 hover:bg-amber-200 hover:text-black/70 dark:border-border dark:hover:bg-primary/20 dark:hover:text-primary sm:w-auto"
               >
                 Find an artisan
               </button>
@@ -284,7 +303,7 @@ function LandingPage() {
           </div>
         </section>
 
-        {/* footer */}
+        {/* Footer */}
         <Footer />
       </div>
     </div>
