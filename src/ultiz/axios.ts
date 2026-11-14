@@ -65,7 +65,8 @@ apiClient.interceptors.response.use(
         status === 401 &&
         originalRequest &&
         !originalRequest._retry &&
-        !originalRequest.url?.includes("/auth/refresh")
+        !originalRequest.url?.includes("/auth/refresh") &&
+        !originalRequest.url?.includes("/auth/login")
       ) {
         originalRequest._retry = true;
 
@@ -75,7 +76,7 @@ apiClient.interceptors.response.use(
             await apiClient.post("/auth/refresh");
             isRefreshing = false;
             onRefreshed();
-            return apiClient(originalRequest); 
+            return apiClient(originalRequest);
           } catch (refreshError) {
             isRefreshing = false;
             onRefreshFailed(refreshError);
