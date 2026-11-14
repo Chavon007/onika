@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Form } from "./form";
@@ -6,6 +5,7 @@ import Button from "./button";
 import { InputField } from "./inputField";
 import useAuthStore from "@/store/authStore";
 import { profileFormDTO, profileSchema } from "@/schema/userSchema";
+import { toTitleCase } from "@/ultiz/formatText";
 
 function ProfileForm() {
   const user = useAuthStore((s) => s.user);
@@ -15,19 +15,14 @@ function ProfileForm() {
   return (
     <section className="w-full space-y-6">
       <div>
-        <h2 className="font-heading text-2xl text-main">
-          Personal Details
-        </h2>
+        <h2 className="font-heading text-2xl text-text">Personal Details</h2>
         <p className="mt-2 text-sm leading-6 text-muted">
           Manage your personal information and profile details.
         </p>
       </div>
 
-      <div className="rounded-2xl border border-border bg-white p-5 shadow-sm sm:p-7">
-        <Form<profileFormDTO>
-          onSubmit={onSubmit}
-          schema={profileSchema}
-        >
+      <div className="rounded-2xl border border-border bg-white p-5 shadow-sm transition-colors duration-300 dark:bg-secondary sm:p-7">
+        <Form<profileFormDTO> onSubmit={onSubmit} schema={profileSchema}>
           {(methods) => (
             <div className="space-y-5">
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
@@ -58,7 +53,7 @@ function ProfileForm() {
                 <InputField
                   label="Preferred State"
                   type="text"
-                  defaultValue={user?.state}
+                  defaultValue={toTitleCase(user?.state)}
                   registration={methods.register("state")}
                   error={methods.formState.errors.state}
                 />
@@ -66,7 +61,7 @@ function ProfileForm() {
                 <InputField
                   label="Preferred LGA"
                   type="text"
-                  defaultValue={user?.lga}
+                  defaultValue={toTitleCase(user?.lga)}
                   registration={methods.register("lga")}
                   error={methods.formState.errors.lga}
                 />
