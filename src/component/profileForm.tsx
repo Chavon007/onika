@@ -5,7 +5,7 @@ import Button from "./button";
 import { InputField } from "./inputField";
 import useAuthStore from "@/store/authStore";
 import { profileFormDTO, profileSchema } from "@/schema/userSchema";
-import { toTitleCase } from "@/ultiz/formatText";
+import { toTitleCase } from "@/ultiz/Formattext";
 
 function ProfileForm() {
   const user = useAuthStore((s) => s.user);

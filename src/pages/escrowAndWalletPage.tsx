@@ -1,4 +1,3 @@
-
 import Card from "@/component/card";
 import { formatNaira } from "@/ultiz/formatMoney";
 import TransactionHistorysection from "@/component/transactionHistory";
@@ -8,8 +7,12 @@ import { useState } from "react";
 import { Form } from "../component/form";
 import { InputField } from "../component/inputField";
 import useAuthStore from "@/store/authStore";
-import { useGetArtisanCurrentMonthEarnings } from "@/api/earnings";
+import {
+  useGetArtisanCurrentMonthEarnings,
+  useGetArtisanAllTimeEarnings,
+} from "@/api/earnings";
 import { useShallow } from "zustand/shallow";
+import WithdrawalForm from "@/component/withdrawalForm";
 import {
   walletFundingDTO,
   walletFundingSchema,
@@ -17,7 +20,6 @@ import {
 import { useFundingWallet, useGetWallet } from "@/api/wallet";
 import { useCustomerTotalSpent } from "@/api/job";
 import { useCustomerAmountInEscrow } from "@/api/escrow";
-import { useGetArtisanAllTimeEarnings } from "@/api/earnings";
 
 function EscrowAndWalletPage() {
   const { role, joined } = useAuthStore(
@@ -35,13 +37,14 @@ function EscrowAndWalletPage() {
     : "Recently Joined";
 
   const [openModal, setOpenModal] = useState(false);
+  const [withdrawalModal, setWithdrawalModal] = useState(false);
+
   const { mutate, isPending } = useFundingWallet();
   const { data: wallet } = useGetWallet();
   const { data: escrowBalance } = useCustomerAmountInEscrow();
   const { data: totalSpent } = useCustomerTotalSpent();
   const { data: monthEarnings } = useGetArtisanCurrentMonthEarnings();
   const { data: allTimeEarnings } = useGetArtisanAllTimeEarnings();
-
   const balance = wallet?.balance ?? 0;
 
   const date = new Date().toLocaleDateString("en-US", {
@@ -95,12 +98,7 @@ function EscrowAndWalletPage() {
     },
   ];
 
-  const baseStats =
-    role === "artisan" ? artisanWalletStats : customerWalletStats;
-
-  const stats = baseStats.map((s) =>
-    s.title === "Wallet Balance" ? { ...s, amount: formatNaira(balance) } : s,
-  );
+  const stats = role === "artisan" ? artisanWalletStats : customerWalletStats;
 
   return (
     <div className="flex flex-col gap-4 bg-background transition-colors duration-300">
@@ -137,8 +135,8 @@ function EscrowAndWalletPage() {
               </Button>
 
               <Button
-                onClick={() => setOpenModal(true)}
-                className="w-25 border border-border bg-background font-heading text-[9px] font-semibold text-text hover:bg-secondary hover:border-border md:w-[130px] md:text-xs"
+                onClick={() => setWithdrawalModal(true)}
+                className="w-25 border border-border bg-background font-heading text-[9px] font-semibold text-text hover:border-border hover:bg-secondary md:w-[130px] md:text-xs"
               >
                 Withdraw Funds
               </Button>
@@ -147,7 +145,7 @@ function EscrowAndWalletPage() {
 
           {role === "artisan" && (
             <Button
-              onClick={() => setOpenModal(false)}
+              onClick={() => setWithdrawalModal(true)}
               className="w-[130px] bg-main font-heading text-xs font-semibold text-white hover:bg-main/90"
             >
               Withdraw Funds
@@ -158,6 +156,7 @@ function EscrowAndWalletPage() {
         <TransactionHistorysection />
       </div>
 
+      {/* Top-up modal */}
       {openModal && (
         <div
           onClick={() => setOpenModal(false)}
@@ -165,7 +164,7 @@ function EscrowAndWalletPage() {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-md overflow-hidden rounded-3xl border border-border bg-background shadow-2xl"
+            className="relative max-h-[90vh] w-full max-w-md overflow-y-auto rounded-3xl border border-border bg-background shadow-2xl"
           >
             {/* Header */}
             <div className="border-b border-border bg-background px-6 pb-5 pt-6 sm:px-8">
@@ -270,6 +269,16 @@ function EscrowAndWalletPage() {
               </span>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Withdrawal modal */}
+      {withdrawalModal && (
+        <div
+          onClick={() => setWithdrawalModal(false)}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-main/50 p-4 backdrop-blur-sm"
+        >
+          <WithdrawalForm onClose={() => setWithdrawalModal(false)} />
         </div>
       )}
     </div>
