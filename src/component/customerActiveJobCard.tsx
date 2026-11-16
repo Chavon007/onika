@@ -37,7 +37,7 @@ function getStepFromStatus(
   return map[status] ?? 1;
 }
 
-export function CustomerActiveJob({ jobs }: { jobs: jobDetails }) {
+function CustomerActiveJob({ jobs }: { jobs: jobDetails }) {
   const formattedDate = new Date(jobs.createdAt).toLocaleDateString("en-NG");
 
   const [releasePayment, setReleasePayment] = useState(false);
@@ -57,9 +57,11 @@ export function CustomerActiveJob({ jobs }: { jobs: jobDetails }) {
   // Each button only shows when it actually applies to the current status
   const canConfirm = jobs.status === "awaiting_confirmation";
   const canCancel = jobs.status === "pending" || jobs.status === "accepted";
-  const canDispute = ["accepted", "in_progress", "awaiting_confirmation"].includes(
-    jobs.status,
-  );
+  const canDispute = [
+    "accepted",
+    "in_progress",
+    "awaiting_confirmation",
+  ].includes(jobs.status);
   const showActions = canConfirm || canCancel || canDispute;
 
   const handleDisputeSubmit = (data: raiseDisputeDTO) => {
@@ -315,3 +317,5 @@ export function CustomerActiveJob({ jobs }: { jobs: jobDetails }) {
     </div>
   );
 }
+
+export default CustomerActiveJob;

@@ -98,7 +98,16 @@ function EscrowAndWalletPage() {
     },
   ];
 
-  const stats = role === "artisan" ? artisanWalletStats : customerWalletStats;
+  type WalletStat = {
+  icon?: string;
+  title: string;
+  amount: string;
+  desc: string;
+  background?: string;
+};
+
+const stats: WalletStat[] =
+  role === "artisan" ? artisanWalletStats : customerWalletStats;
 
   return (
     <div className="flex flex-col gap-4 bg-background transition-colors duration-300">

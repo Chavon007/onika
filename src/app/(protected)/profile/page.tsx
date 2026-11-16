@@ -1,4 +1,4 @@
-import Profile from "@/pages/profilePage";
+import Profile from "@/views/profilePage";
 function ProfilePage() {
   return (
     <div>

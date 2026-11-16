@@ -1,6 +1,6 @@
 "use client";
 
-import SignupPage from "@/pages/signupPage";
+import SignupPage from "@/views/signupPage";
 function Signup() {
   return <SignupPage />;
 }

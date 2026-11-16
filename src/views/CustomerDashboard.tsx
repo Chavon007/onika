@@ -9,7 +9,7 @@ import { useState } from "react";
 import Link from "next/link";
 import EscrowAndWalletPage from "./escrowAndWalletPage";
 import JobHistoryPage from "./jobHistoryPage";
-import { CustomerActiveJobPage } from "./CustomerActiveJobPage";
+import  CustomerActiveJobPage  from "./CustomerActiveJobPage";
 import { useCustomerActiveJob } from "@/api/job";
 import { MdArrowRightAlt } from "react-icons/md";
 import ActiveJob from "@/component/activeJob";

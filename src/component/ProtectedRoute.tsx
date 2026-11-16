@@ -15,7 +15,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     const verifySession = async () => {
       try {
         const freshUser = await auth.fetchMeFn();
-        login(freshUser, freshUser.verified);
+        login(freshUser, freshUser.isVerified);
       } catch {
         logout();
         router.replace("/login");

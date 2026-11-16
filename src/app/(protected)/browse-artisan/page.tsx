@@ -1,6 +1,6 @@
 "use client";
 
-import FetchAllArtisanPage from "@/pages/BrowseArtisanPage";
+import FetchAllArtisanPage from "@/views/BrowseArtisanPage";
 function AllArtisan() {
   return <FetchAllArtisanPage />;
 }

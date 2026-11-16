@@ -1,7 +1,12 @@
-import VerifyPage from "@/pages/verifyPage";
+import { Suspense } from "react";
+import VerifyPage from "@/views/verifyPage";
 
 function Verify() {
-  return <VerifyPage />;
+  return (
+    <Suspense fallback={null}>
+      <VerifyPage />
+    </Suspense>
+  );
 }
 
 export default Verify;
