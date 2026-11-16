@@ -1,8 +1,8 @@
 
-import { CustomerActiveJob } from "@/component/customerActiveJobCard";
+import  CustomerActiveJob  from "@/component/customerActiveJobCard";
 import { useCustomerActiveJob } from "@/api/job";
 
-export function CustomerActiveJobPage() {
+function CustomerActiveJobPage() {
   const { data: jobs, isLoading, isError } = useCustomerActiveJob();
 
   if (isLoading)
@@ -43,3 +43,5 @@ export function CustomerActiveJobPage() {
     </div>
   );
 }
+
+export default CustomerActiveJobPage

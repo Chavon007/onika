@@ -1,5 +1,5 @@
 "use client";
-import LoginPage from "@/pages/loginPage";
+import LoginPage from "@/views/loginPage";
 
 function Login() {
   return <LoginPage />;

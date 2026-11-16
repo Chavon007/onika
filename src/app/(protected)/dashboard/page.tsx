@@ -1,5 +1,5 @@
 "use client";
-import Dashboard from "@/pages/Home";
+import Dashboard from "@/views/Home";
 
 function DashboardPage() {
   return <Dashboard />;

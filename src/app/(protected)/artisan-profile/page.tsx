@@ -1,6 +1,6 @@
 "use client";
 
-import VerifyArtisanDetails from "@/pages/verifyArtisanDetailsPage";
+import VerifyArtisanDetails from "@/views/verifyArtisanDetailsPage";
 
 function Artisan() {
   return <VerifyArtisanDetails />;
